@@ -59,7 +59,7 @@ export default {
       // Alert anyone that we have moved
     },
     handleClick() {
-      this.$parent.loadInspector('processmaker-connectors-social-twitter-send', this.node.definition, this);
+      this.$parent.loadInspector('processmaker-communication-email-send', this.node.definition, this);
     },
   },
   mounted() {

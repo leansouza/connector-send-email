@@ -1,8 +1,8 @@
 
 import component from './component.vue';
 
-const implementation = 'processmaker-social-email-send';
-const nodeId = 'processmaker-connectors-social-email-send';
+const implementation = 'processmaker-communication-email-send';
+const nodeId = 'processmaker-communication-email-send';
 
 export default  {
     id: nodeId,
