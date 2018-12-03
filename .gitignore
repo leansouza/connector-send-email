@@ -1,0 +1,5 @@
+node_modules
+public
+/nbproject/private/
+package-lock.json
+nbproject/
