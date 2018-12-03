@@ -77,7 +77,7 @@ export default {
         fill: 'black',
       },
 
-      image: { 'xlink:href': require('icon.svg') }
+      image: { 'xlink:href': require('./icon.svg') }
     });
     this.shape.on('change:position', (element, position) => {
       this.node.diagram.bounds.x = position.x;

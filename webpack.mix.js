@@ -15,6 +15,6 @@ folder configured for publishing by default.
  */
 
 mix.setPublicPath('public')
-.setResourceRoot('/vendor/processmaker/connectors/social/')
-    .js('resources/js/social-connectors.js', 'js')
+.setResourceRoot('/vendor/processmaker/connectors/email/')
+    .js('resources/js/email-connector.js', 'js')
     .version()
