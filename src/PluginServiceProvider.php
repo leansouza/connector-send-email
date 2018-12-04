@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use ProcessMaker\Events\ModelerStarting;
-use Seeds\EmailSendSeeder;
+use ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder;
 
 class PluginServiceProvider extends ServiceProvider
 {
