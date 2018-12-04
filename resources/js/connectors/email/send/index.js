@@ -68,7 +68,7 @@ export default  {
                     config: {
                         label: 'Subject',
                         helper: 'Subject of the message',
-                        name: 'config.targetName',
+                        name: 'config.subject',
                     },
                 },
                 {

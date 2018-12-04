@@ -76,12 +76,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+/**
+ * A new control based on a Task node.
+ *
+ */
 /* harmony default export */ __webpack_exports__["default"] = ({
   extends: ProcessMaker.nodeTypes.get('processmaker-modeler-task').component,
   methods: {
+    /**
+     * Define the task marker
+     */
     getMarker: function getMarker() {
       return { 'xlink:href': __webpack_require__("./resources/js/connectors/email/send/marker.svg") };
     },
+
+    /**
+     * Define the inspector loaded when nthe control is selected
+     */
     handleClick: function handleClick() {
       this.$parent.loadInspector('processmaker-communication-email-send', this.node.definition, this);
     }
@@ -272,7 +283,7 @@ module.exports = Component.exports
 /***/ "./resources/js/connectors/email/send/icon.svg":
 /***/ (function(module, exports) {
 
-module.exports = "/vendor/processmaker/connectors/email/fonts/icon.svg?c6e090743855c0ecadc0ead3848f199f";
+module.exports = "/vendor/processmaker/connectors/email/fonts/icon.svg?0652bcbfde0ba1266dc69fed99fb8bda";
 
 /***/ }),
 
@@ -347,7 +358,7 @@ var nodeId = 'processmaker-communication-email-send';
             config: {
                 label: 'Subject',
                 helper: 'Subject of the message',
-                name: 'config.targetName'
+                name: 'config.subject'
             }
         }, {
             component: 'FormInput',
@@ -365,7 +376,7 @@ var nodeId = 'processmaker-communication-email-send';
 /***/ "./resources/js/connectors/email/send/marker.svg":
 /***/ (function(module, exports) {
 
-module.exports = "/vendor/processmaker/connectors/email/fonts/marker.svg?3cee1ea7533194018f2ca582b93a9815";
+module.exports = "/vendor/processmaker/connectors/email/fonts/marker.svg?77d195e690c50759d71166456c5093c2";
 
 /***/ }),
 
@@ -377,6 +388,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__connectors_email_send_index__ = __webpack_require__("./resources/js/connectors/email/send/index.js");
 
 var nodeTypes = [__WEBPACK_IMPORTED_MODULE_0__connectors_email_send_index__["a" /* default */]];
+
+/**
+ * Initialize the connector.
+ * 
+ * Register the nodes it contains.
+ */
 window.ProcessMaker.EventBus.$on('modeler-init', function (_ref) {
     var registerNode = _ref.registerNode,
         registerBpmnExtension = _ref.registerBpmnExtension;
