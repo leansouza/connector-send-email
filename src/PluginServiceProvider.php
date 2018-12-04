@@ -1,6 +1,7 @@
 <?php
 namespace ProcessMaker\Packages\Connectors\Email;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use ProcessMaker\Events\ModelerStarting;

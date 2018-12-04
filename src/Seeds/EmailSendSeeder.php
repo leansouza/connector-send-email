@@ -3,7 +3,6 @@
 namespace ProcessMaker\Packages\Connectors\Email\Seeds;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Cache;
 use ProcessMaker\Models\Script;
 
 class EmailSendSeeder extends Seeder
