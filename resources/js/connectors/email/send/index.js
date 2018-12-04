@@ -16,6 +16,7 @@ export default  {
         return moddle.create('bpmn:ServiceTask', {
             name: 'Send Email',
             implementation,
+            config: JSON.stringify({ email: '', targetName: '', subject: '', template: '' }),
         });
     },
     diagram: function(moddle) {
@@ -31,7 +32,7 @@ export default  {
         for (var key in value) {
             // Only change if the value is different
             if (definition[key] != value[key]) {
-                definition[key] = value[key];
+                definition[key] = key === 'config' ? JSON.stringify(value[key]) : value[key];
             }
         }
         component.updateShape();
@@ -52,7 +53,7 @@ export default  {
                     config: {
                         label: 'Email',
                         helper: "Recipient's Email",
-                        name: 'config.email',
+                        name: 'email',
                     },
                 },
                 {
@@ -60,7 +61,7 @@ export default  {
                     config: {
                         label: 'Name',
                         helper: "recipient's name",
-                        name: 'config.targetName',
+                        name: 'targetName',
                     },
                 },
                 {
@@ -68,7 +69,7 @@ export default  {
                     config: {
                         label: 'Subject',
                         helper: 'Subject of the message',
-                        name: 'config.subject',
+                        name: 'subject',
                     },
                 },
                 {
@@ -76,7 +77,7 @@ export default  {
                     config: {
                         label: 'Template',
                         helper: 'Template of the message',
-                        name: 'config.template',
+                        name: 'template',
                     },
                 },
             ],
