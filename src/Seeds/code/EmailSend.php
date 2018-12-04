@@ -1,4 +1,5 @@
 <?php
+var_dump($config, get_defined_vars());
 $to      = $config['targetName'] . '<' . $config=['email'] . '>';
 $subject = $config['subject'];
 $message = 'hello world';

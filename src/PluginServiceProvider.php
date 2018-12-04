@@ -9,7 +9,7 @@ use ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder;
 
 class PluginServiceProvider extends ServiceProvider
 {
-    const version = '0.0.1';
+    const version = '0.0.2';
 
     /**
      * This service provider listens for the modeler starting event 
