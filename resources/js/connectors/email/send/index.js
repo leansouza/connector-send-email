@@ -1,5 +1,6 @@
 
 import component from './component.vue';
+import inspector from './inspector.vue';
 
 const implementation = 'processmaker-communication-email-send';
 const nodeId = 'processmaker-communication-email-send';
@@ -49,35 +50,9 @@ export default  {
                     },
                 },
                 {
-                    component: 'FormInput',
+                    component: inspector,
                     config: {
-                        label: 'Email',
-                        helper: "Recipient's Email",
-                        name: 'email',
-                    },
-                },
-                {
-                    component: 'FormInput',
-                    config: {
-                        label: 'Name',
-                        helper: "recipient's name",
-                        name: 'targetName',
-                    },
-                },
-                {
-                    component: 'FormInput',
-                    config: {
-                        label: 'Subject',
-                        helper: 'Subject of the message',
-                        name: 'subject',
-                    },
-                },
-                {
-                    component: 'FormInput',
-                    config: {
-                        label: 'Template',
-                        helper: 'Template of the message',
-                        name: 'template',
+                        name: 'id',
                     },
                 },
             ],
