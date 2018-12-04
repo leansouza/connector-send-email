@@ -10,7 +10,7 @@ export default  {
     bpmnType: 'bpmn:ServiceTask',
     control: true,
     category: 'Communication',
-    icon: require('@processmaker/modeler/src/assets/toolpanel/task.svg'),
+    icon: require('./icon.svg'),
     label: 'Send Email',
     definition: function(moddle) {
         return moddle.create('bpmn:ServiceTask', {
