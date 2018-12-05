@@ -29,7 +29,7 @@ class EmailSendSeeder extends Seeder
             $exists->fill($definition);
             $exists->saveOrFail();
         } else {
-            $script = $factory(Script::class)->make($definition);
+            $script = factory(Script::class)->make($definition);
             $script->saveOrFail();
         }
     }
