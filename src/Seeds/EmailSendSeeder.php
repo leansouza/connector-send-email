@@ -24,17 +24,10 @@ class EmailSendSeeder extends Seeder
             'language' => 'PHP',
             'code' => $this->getCode(),
         ];
-        \Illuminate\Support\Facades\Log::info("Updated: " . \Illuminate\Support\Facades\DB::connection()->getName());
         $exists = Script::where('key', self::IMPLEMENTATION_ID)->first();
-        \Illuminate\Support\Facades\Log::info(json_encode($exists));
         if ($exists) {
-            // Debug code to review the code update
-            \Illuminate\Support\Facades\Log::info($definition['code']);
             $exists->fill($definition);
             $exists->saveOrFail();
-            $exists2 = Script::where('key', self::IMPLEMENTATION_ID)->first();
-            \Illuminate\Support\Facades\Log::info("Updated: " . $exists2->id);
-            \Illuminate\Support\Facades\Log::info($exists2->code);
         } else {
             $script = factory(Script::class)->make($definition);
             $script->saveOrFail();
