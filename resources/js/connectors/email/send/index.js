@@ -17,7 +17,7 @@ export default  {
         return moddle.create('bpmn:ServiceTask', {
             name: 'Send Email',
             implementation,
-            config: JSON.stringify({ email: '', targetName: '', subject: '', template: '' }),
+            config: JSON.stringify({ email: '', targetName: '', subject: '', template: 'welcome' }),
         });
     },
     diagram: function(moddle) {

@@ -124,14 +124,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ["value", "label", "helper", "property"],
+    props: ["value"],
     data: function data() {
         return {
             email: '',
             targetName: '',
-            subject: ''
+            subject: '',
+            template: ''
         };
     },
 
@@ -145,24 +157,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         subject: function subject() {
             this.updateConfig();
         },
+        template: function template() {
+            this.updateConfig();
+        },
         value: function value() {
+            this.loadConfig();
+        }
+    },
+    computed: {},
+    methods: {
+        loadConfig: function loadConfig() {
             var node = this.$parent.$parent.inspectorNode;
             var config = JSON.parse(_.get(node, 'config'));
             this.email = config.email;
             this.targetName = config.targetName;
             this.subject = config.subject;
-        }
-    },
-    computed: {},
-    methods: {
+            this.template = config.template;
+        },
         updateConfig: function updateConfig() {
             var node = this.$parent.$parent.inspectorNode;
             Vue.set(node, 'config', JSON.stringify({
                 email: this.email,
                 targetName: this.targetName,
-                subject: this.subject
+                subject: this.subject,
+                template: this.template
             }));
         }
+    },
+    mounted: function mounted() {
+        this.loadConfig();
     }
 });
 
@@ -406,7 +429,11 @@ var render = function() {
             _vm.email = $event.target.value
           }
         }
-      })
+      }),
+      _vm._v(" "),
+      _c("small", { staticClass: "form-text text-muted" }, [
+        _vm._v("Recipient's email address")
+      ])
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "form-group" }, [
@@ -431,7 +458,11 @@ var render = function() {
             _vm.targetName = $event.target.value
           }
         }
-      })
+      }),
+      _vm._v(" "),
+      _c("small", { staticClass: "form-text text-muted" }, [
+        _vm._v("Recipient's name")
+      ])
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "form-group" }, [
@@ -456,7 +487,54 @@ var render = function() {
             _vm.subject = $event.target.value
           }
         }
-      })
+      }),
+      _vm._v(" "),
+      _c("small", { staticClass: "form-text text-muted" }, [
+        _vm._v("Email subject")
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "form-group" }, [
+      _c("label", [_vm._v("Template")]),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.template,
+              expression: "template"
+            }
+          ],
+          staticClass: "form-control",
+          on: {
+            change: function($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function(o) {
+                  return o.selected
+                })
+                .map(function(o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.template = $event.target.multiple
+                ? $$selectedVal
+                : $$selectedVal[0]
+            }
+          }
+        },
+        [
+          _c("option", { attrs: { value: "" } }),
+          _vm._v(" "),
+          _c("option", { attrs: { value: "welcome" } }, [_vm._v("Welcome")])
+        ]
+      ),
+      _vm._v(" "),
+      _c("small", { staticClass: "form-text text-muted" }, [
+        _vm._v("Template of the email")
+      ])
     ])
   ])
 }
@@ -865,7 +943,7 @@ var nodeId = 'processmaker-communication-email-send';
         return moddle.create('bpmn:ServiceTask', {
             name: 'Send Email',
             implementation: implementation,
-            config: JSON.stringify({ email: '', targetName: '', subject: '', template: '' })
+            config: JSON.stringify({ email: '', targetName: '', subject: '', template: 'welcome' })
         });
     },
     diagram: function diagram(moddle) {
