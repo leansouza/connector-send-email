@@ -2,10 +2,9 @@
 
 namespace ProcessMaker\Packages\Connectors\Email\Seeds;
 
-use Illuminate\Database\Seeder;
 use ProcessMaker\Models\Script;
 
-class EmailSendSeeder extends Seeder
+class EmailSendSeeder
 {
 
     const IMPLEMENTATION_ID = 'processmaker-communication-email-send';
