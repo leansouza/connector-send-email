@@ -2,9 +2,10 @@
 
 namespace ProcessMaker\Packages\Connectors\Email\Seeds;
 
+use Illuminate\Database\Seeder;
 use ProcessMaker\Models\Script;
 
-class EmailSendSeeder
+class EmailSendSeeder extends Seeder
 {
 
     const IMPLEMENTATION_ID = 'processmaker-communication-email-send';
@@ -30,6 +31,7 @@ class EmailSendSeeder
             $exists->fill($definition);
             $exists->saveOrFail();
             $exists2 = Script::where('key', self::IMPLEMENTATION_ID)->first();
+            \Illuminate\Support\Facades\Log::info("Updated: " . $exists2->id);
             \Illuminate\Support\Facades\Log::info($exists2->code);
         } else {
             $script = factory(Script::class)->make($definition);
