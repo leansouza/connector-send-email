@@ -2,13 +2,15 @@
 
 use GuzzleHttp\Client;
 
+// Rest client 
 $client = new Client([
-    'base_uri' => 'https://172.17.0.1',
+    'base_uri' => getenv('HOST_URL'),
     'verify' => false,
     'defaults' => ['verify' => false]
     ]);
 
-$response = @$client->request('POST', '/plugins/email/send', [
+// Call to send an email 
+$response = $client->request('POST', '/plugins/email/send', [
     'form_params' => [
         'email' => $config['email'],
         'name' => $config['targetName'],
@@ -16,8 +18,5 @@ $response = @$client->request('POST', '/plugins/email/send', [
         'template' => $config['template'],
     ]
 ]);
-$json = json_decode((string) $response->getBody());
-
-var_dump($json);
 
 return [];
