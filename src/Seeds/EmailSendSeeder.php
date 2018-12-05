@@ -24,6 +24,7 @@ class EmailSendSeeder extends Seeder
             'language' => 'PHP',
             'code' => $this->getCode(),
         ];
+        \Illuminate\Support\Facades\Log::info("Updated: " . \Illuminate\Support\Facades\DB::connection()->getName());
         $exists = Script::where('key', self::IMPLEMENTATION_ID)->first();
         if ($exists) {
             // Debug code to review the code update
