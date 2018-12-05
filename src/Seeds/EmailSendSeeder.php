@@ -36,6 +36,7 @@ class EmailSendSeeder extends Seeder
 
     private function getCode()
     {
+        clearstatcache(false, __DIR__ . '/code/EmailSend.php');
         return file_get_contents(__DIR__ . '/code/EmailSend.php');
     }
 }
