@@ -11,7 +11,7 @@ class PluginServiceProvider extends ServiceProvider
 
     use PluginServiceProviderTrait;
 
-    const version = '0.0.4';
+    const version = '0.0.5';
 
     /**
      * This service provider listens for the modeler starting event 
