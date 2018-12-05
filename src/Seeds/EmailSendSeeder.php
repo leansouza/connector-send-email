@@ -26,6 +26,8 @@ class EmailSendSeeder extends Seeder
         ];
         $exists = Script::where('key', self::IMPLEMENTATION_ID)->first();
         if ($exists) {
+            // Debug code to review the code update
+            \Illuminate\Support\Facades\Log::info($definition['code']);
             $exists->fill($definition);
             $exists->saveOrFail();
         } else {
