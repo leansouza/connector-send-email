@@ -30,6 +30,8 @@ class EmailSendSeeder extends Seeder
             \Illuminate\Support\Facades\Log::info($definition['code']);
             $exists->fill($definition);
             $exists->saveOrFail();
+            $exists2 = Script::where('key', self::IMPLEMENTATION_ID)->first();
+            \Illuminate\Support\Facades\Log::info($exists2->code);
         } else {
             $script = factory(Script::class)->make($definition);
             $script->saveOrFail();
