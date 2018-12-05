@@ -27,6 +27,7 @@ class EmailSendSeeder extends Seeder
         $exists = Script::where('key', self::IMPLEMENTATION_ID)->first();
         if ($exists) {
             $exists->fill($definition);
+            $exists->save();
         } else {
             factory(Script::class)->create($definition);
         }

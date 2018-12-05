@@ -1,15 +1,17 @@
 <?php
+
 namespace ProcessMaker\Packages\Connectors\Email;
 
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
-use ProcessMaker\Events\ModelerStarting;
 use ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder;
+use ProcessMaker\Traits\PluginServiceProviderTrait;
 
 class PluginServiceProvider extends ServiceProvider
 {
-    const version = '0.0.2';
+
+    use PluginServiceProviderTrait;
+
+    const version = '0.0.4';
 
     /**
      * This service provider listens for the modeler starting event 
@@ -17,35 +19,30 @@ class PluginServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Event::listen(ModelerStarting::class, function($event) {
-            $event->manager->addScript(mix('js/email-connector.js', 'vendor/processmaker/connectors/email'));
-        });
+        // Register a javascript library for the modeler
+        $this->registerModelerScript('js/email-connector.js',
+            'vendor/processmaker/connectors/email');
 
         $this->publishes([
-            __DIR__.'/../public' => public_path('vendor/processmaker/connectors/email'),
-        ], 'bpm-package-email-connector');
+            __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
+            ], 'bpm-package-email-connector');
 
-        if (!$this->isUpdated()) {
-            $this->updateVersion();
-        }
+        $this->loadRoutesFrom(__DIR__ . '/routes.php');
+
+        //Register email templates
+        $this->loadViewsFrom(__DIR__ . '/views', 'email');
+
+        // Complete the plugin booting
+        $this->completePluginBoot();
     }
 
     /**
-     * Executed when the version was changed.
+     * Executed once when the plug-in version was changed.
      *
      */
     protected function updateVersion()
     {
         $seed = new EmailSendSeeder;
         $seed->run();
-    }
-
-    /**
-     * Check if the plugin was updated
-     */
-    protected function isUpdated()
-    {
-        $key = str_replace('\\', '_' , static::class);
-        return static::version === Cache::get($key, '0.0.0');
     }
 }
