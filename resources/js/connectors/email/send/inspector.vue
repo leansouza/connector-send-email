@@ -15,14 +15,6 @@
             <input v-model="subject" class="form-control">
             <small class="form-text text-muted">Email subject</small>
         </div>
-        <div class="form-group">
-            <label>Template</label>
-            <select v-model="template" class="form-control">
-                <option value=''></option>
-                <option value='welcome'>Welcome</option>
-            </select>
-            <small class="form-text text-muted">Template of the email</small>
-        </div>
     </div>
 </template>
 

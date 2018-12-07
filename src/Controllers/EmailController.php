@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use ProcessMaker\Http\Controllers\Controller;
 use ProcessMaker\Packages\Connectors\Email\EmailMessage;
+use ProcessMaker\Models\Screen;
+use ProcessMaker\Packages\Connectors\Email\ScreenRenderer;
 
 class EmailController extends Controller
 {
@@ -19,7 +21,18 @@ class EmailController extends Controller
     public function send(Request $request)
     {
         $config = $request->input();
-        $res = Mail::to($config['email'])->send(new EmailMessage($config));
+        $screen = Screen::find($config['screenRef']);
+        $data = json_decode($config['json_data']);
+        
+        $rendered = ScreenRenderer::render($screen->config, $data);
+        $config['body'] = $rendered;
+
+        $res = Mail::send([], [], function ($message) use ($config) {
+            $message->to($config['email'])
+                ->from('about@processmaker.com')
+                ->subject($config['subject'])
+                ->setBody($config['body'], 'text/html');
+        });
         return response()->json($res);
     }
 }
