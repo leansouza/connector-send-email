@@ -15,7 +15,8 @@ $response = $client->request('POST', '/plugins/email/send', [
         'email' => $config['email'],
         'name' => $config['targetName'],
         'subject' => $config['subject'],
-        'template' => $config['template'],
+        'screenRef' => $config['screenRef'],
+        'json_data' => json_encode($data),
     ]
 ]);
 

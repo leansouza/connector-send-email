@@ -3,7 +3,8 @@
     "description": "ProcessMaker BPM Connectors that provide Email service",
     "type": "project",
     "require": {
-	    "processmaker/bpm": "4.0.*"
+	    "processmaker/bpm": "4.0.*",
+	    "spatie/server-side-rendering": "^0.2.5"
     },
     "autoload": {
         "psr-4": {

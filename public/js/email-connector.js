@@ -127,14 +127,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ["value"],
@@ -491,49 +483,6 @@ var render = function() {
       _vm._v(" "),
       _c("small", { staticClass: "form-text text-muted" }, [
         _vm._v("Email subject")
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "form-group" }, [
-      _c("label", [_vm._v("Template")]),
-      _vm._v(" "),
-      _c(
-        "select",
-        {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.template,
-              expression: "template"
-            }
-          ],
-          staticClass: "form-control",
-          on: {
-            change: function($event) {
-              var $$selectedVal = Array.prototype.filter
-                .call($event.target.options, function(o) {
-                  return o.selected
-                })
-                .map(function(o) {
-                  var val = "_value" in o ? o._value : o.value
-                  return val
-                })
-              _vm.template = $event.target.multiple
-                ? $$selectedVal
-                : $$selectedVal[0]
-            }
-          }
-        },
-        [
-          _c("option", { attrs: { value: "" } }),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "welcome" } }, [_vm._v("Welcome")])
-        ]
-      ),
-      _vm._v(" "),
-      _c("small", { staticClass: "form-text text-muted" }, [
-        _vm._v("Template of the email")
       ])
     ])
   ])
@@ -1058,7 +1007,8 @@ var nodeTypes = [__WEBPACK_IMPORTED_MODULE_0__connectors_email_send_index__["a" 
  */
 window.ProcessMaker.EventBus.$on('modeler-init', function (_ref) {
     var registerNode = _ref.registerNode,
-        registerBpmnExtension = _ref.registerBpmnExtension;
+        registerBpmnExtension = _ref.registerBpmnExtension,
+        registerInspectorExtension = _ref.registerInspectorExtension;
 
     /* Register basic node types */
     var _iteratorNormalCompletion = true;
@@ -1071,6 +1021,8 @@ window.ProcessMaker.EventBus.$on('modeler-init', function (_ref) {
 
             registerNode(node);
         }
+
+        /* Register the inspector extensions for tasks */
     } catch (err) {
         _didIteratorError = true;
         _iteratorError = err;
@@ -1085,6 +1037,15 @@ window.ProcessMaker.EventBus.$on('modeler-init', function (_ref) {
             }
         }
     }
+
+    registerInspectorExtension(__WEBPACK_IMPORTED_MODULE_0__connectors_email_send_index__["a" /* default */], {
+        component: 'ModelerScreenSelect',
+        config: {
+            label: 'Screen For Input',
+            helper: 'What Screen Should Be Used For Sending This Email',
+            name: 'screenRef'
+        }
+    });
 });
 
 /***/ }),
