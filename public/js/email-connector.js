@@ -127,30 +127,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ["value"],
     data: function data() {
         return {
-            email: '',
-            targetName: '',
-            subject: '',
-            template: ''
+            config: {
+                email: '',
+                targetName: '',
+                subject: '',
+                screenRef: ''
+            }
         };
     },
 
     watch: {
-        email: function email() {
-            this.updateConfig();
-        },
-        targetName: function targetName() {
-            this.updateConfig();
-        },
-        subject: function subject() {
-            this.updateConfig();
-        },
-        template: function template() {
-            this.updateConfig();
+        config: {
+            deep: true,
+            handler: function handler() {
+                this.updateConfig();
+            }
         },
         value: function value() {
             this.loadConfig();
@@ -159,21 +159,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     computed: {},
     methods: {
         loadConfig: function loadConfig() {
+            var _this = this;
+
             var node = this.$parent.$parent.inspectorNode;
             var config = JSON.parse(_.get(node, 'config'));
-            this.email = config.email;
-            this.targetName = config.targetName;
-            this.subject = config.subject;
-            this.template = config.template;
+            Object.keys(config).forEach(function (key) {
+                Vue.set(_this.config, key, config[key]);
+            });
         },
         updateConfig: function updateConfig() {
             var node = this.$parent.$parent.inspectorNode;
-            Vue.set(node, 'config', JSON.stringify({
-                email: this.email,
-                targetName: this.targetName,
-                subject: this.subject,
-                template: this.template
-            }));
+            Vue.set(node, 'config', JSON.stringify(this.config));
         }
     },
     mounted: function mounted() {
@@ -398,94 +394,112 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("div", { staticClass: "form-group" }, [
-      _c("label", [_vm._v("Email")]),
-      _vm._v(" "),
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.email,
-            expression: "email"
-          }
-        ],
-        staticClass: "form-control",
-        domProps: { value: _vm.email },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "form-group" }, [
+        _c("label", [_vm._v("Email")]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.config.email,
+              expression: "config.email"
             }
-            _vm.email = $event.target.value
-          }
-        }
-      }),
-      _vm._v(" "),
-      _c("small", { staticClass: "form-text text-muted" }, [
-        _vm._v("Recipient's email address")
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "form-group" }, [
-      _c("label", [_vm._v("Name")]),
-      _vm._v(" "),
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.targetName,
-            expression: "targetName"
-          }
-        ],
-        staticClass: "form-control",
-        domProps: { value: _vm.targetName },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
+          ],
+          staticClass: "form-control",
+          domProps: { value: _vm.config.email },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.config, "email", $event.target.value)
             }
-            _vm.targetName = $event.target.value
           }
-        }
-      }),
+        }),
+        _vm._v(" "),
+        _c("small", { staticClass: "form-text text-muted" }, [
+          _vm._v("Recipient's email address")
+        ])
+      ]),
       _vm._v(" "),
-      _c("small", { staticClass: "form-text text-muted" }, [
-        _vm._v("Recipient's name")
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "form-group" }, [
-      _c("label", [_vm._v("Subject")]),
-      _vm._v(" "),
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.subject,
-            expression: "subject"
-          }
-        ],
-        staticClass: "form-control",
-        domProps: { value: _vm.subject },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
+      _c("div", { staticClass: "form-group" }, [
+        _c("label", [_vm._v("Name")]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.config.targetName,
+              expression: "config.targetName"
             }
-            _vm.subject = $event.target.value
+          ],
+          staticClass: "form-control",
+          domProps: { value: _vm.config.targetName },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.config, "targetName", $event.target.value)
+            }
           }
-        }
-      }),
+        }),
+        _vm._v(" "),
+        _c("small", { staticClass: "form-text text-muted" }, [
+          _vm._v("Recipient's name")
+        ])
+      ]),
       _vm._v(" "),
-      _c("small", { staticClass: "form-text text-muted" }, [
-        _vm._v("Email subject")
-      ])
-    ])
-  ])
+      _c("div", { staticClass: "form-group" }, [
+        _c("label", [_vm._v("Subject")]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.config.subject,
+              expression: "config.subject"
+            }
+          ],
+          staticClass: "form-control",
+          domProps: { value: _vm.config.subject },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.config, "subject", $event.target.value)
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("small", { staticClass: "form-text text-muted" }, [
+          _vm._v("Email subject")
+        ])
+      ]),
+      _vm._v(" "),
+      _c("modeler-screen-select", {
+        attrs: {
+          label: "Screen For Input",
+          helper: "What Screen Should Be Used For Sending This Email"
+        },
+        model: {
+          value: _vm.config.screenRef,
+          callback: function($$v) {
+            _vm.$set(_vm.config, "screenRef", $$v)
+          },
+          expression: "config.screenRef"
+        }
+      })
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -1021,8 +1035,6 @@ window.ProcessMaker.EventBus.$on('modeler-init', function (_ref) {
 
             registerNode(node);
         }
-
-        /* Register the inspector extensions for tasks */
     } catch (err) {
         _didIteratorError = true;
         _iteratorError = err;
@@ -1037,15 +1049,6 @@ window.ProcessMaker.EventBus.$on('modeler-init', function (_ref) {
             }
         }
     }
-
-    registerInspectorExtension(__WEBPACK_IMPORTED_MODULE_0__connectors_email_send_index__["a" /* default */], {
-        component: 'ModelerScreenSelect',
-        config: {
-            label: 'Screen For Input',
-            helper: 'What Screen Should Be Used For Sending This Email',
-            name: 'screenRef'
-        }
-    });
 });
 
 /***/ }),
