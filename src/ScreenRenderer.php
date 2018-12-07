@@ -14,7 +14,7 @@ class ScreenRenderer
             ->debug()
             ->context('config', $screen_config)
             ->context('data', $data)
-            ->entry('/home/vagrant/bpm-plugins/vue-form-ssr/dist/main.js')
+            ->entry(__DIR__ . '/../resources/js/ssr-renderer.js')
             ->render();
     }
 }
