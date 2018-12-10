@@ -15,7 +15,7 @@
             <input v-model="config.subject" class="form-control">
             <small class="form-text text-muted">Email subject</small>
         </div>
-        <modeler-screen-select label="Screen For Input"
+        <modeler-screen-select label="Email body"
                                helper='What Screen Should Be Used For Sending This Email'
                                types='EMAIL'
                                :params='{type:"DISPLAY"}'

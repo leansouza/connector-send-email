@@ -488,7 +488,7 @@ var render = function() {
       _vm._v(" "),
       _c("modeler-screen-select", {
         attrs: {
-          label: "Screen For Input",
+          label: "Email body",
           helper: "What Screen Should Be Used For Sending This Email",
           types: "EMAIL",
           params: { type: "DISPLAY" }
