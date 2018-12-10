@@ -5,7 +5,6 @@ namespace ProcessMaker\Packages\Connectors\Email\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use ProcessMaker\Http\Controllers\Controller;
-use ProcessMaker\Packages\Connectors\Email\EmailMessage;
 use ProcessMaker\Models\Screen;
 use ProcessMaker\Packages\Connectors\Email\ScreenRenderer;
 

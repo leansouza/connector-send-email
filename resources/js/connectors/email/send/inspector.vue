@@ -18,6 +18,7 @@
         <modeler-screen-select label="Screen For Input"
                                helper='What Screen Should Be Used For Sending This Email'
                                types='EMAIL'
+                               :params='{type:"DISPLAY"}'
                                v-model='config.screenRef'
                                ></modeler-screen-select>
     </div>
