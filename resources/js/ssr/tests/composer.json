@@ -1,0 +1,6 @@
+{
+    "name": "nolan/tests",
+    "require": {
+        "spatie/server-side-rendering": "^0.2.5"
+    }
+}

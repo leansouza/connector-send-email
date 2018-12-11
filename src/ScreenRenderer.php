@@ -14,7 +14,7 @@ class ScreenRenderer
             ->debug()
             ->context('config', $screen_config)
             ->context('data', $data)
-            ->entry(__DIR__ . '/../resources/js/ssr-renderer.js')
+            ->entry(__DIR__ . '/../resources/js/ssr/dist/main.js')
             ->render();
     }
 }
