@@ -26,11 +26,11 @@ class EmailController extends Controller
         $rendered = ScreenRenderer::render($screen->config, $data);
         $config['body'] = $rendered;
 
-        $res = Mail::send([], [], function ($message) use ($config) {
+        $res = Mail::send([], [], function (\Illuminate\Mail\Message $message) use ($config) {
             $message->to($config['email'])
                 ->from('about@processmaker.com')
                 ->subject($config['subject'])
-                ->setBody($config['body'], 'text/html');
+                ->setBody(view('email::layout', $config)->render(), 'text/html');
         });
         return response()->json($res);
     }
