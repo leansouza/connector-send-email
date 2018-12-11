@@ -47,7 +47,7 @@ class PluginServiceProvider extends ServiceProvider
         $seed->run();
         Artisan::call('vendor:publish',
             [
-            '--tag=bpm-package-email-connector' => 'bpm-package-email-connector',
+            '--tag' => 'bpm-package-email-connector',
             '--force' => true,
             ]
         );
