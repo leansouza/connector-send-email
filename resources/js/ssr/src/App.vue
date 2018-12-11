@@ -9,10 +9,12 @@ import Vue from 'vue'
 import VueFormRenderer from "@processmaker/vue-form-builder/src/components/vue-form-renderer";
 import FormText from "@processmaker/vue-form-builder/src/components/renderer/form-text";
 import FormMultiColumn from "@processmaker/vue-form-builder/src/components/renderer/form-multi-column";
+import FormRecordList from "@processmaker/vue-form-builder/src/components/renderer/form-record-list";
 
 Vue.component('VueFormRenderer', VueFormRenderer);
 Vue.component('FormText', FormText);
 Vue.component('FormMultiColumn', FormMultiColumn);
+Vue.component('FormRecordList', FormRecordList);
 
 export default {
     props: ['config', 'formData'],
