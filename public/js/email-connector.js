@@ -132,7 +132,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ["value"],
@@ -490,8 +489,7 @@ var render = function() {
         attrs: {
           label: "Email body",
           helper: "What Screen Should Be Used For Sending This Email",
-          types: "EMAIL",
-          params: { type: "DISPLAY" }
+          params: { type: "EMAIL" }
         },
         model: {
           value: _vm.config.screenRef,

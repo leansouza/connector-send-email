@@ -17,8 +17,7 @@
         </div>
         <modeler-screen-select label="Email body"
                                helper='What Screen Should Be Used For Sending This Email'
-                               types='EMAIL'
-                               :params='{type:"DISPLAY"}'
+                               :params='{type:"EMAIL"}'
                                v-model='config.screenRef'
                                ></modeler-screen-select>
     </div>
