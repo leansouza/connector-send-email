@@ -2,6 +2,7 @@
 
 namespace ProcessMaker\Packages\Connectors\Email;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\ServiceProvider;
 use ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder;
 use ProcessMaker\Traits\PluginServiceProviderTrait;
