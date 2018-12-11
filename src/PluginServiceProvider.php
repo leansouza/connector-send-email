@@ -11,7 +11,7 @@ class PluginServiceProvider extends ServiceProvider
 
     use PluginServiceProviderTrait;
 
-    const version = '0.0.10';
+    const version = '0.0.11';
 
     /**
      * This service provider listens for the modeler starting event 
@@ -44,5 +44,11 @@ class PluginServiceProvider extends ServiceProvider
     {
         $seed = new EmailSendSeeder;
         $seed->run();
+        Artisan::call('vendor:publish',
+            [
+            '--tag=bpm-package-email-connector' => 'bpm-package-email-connector',
+            '--force' => true,
+            ]
+        );
     }
 }
