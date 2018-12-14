@@ -28,7 +28,6 @@ class EmailController extends Controller
 
         $res = Mail::send([], [], function (\Illuminate\Mail\Message $message) use ($config) {
             $message->to($config['email'])
-                ->from('about@processmaker.com')
                 ->subject($config['subject'])
                 ->setBody(view('email::layout', $config)->render(), 'text/html');
         });
