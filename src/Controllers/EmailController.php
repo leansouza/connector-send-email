@@ -29,7 +29,7 @@ class EmailController extends Controller
         $res = Mail::send([], [], function (\Illuminate\Mail\Message $message) use ($config) {
             $message->to($config['email'])
                 ->subject($config['subject'])
-                ->setBody(view('email::layout', $config)->render(), 'text/html');
+                ->setBody(view('email::layout', array_merge($config, ['message' => $message]))->render(), 'text/html');
         });
         return response()->json($res);
     }
