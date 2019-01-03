@@ -33,6 +33,9 @@ class PluginServiceProvider extends ServiceProvider
         //Register email templates
         $this->loadViewsFrom(__DIR__ . '/views', 'email');
 
+        //Register a seeder that will be executed in php artisan db:seed
+        $this->registerSeeder(EmailSendSeeder::class);
+
         // Complete the plugin booting
         $this->completePluginBoot();
     }
