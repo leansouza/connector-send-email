@@ -52,14 +52,14 @@
         },
         methods: {
             loadConfig() {
-                const node = this.$parent.$parent.inspectorNode;
+                const node = this.$parent.$parent.highlightedNode.definition;
                 const config = JSON.parse(_.get(node, 'config'));
                 Object.keys(config).forEach(key => {
                     Vue.set(this.config, key, config[key]);
                 });
             },
             updateConfig() {
-                const node = this.$parent.$parent.inspectorNode;
+                const node = this.$parent.$parent.highlightedNode.definition;
                 Vue.set(node, 'config', JSON.stringify(this.config));
             },
         },
