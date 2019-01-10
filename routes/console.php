@@ -61,5 +61,10 @@ Artisan::command('pm4-connector-send-email:uninstall', function () {
         }
         file_put_contents($envPath, $envContent);
     }
+    // Remove the service task script
+    ProcessMaker\Models\Script::where('key', 'processmaker-communication-email-send')->delete();
+
+    // Remove the vendor assets
+    Illuminate\Support\Facades\File::deleteDirectory(public_path('vendor/processmaker/connectors/email'));
     $this->info('Connector send email plugin Uninstalled');
 })->describe('Uninstalls Connector send email plugin');
