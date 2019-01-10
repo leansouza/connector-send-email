@@ -45,6 +45,7 @@ Artisan::command('pm4-connector-send-email:uninstall', function () {
     if (file_exists($envPath)) {
         $handle = fopen($envPath, "r");
         $envContent = "";
+
         if ($handle) {
             while (($line = fgets($handle)) !== false) {
                 if (
@@ -52,7 +53,8 @@ Artisan::command('pm4-connector-send-email:uninstall', function () {
                     strpos($line, "MAIL_HOST")      === false &&
                     strpos($line, "MAIL_PORT")      === false &&
                     strpos($line, "MAIL_USERNAME")  === false &&
-                    strpos($line, "MAIL_PASSWORD")  === false
+                    strpos($line, "MAIL_PASSWORD")  === false ||
+                    strpos($line, "#")  === 0
                 ){
                     $envContent .= $line;
                 }
