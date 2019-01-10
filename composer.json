@@ -1,5 +1,5 @@
 {
-    "name": "processmaker/pm4-connector-send-email",
+    "name": "processmaker/bpm-package-email-connector",
     "description": "ProcessMaker BPM Connectors that provide Email service",
     "type": "project",
     "require": {
