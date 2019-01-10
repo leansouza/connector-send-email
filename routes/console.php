@@ -4,7 +4,13 @@ Artisan::command('pm4-connector-send-email:install', function () {
     Artisan::call('vendor:publish',
         [
             '--tag' => 'bpm-package-email-connector',
-            '--force' => true,
+            '--force' => true
+        ]
+    );
+    Artisan::call('db:seed',
+        [
+            '--class' => 'ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder',
+            '--force' => true
         ]
     );
     /* In case to add parameters to .env file */

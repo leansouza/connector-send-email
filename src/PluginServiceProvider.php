@@ -44,18 +44,4 @@ class PluginServiceProvider extends ServiceProvider
         }
 
     }
-
-    /**
-     * Executed once when the plug-in version was changed.
-     *
-     */
-    protected function updateVersion()
-    {
-        Artisan::call('vendor:publish',
-            [
-            '--tag' => 'bpm-package-email-connector',
-            '--force' => true,
-            ]
-        );
-    }
 }

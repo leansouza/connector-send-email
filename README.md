@@ -4,28 +4,23 @@ This package allows you to send emails as a task from [ProcessMaker](https://git
 
 1. Install this package via composer in your ProcessMaker root folder
 ```bash
-composer require processmaker/bpm-package-email-connector
+composer require processmaker/pm4-connector-send-email
 ```
 
-2. Then publish the necessary assets
+2. Setup the package with the php artisan command
 ```bash
-php artisan vendor:publish --tag=bpm-package-email-connector --force
+php artisan pm4-connector-send-email:install
 ```
 
-3. Then run the seeds to create the required script task
-```bash
-php artisan db:seed --class="ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder"
-```
-## Configuration
+* Specify your MAIL_DRIVER 
+* Specify your MAIL_HOST
+* Specify your MAIL_PORT
+* Specify your MAIL_USERNAME
+* Specify your MAIL_PASSWORD
 
-If don't already have it, your .env will need mail settings. For example:
-```bash
-MAIL_DRIVER=smtp
-MAIL_HOST=smtp.mailtrap.io
-MAIL_PORT=2525
-MAIL_USERNAME=username
-MAIL_PASSWORD=password
-```
+## Uninstall
+* Use `php artisan pm4-connector-send-email:uninstall` to remove the package setup 
+* Use `composer remove processmaker/pm4-connector-send-email` to remove the package
 
 ## Development
 
