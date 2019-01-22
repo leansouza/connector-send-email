@@ -7,6 +7,9 @@ use Illuminate\Support\ServiceProvider;
 use ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder;
 use ProcessMaker\Traits\PluginServiceProviderTrait;
 
+use Illuminate\Support\Facades\Event;
+use ProcessMaker\Events\ScreenBuilderStarting;
+
 class PluginServiceProvider extends ServiceProvider
 {
 
@@ -29,6 +32,7 @@ class PluginServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
+                __DIR__ . '/../resources/js/processes/screen-builder/typeEmail.js' => base_path('resources/js/processes/screen-builder/typeEmail.js'),
             ], 'bpm-package-email-connector');
 
             $this->loadRoutesFrom(__DIR__ . '/routes.php');
@@ -38,6 +42,13 @@ class PluginServiceProvider extends ServiceProvider
 
             //Register a seeder that will be executed in php artisan db:seed
             $this->registerSeeder(EmailSendSeeder::class);
+
+            Event::listen(ScreenBuilderStarting::class, function($event) {
+                if ($event->type == 'EMAIL') {
+                    \Illuminate\Support\Facades\Log::info("STARTING- type: " . $event->type);
+                    $event->manager->addScript(mix('js/processes/screen-builder/typeEmail.js'));
+                }
+            });
 
             // Complete the plugin booting
             $this->completePluginBoot();
