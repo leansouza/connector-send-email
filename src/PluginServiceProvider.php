@@ -20,28 +20,27 @@ class PluginServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if ($this->app->runningInConsole()) {
-            require(__DIR__ . '/../routes/console.php');
-        } else {
-            // Register a javascript library for the modeler
-            $this->registerModelerScript('js/email-connector.js',
-                'vendor/processmaker/connectors/email');
+        // Register console commands
+        $this->loadRoutesFrom(__DIR__.'/../routes/console.php');
 
-            $this->publishes([
-                __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
-            ], 'bpm-package-email-connector');
+        // Register a javascript library for the modeler
+        $this->registerModelerScript('js/email-connector.js',
+            'vendor/processmaker/connectors/email');
 
-            $this->loadRoutesFrom(__DIR__ . '/routes.php');
+        $this->publishes([
+            __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
+        ], 'bpm-package-email-connector');
 
-            //Register email templates
-            $this->loadViewsFrom(__DIR__ . '/views', 'email');
+        $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
-            //Register a seeder that will be executed in php artisan db:seed
-            $this->registerSeeder(EmailSendSeeder::class);
+        //Register email templates
+        $this->loadViewsFrom(__DIR__ . '/views', 'email');
 
-            // Complete the plugin booting
-            $this->completePluginBoot();
-        }
+        //Register a seeder that will be executed in php artisan db:seed
+        $this->registerSeeder(EmailSendSeeder::class);
+
+        // Complete the plugin booting
+        $this->completePluginBoot();
 
     }
 }
