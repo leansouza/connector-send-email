@@ -27,6 +27,8 @@ class PluginServiceProvider extends ServiceProvider
         $this->registerModelerScript('js/email-connector.js',
             'vendor/processmaker/connectors/email');
 
+        $this->loadJsonTranslationsFrom(__DIR__ . '/../resources/lang');
+
         $this->publishes([
             __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
         ], 'bpm-package-email-connector');

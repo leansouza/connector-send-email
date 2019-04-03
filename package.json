@@ -1,5 +1,5 @@
 {
-  "name": "bpm-package-email-connector",
+  "name": "pm4-connector-send-email",
   "version": "1.0.0",
   "description": "Email connector for ProcessMaker 4",
   "author": "David Callizaya <david.callizaya@processmaker.com>",
@@ -21,6 +21,7 @@
   "dependencies": {
     "@processmaker/modeler": "^0.1.15",
     "bpmn-moddle": "^5.1.5",
+    "cross-env": "^5.2.0",
     "jointjs": "^2.2.1"
   }
 }

@@ -3,7 +3,7 @@
 Artisan::command('pm4-connector-send-email:install', function () {
     Artisan::call('vendor:publish',
         [
-            '--tag' => 'bpm-package-email-connector',
+            '--tag' => 'pm4-connector-send-email',
             '--force' => true
         ]
     );
