@@ -138,7 +138,7 @@
     <div class="container">
       <div class="header">
         <a href="https://www.processmaker.com" class="btn btn-primary">
-          SENT BY PROCESSMAKER 4
+          {{ __('SENT BY PROCESSMAKER 4') }}
         </a>
       </div>
 
