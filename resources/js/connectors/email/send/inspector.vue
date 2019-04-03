@@ -3,7 +3,7 @@
         <div class="form-group">
             <label>Email</label>
             <input v-model="config.email" class="form-control">
-            <small class="form-text text-muted">Recipient's email address</small>
+            <small class="form-text text-muted">{{ $t("Recipient's email address") }}</small>
         </div>
         <div class="form-group">
             <label>Name</label>

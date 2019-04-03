@@ -31,7 +31,7 @@ class PluginServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
-        ], 'bpm-package-email-connector');
+        ], 'pm4-connector-send-email');
 
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
 

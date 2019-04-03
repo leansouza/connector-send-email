@@ -424,7 +424,7 @@ var render = function() {
         }),
         _vm._v(" "),
         _c("small", { staticClass: "form-text text-muted" }, [
-          _vm._v("Recipient's email address")
+          _vm._v(_vm._s(_vm.$t("Recipient's email address")))
         ])
       ]),
       _vm._v(" "),

@@ -17,10 +17,5 @@
                 "ProcessMaker\\Packages\\Connectors\\Email\\PluginServiceProvider"
             ]
         }
-    },
-    "scripts": {
-        "post-autoload-dump": [
-            "@php artisan vendor:publish --tag=bpm-package-email-connector"
-        ]
     }
 }
