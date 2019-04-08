@@ -29,7 +29,7 @@ class PluginServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
-        ], 'bpm-package-email-connector');
+        ], 'spark-package-email-connector');
 
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
