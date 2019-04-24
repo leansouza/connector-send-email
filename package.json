@@ -19,7 +19,7 @@
     "laravel-mix": "1.7.2"
   },
   "dependencies": {
-    "@processmaker/modeler": "^0.1.15",
+    "@processmaker/spark-modeler": "^0.10.0",
     "bpmn-moddle": "^5.1.5",
     "jointjs": "^2.2.1"
   }
