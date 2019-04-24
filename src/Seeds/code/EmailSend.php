@@ -2,20 +2,20 @@
 
 use GuzzleHttp\Client;
 
-// Rest client 
+// Rest client
 $client = new Client([
     'base_uri' => getenv('HOST_URL'),
     'verify' => false,
     'defaults' => ['verify' => false]
     ]);
 
-// Call to send an email 
+// Call to send an email
 $response = $client->request('POST', '/plugins/email/send', [
     'form_params' => [
-        'email' => $config['email'],
-        'name' => $config['targetName'],
-        'subject' => $config['subject'],
-        'screenRef' => $config['screenRef'],
+        'email' => isset($data[$config['email']]) ? $data[$config['email']] : $config['email'],
+        'name' => isset($data[$config['name']]) ? $data[$config['name']] : $config['targetName'],
+        'subject' => isset($data[$config['subject']]) ? $data[$config['subject']] : $config['subject'],
+        'screenRef' => isset($data[$config['screenRef']]) ? $data[$config['screenRef']] : $config['screenRef'],
         'json_data' => json_encode($data),
     ]
 ]);
