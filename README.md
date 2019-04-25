@@ -1,15 +1,15 @@
-This package allows you to send emails as a task from [ProcessMaker](https://github.com/ProcessMaker/bpm)
+This package allows you to send emails as a task from [ProcessMaker](https://github.com/ProcessMaker/spark)
 
 ## Installation
 
 1. Install this package via composer in your ProcessMaker root folder
 ```bash
-composer require processmaker/pm4-connector-send-email
+composer require processmaker/spark-connector-send-email
 ```
 
 2. Setup the package with the php artisan command
 ```bash
-php artisan pm4-connector-send-email:install
+php artisan spark-connector-send-email:install
 ```
 
 * Specify your MAIL_DRIVER 
@@ -19,8 +19,8 @@ php artisan pm4-connector-send-email:install
 * Specify your MAIL_PASSWORD
 
 ## Uninstall
-* Use `php artisan pm4-connector-send-email:uninstall` to remove the package setup 
-* Use `composer remove processmaker/pm4-connector-send-email` to remove the package
+* Use `php artisan spark-connector-send-email:uninstall` to remove the package setup 
+* Use `composer remove processmaker/spark-connector-send-email` to remove the package
 
 ## Development
 

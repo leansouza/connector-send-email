@@ -2,14 +2,14 @@
 
 use GuzzleHttp\Client;
 
-// Rest client 
+// Rest client
 $client = new Client([
     'base_uri' => getenv('HOST_URL'),
     'verify' => false,
     'defaults' => ['verify' => false]
     ]);
 
-// Call to send an email 
+// Call to send an email
 $response = $client->request('POST', '/plugins/email/send', [
     'form_params' => [
         'email' => $config['email'],

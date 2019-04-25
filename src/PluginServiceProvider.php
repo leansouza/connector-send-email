@@ -3,12 +3,11 @@
 namespace ProcessMaker\Packages\Connectors\Email;
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use ProcessMaker\Events\ScreenBuilderStarting;
 use ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder;
 use ProcessMaker\Traits\PluginServiceProviderTrait;
-
-use Illuminate\Support\Facades\Event;
-use ProcessMaker\Events\ScreenBuilderStarting;
 
 class PluginServiceProvider extends ServiceProvider
 {
@@ -18,41 +17,47 @@ class PluginServiceProvider extends ServiceProvider
     const version = '0.0.11';
 
     /**
-     * This service provider listens for the modeler starting event 
+     * This service provider listens for the modeler starting event
      * and registers custom javascript with the modeler.
      */
     public function boot()
     {
-        if ($this->app->runningInConsole()) {
-            require(__DIR__ . '/../routes/console.php');
-        } else {
-            // Register a javascript library for the modeler
-            $this->registerModelerScript('js/email-connector.js',
-                'vendor/processmaker/connectors/email');
+        // Register console commands
+        $this->loadRoutesFrom(__DIR__ . '/../routes/console.php');
 
-            $this->publishes([
-                __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
-                __DIR__ . '/../resources/js/processes/screen-builder/typeEmail.js' => base_path('resources/js/processes/screen-builder/typeEmail.js'),
-            ], 'bpm-package-email-connector');
+        // Register a javascript library for the modeler
+        $this->registerModelerScript('js/email-connector.js',
+            'vendor/processmaker/connectors/email');
 
-            $this->loadRoutesFrom(__DIR__ . '/routes.php');
+        $this->publishes([
+            __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
+            __DIR__ . '/../resources/js/processes/screen-builder/typeEmail.js' => base_path('resources/js/processes/screen-builder/typeEmail.js'),
+        ], 'bpm-package-email-connector');
 
-            //Register email templates
-            $this->loadViewsFrom(__DIR__ . '/views', 'email');
+        //translations
+        $this->loadJsonTranslationsFrom(__DIR__ . '/../resources/lang');
 
-            //Register a seeder that will be executed in php artisan db:seed
-            $this->registerSeeder(EmailSendSeeder::class);
+        $this->publishes([
+            __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
+        ], 'spark-package-email-connector');
 
-            Event::listen(ScreenBuilderStarting::class, function($event) {
-                if ($event->type == 'EMAIL') {
-                    \Illuminate\Support\Facades\Log::info("STARTING- type: " . $event->type);
-                    $event->manager->addScript(mix('js/processes/screen-builder/typeEmail.js'));
-                }
-            });
+        $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
-            // Complete the plugin booting
-            $this->completePluginBoot();
-        }
+        Event::listen(ScreenBuilderStarting::class, function ($event) {
+            if ($event->type == 'EMAIL') {
+                \Illuminate\Support\Facades\Log::info("STARTING- type: " . $event->type);
+                $event->manager->addScript(mix('js/processes/screen-builder/typeEmail.js'));
+            }
+        });
+
+        //Register email templates
+        $this->loadViewsFrom(__DIR__ . '/views', 'email');
+
+        //Register a seeder that will be executed in php artisan db:seed
+        $this->registerSeeder(EmailSendSeeder::class);
+
+        // Complete the plugin booting
+        $this->completePluginBoot();
 
     }
 }
