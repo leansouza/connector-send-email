@@ -15,7 +15,7 @@ class PluginServiceProvider extends ServiceProvider
     const version = '0.0.11';
 
     /**
-     * This service provider listens for the modeler starting event 
+     * This service provider listens for the modeler starting event
      * and registers custom javascript with the modeler.
      */
     public function boot()
@@ -26,6 +26,9 @@ class PluginServiceProvider extends ServiceProvider
         // Register a javascript library for the modeler
         $this->registerModelerScript('js/email-connector.js',
             'vendor/processmaker/connectors/email');
+
+        //translations
+        $this->loadJsonTranslationsFrom(__DIR__ . '/../resources/lang');
 
         $this->publishes([
             __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
