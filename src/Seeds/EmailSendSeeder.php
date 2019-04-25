@@ -22,6 +22,7 @@ class EmailSendSeeder extends Seeder
             'title' => 'Email Send',
             'description' => 'Send an email',
             'language' => 'PHP',
+            'run_as_user_id' => Script::defaultRunAsUser()->id,
             'code' => $this->getCode(),
         ];
         $exists = Script::where('key', self::IMPLEMENTATION_ID)->first();
