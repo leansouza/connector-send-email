@@ -1,10 +1,12 @@
 {
-    "Copy": "Copy",
     "Send Email": "Send Email",
     "Communication": "Communication",
-    "Email body": "Email body",
-    "Email subject": "Email subject",
+    "Email": "Email",
     "Recipient's email address": "Recipient's email address",
+    "Name": "Name",
     "Recipient's name": "Recipient's name",
+    "Subject": "Subject",
+    "Email subject": "Email subject",
+    "Email body": "Email body",
     "What Screen Should Be Used For Sending This Email": "What Screen Should Be Used For Sending This Email"
 }
