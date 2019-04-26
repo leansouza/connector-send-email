@@ -1,7 +1,7 @@
-import FormText from "@processmaker/vue-form-builder/src/components/renderer/form-text";
-import FormMultiColumn from "@processmaker/vue-form-builder/src/components/renderer/form-multi-column"
-import FormRecordList from "@processmaker/vue-form-builder/src/components/renderer/form-record-list"
-import FormRecordListStatic from "@processmaker/vue-form-builder/src/components/renderer/form-record-list-static"
+import FormText from "@processmaker/spark-screen-builder/src/components/renderer/form-text";
+import FormMultiColumn from "@processmaker/spark-screen-builder/src/components/renderer/form-multi-column"
+import FormRecordList from "@processmaker/spark-screen-builder/src/components/renderer/form-record-list"
+import FormRecordListStatic from "@processmaker/spark-screen-builder/src/components/renderer/form-record-list-static"
 
 import {
     FormInput,
@@ -22,7 +22,7 @@ let initialControls =  [
             label: 'Text',
             component: 'FormText',
             'editor-component': 'FormText',
-            'editor-icon': require('@processmaker/vue-form-builder/src/assets/icons/Label.png'),
+            'editor-icon': require('@processmaker/spark-screen-builder/src/assets/icons/Label.png'),
             config: {
                 label: 'New Text',
                 fontSize: '1em',
@@ -130,7 +130,7 @@ let initialControls =  [
             label: "Multi Column",
             component: 'FormMultiColumn',
             "editor-component": "MultiColumn",
-            'editor-icon': require('@processmaker/vue-form-builder/src/assets/icons/Button.png'),
+            'editor-icon': require('@processmaker/spark-screen-builder/src/assets/icons/Button.png'),
             container: true,
             // Default items container
             items: [
@@ -159,7 +159,7 @@ let initialControls =  [
             label: "Record List",
             component: 'FormRecordList',
             "editor-component": "FormText",
-            'editor-icon': require('@processmaker/vue-form-builder/src/assets/icons/Table.png'),
+            'editor-icon': require('@processmaker/spark-screen-builder/src/assets/icons/Table.png'),
             config: {
                 name: '',
                 label: "New Record List",

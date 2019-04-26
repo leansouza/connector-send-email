@@ -32,21 +32,17 @@ class PluginServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
             __DIR__ . '/../resources/js/processes/screen-builder/typeEmail.js' => base_path('resources/js/processes/screen-builder/typeEmail.js'),
-        ], 'bpm-package-email-connector');
+        ], 'spark-package-email-connector');
 
         //translations
         $this->loadJsonTranslationsFrom(__DIR__ . '/../resources/lang');
 
-        $this->publishes([
-            __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
-        ], 'spark-package-email-connector');
-
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
+        // Listen to the events for our core screen types and add our javascript
         Event::listen(ScreenBuilderStarting::class, function ($event) {
             if ($event->type == 'EMAIL') {
-                \Illuminate\Support\Facades\Log::info("STARTING- type: " . $event->type);
-                $event->manager->addScript(mix('js/processes/screen-builder/typeEmail.js'));
+                $event->manager->addScript('/vendor/processmaker/connectors/email/js/processes/screen-builder/typeEmail.js');
             }
         });
 
