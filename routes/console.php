@@ -63,6 +63,8 @@ Artisan::command('spark-connector-send-email:uninstall', function () {
         }
         file_put_contents($envPath, $envContent);
     }
+    // Remove screen type EMAIL
+    ProcessMaker\Models\ScreenType::where('name', 'EMAIL')->delete();
     // Remove the service task script
     ProcessMaker\Models\Script::where('key', 'processmaker-communication-email-send')->delete();
 

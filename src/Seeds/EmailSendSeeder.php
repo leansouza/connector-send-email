@@ -3,6 +3,7 @@
 namespace ProcessMaker\Packages\Connectors\Email\Seeds;
 
 use Illuminate\Database\Seeder;
+use ProcessMaker\Models\ScreenType;
 use ProcessMaker\Models\Script;
 
 class EmailSendSeeder extends Seeder
@@ -17,6 +18,15 @@ class EmailSendSeeder extends Seeder
      */
     public function run()
     {
+        //Register screen type EMAIL
+        $exists = ScreenType::where('name', 'EMAIL')->first();
+        if (!$exists) {
+            factory(ScreenType::class)->create([
+                'name' => 'EMAIL',
+            ]);
+        }
+
+        //Definition script send an email
         $definition = [
             'key' => self::IMPLEMENTATION_ID,
             'title' => 'Email Send',
