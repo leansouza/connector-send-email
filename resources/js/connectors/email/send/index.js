@@ -12,6 +12,7 @@ export default  {
     control: true,
     category: 'Communication',
     icon: require('./icon.svg'),
+    implementation,
     label: 'Send Email',
     definition: function(moddle) {
         return moddle.create('bpmn:ServiceTask', {
