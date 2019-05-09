@@ -15,6 +15,7 @@ class PluginServiceProvider extends ServiceProvider
     use PluginServiceProviderTrait;
 
     const version = '0.0.11';
+    const name = 'spark-connector-send-email';
 
     /**
      * This service provider listens for the modeler starting event
