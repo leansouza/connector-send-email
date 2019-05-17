@@ -107,7 +107,7 @@ let initialControls = [
       label: 'Text',
       component: 'FormText',
       'editor-component': 'FormText',
-      'editor-icon': require('@processmaker/spark-screen-builder/src/assets/icons/Label.png'),
+      'fa-icon': 'fas fa-align-justify',
       config: {
         label: 'New Text',
         fontSize: '1em',
@@ -227,7 +227,7 @@ let initialControls = [
       label: "Multi Column",
       component: 'FormMultiColumn',
       "editor-component": "MultiColumn",
-      'editor-icon': require('@processmaker/spark-screen-builder/src/assets/icons/Button.png'),
+      'fa-icon': 'fas fa-table',
       container: true,
       // Default items container
       items: [
@@ -268,7 +268,7 @@ let initialControls = [
       label: "Record List",
       component: 'FormRecordList',
       "editor-component": "FormText",
-      'editor-icon': require('@processmaker/spark-screen-builder/src/assets/icons/Table.png'),
+      'fa-icon': 'fas fa-th-list',
       config: {
         name: '',
         label: "New Record List",
