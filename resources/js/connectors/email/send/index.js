@@ -2,7 +2,7 @@
 import component from './component.vue';
 import inspector from './inspector.vue';
 
-const implementation = 'processmaker-communication-email-send';
+const implementation = 'spark-connector-send-email/processmaker-communication-email-send';
 const nodeId = 'processmaker-communication-email-send';
 
 export default  {
