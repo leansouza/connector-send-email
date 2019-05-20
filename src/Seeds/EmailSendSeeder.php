@@ -9,7 +9,7 @@ use ProcessMaker\Models\Script;
 class EmailSendSeeder extends Seeder
 {
 
-    const IMPLEMENTATION_ID = 'processmaker-communication-email-send';
+    const IMPLEMENTATION_ID = 'spark-connector-send-email/processmaker-communication-email-send';
 
     /**
      * Creates or updates the script implementation.
