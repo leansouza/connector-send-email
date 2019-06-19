@@ -1,5 +1,5 @@
 {
-    "name": "processmaker/spark-connector-send-email",
+    "name": "processmaker/connector-send-email",
     "description": "ProcessMaker BPM Connectors that provide Email service",
     "type": "project",
     "require": {
