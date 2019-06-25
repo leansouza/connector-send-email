@@ -6,6 +6,9 @@
         "mustache/mustache": "^2.12.0",
 	    "spatie/server-side-rendering": "^0.2.5"
     },
+    "require-dev": {
+        "processmaker/processmaker": "4.0.*"
+    },
     "autoload": {
         "psr-4": {
             "ProcessMaker\\Packages\\Connectors\\Email\\": "src/"
