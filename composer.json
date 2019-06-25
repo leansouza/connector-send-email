@@ -4,7 +4,6 @@
     "type": "project",
     "require": {
         "mustache/mustache": "^2.12.0",
-        "processmaker/spark": "4.0.*",
 	    "spatie/server-side-rendering": "^0.2.5"
     },
     "autoload": {
