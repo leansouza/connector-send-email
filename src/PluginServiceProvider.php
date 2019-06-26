@@ -11,7 +11,6 @@ use ProcessMaker\Traits\PluginServiceProviderTrait;
 
 class PluginServiceProvider extends ServiceProvider
 {
-
     use PluginServiceProviderTrait;
 
     const version = '0.0.11';
@@ -23,21 +22,22 @@ class PluginServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Register console commands
+        // Register routes
+        $this->loadRoutesFrom(__DIR__ . '/routes.php');
         $this->loadRoutesFrom(__DIR__ . '/../routes/console.php');
 
         // Register a javascript library for the modeler
-        $this->registerModelerScript('js/email-connector.js',
-            'vendor/processmaker/connectors/email');
+        $this->registerModelerScript(
+            'js/email-connector.js',
+            'vendor/processmaker/connectors/email'
+        );
 
         $this->publishes([
             __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
         ], 'spark-package-email-connector');
 
-        //translations
+        // Register translations
         $this->loadJsonTranslationsFrom(__DIR__ . '/../resources/lang');
-
-        $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
         // Listen to the events for our core screen types and add our javascript
         Event::listen(ScreenBuilderStarting::class, function ($event) {
@@ -46,14 +46,13 @@ class PluginServiceProvider extends ServiceProvider
             }
         });
 
-        //Register email templates
+        // Register email templates
         $this->loadViewsFrom(__DIR__ . '/views', 'email');
 
-        //Register a seeder that will be executed in php artisan db:seed
+        // Register a seeder that will be executed in php artisan db:seed
         $this->registerSeeder(EmailSendSeeder::class);
 
-        // Complete the plugin booting
+        // Complete the connector boot
         $this->completePluginBoot();
-
     }
 }
