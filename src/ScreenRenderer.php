@@ -1,4 +1,5 @@
 <?php
+
 namespace ProcessMaker\Packages\Connectors\Email;
 
 use Spatie\Ssr\Renderer;
@@ -8,7 +9,7 @@ class ScreenRenderer
 {
     public static function render($screen_config, $data)
     {
-        $engine = new Node('/usr/bin/node', '/tmp');
+        $engine = new Node(env('NODE_BIN_PATH', '/usr/bin/node'), '/tmp');
         $renderer = new Renderer($engine);
         return $renderer
             ->debug()
