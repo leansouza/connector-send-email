@@ -1,7 +1,16 @@
-import FormText from "@processmaker/spark-screen-builder/src/components/renderer/form-text";
-import FormMultiColumn from "@processmaker/spark-screen-builder/src/components/renderer/form-multi-column"
-import FormRecordList from "@processmaker/spark-screen-builder/src/components/renderer/form-record-list"
-import FormRecordListStatic from "@processmaker/spark-screen-builder/src/components/renderer/form-record-list-static"
+/*import FormText from "@processmaker/screen-builder/src/components/renderer/form-text";
+import FormMultiColumn from "@processmaker/screen-builder/src/components/renderer/form-multi-column";
+import FormRecordList from "@processmaker/screen-builder/src/components/renderer/form-record-list";
+import FormRecordListStatic from "@processmaker/screen-builder/src/components/renderer/form-record-list-static";*/
+
+import {renderer, FormBuilderControls} from "@processmaker/screen-builder";
+
+const {
+  FormMultiColumn,
+  FormText,
+  FormRecordList,
+  FormRecordListStatic,
+} = renderer;
 
 import {
   FormInput,
@@ -13,7 +22,7 @@ import {
   FormHtmlEditor,
 } from "@processmaker/vue-form-elements";
 
-import globalProperties from "@processmaker/spark-screen-builder/src/global-properties";
+import globalProperties from "@processmaker/screen-builder/src/global-properties";
 
 const bgcolorProperty = {
   type: "ColorSelect",
