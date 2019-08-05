@@ -1,5 +1,5 @@
 {
-  "name": "spark-package-email-connector",
+  "name": "package-email-connector",
   "version": "1.0.0",
   "description": "Email connector for ProcessMaker 4",
   "author": "David Callizaya <david.callizaya@processmaker.com>",

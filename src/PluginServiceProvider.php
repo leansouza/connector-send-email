@@ -15,7 +15,7 @@ class PluginServiceProvider extends ServiceProvider
     use PluginServiceProviderTrait;
 
     const version = '0.0.11';
-    const name = 'spark-connector-send-email';
+    const name = 'connector-send-email';
 
     /**
      * This service provider listens for the modeler starting event
@@ -32,7 +32,7 @@ class PluginServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
-        ], 'spark-package-email-connector');
+        ], 'package-email-connector');
 
         //translations
         $this->loadJsonTranslationsFrom(__DIR__ . '/../resources/lang');
