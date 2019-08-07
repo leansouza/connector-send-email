@@ -8,7 +8,7 @@ class ScreenRenderer
 {
     public static function render($screen_config, $data)
     {
-        $engine = new Node('/usr/bin/node', '/tmp');
+        $engine = new Node('`which node`', '/tmp');
         $renderer = new Renderer($engine);
         return $renderer
             ->debug()

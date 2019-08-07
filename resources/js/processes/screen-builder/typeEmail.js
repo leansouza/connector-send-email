@@ -1,5 +1,6 @@
 import {renderer, FormBuilderControls} from "@processmaker/screen-builder";
-// import {FormHtmlEditor} from "@processmaker/vue-form-elements";
+import {FormHtmlEditor} from "@processmaker/vue-form-elements";
+import RichTextRenderer from "./rich-text-renderer"
 
 const {
     FormMultiColumn,
@@ -92,7 +93,8 @@ const colorProperty = {
 };
 
 const TableControl = FormBuilderControls.find(control => control.editorComponent === FormMultiColumn);
-// const RichTextControl = FormBuilderControls.find(control => control.editorComponent === FormHtmlEditor);
+let RichTextControl = FormBuilderControls.find(control => control.editorComponent === FormHtmlEditor);
+RichTextControl.rendererComponent = RichTextRenderer;
 
 let initialControls = [{
     builderComponent: FormText,

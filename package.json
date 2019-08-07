@@ -1,5 +1,5 @@
 {
-  "name": "spark-package-email-connector",
+  "name": "connector-send-email",
   "version": "1.0.0",
   "description": "Email connector for ProcessMaker 4",
   "author": "David Callizaya <david.callizaya@processmaker.com>",
@@ -19,8 +19,7 @@
     "laravel-mix": "1.7.2"
   },
   "dependencies": {
-    "@processmaker/spark-modeler": "^0.10.0",
-    "bpmn-moddle": "^5.1.5",
-    "jointjs": "^2.2.1"
+    "@processmaker/screen-builder": "^0.17.77",
+    "@processmaker/vue-form-elements": "^0.10.5"
   }
 }

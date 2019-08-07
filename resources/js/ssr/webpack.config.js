@@ -1,7 +1,6 @@
 'use strict'
 const { VueLoaderPlugin } = require('vue-loader')
 const webpack = require('webpack')
-const path = require('path')
 
 module.exports = {
   mode: 'development',
@@ -27,10 +26,4 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(),
   ],
-  resolve: {
-    alias: {
-      'tinymce': path.resolve(__dirname, 'src/dummies'),
-      '@tinymce/tinymce-vue$': path.resolve(__dirname, 'src/rich-text-component.js')
-    }
-  }
 }

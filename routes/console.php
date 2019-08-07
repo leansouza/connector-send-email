@@ -1,9 +1,9 @@
 <?php
 
-Artisan::command('spark-connector-send-email:install', function () {
+Artisan::command('connector-send-email:install', function () {
     Artisan::call('vendor:publish',
         [
-            '--tag' => 'spark-package-email-connector',
+            '--tag' => 'package-email-connector',
             '--force' => true
         ]
     );
@@ -39,7 +39,7 @@ Artisan::command('spark-connector-send-email:install', function () {
     $this->info('Connector send email plugin has been installed');
 })->describe('Installs the send mail connector');
 
-Artisan::command('spark-connector-send-email:uninstall', function () {
+Artisan::command('connector-send-email:uninstall', function () {
     /* In case to delete parameters to .env file */
     $envPath = base_path('.env');
     if (file_exists($envPath)) {
