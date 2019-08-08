@@ -9,7 +9,8 @@ class ScreenRenderer
 {
     public static function render($screen_config, $data)
     {
-        $engine = new Node('`which node`', '/tmp');
+        $node = (function_exists('env') ? env('NODE_BIN_PATH') : '') ?: exec('which node') ?: '`which node`' ?: 'node';
+        $engine = new Node($node, '/Users/davidcallizaya/Netbeans');
         $renderer = new Renderer($engine);
         return $renderer
             ->debug()
