@@ -6,6 +6,7 @@ const implementation = 'connector-send-email/processmaker-communication-email-se
 const nodeId = 'processmaker-communication-email-send';
 
 export default  {
+    // Component properties
     id: nodeId,
     component: component,
     bpmnType: 'bpmn:ServiceTask',
@@ -14,6 +15,9 @@ export default  {
     icon: require('./icon.svg'),
     implementation,
     label: 'Send Email',
+    /**
+     * BPMN definition
+     */
     definition: function(moddle) {
         return moddle.create('bpmn:ServiceTask', {
             name: 'Send Email',
@@ -21,6 +25,9 @@ export default  {
             config: JSON.stringify({ email: '', targetName: '', subject: '', template: 'welcome' }),
         });
     },
+    /**
+     * BPMN definition (diagram)
+     */
     diagram: function(moddle) {
         return moddle.create('bpmndi:BPMNShape', {
             bounds: moddle.create('dc:Bounds', {
@@ -29,6 +36,9 @@ export default  {
             }),
         });
     },
+    /**
+     * Inspector handler
+     */
     inspectorHandler: function(value, definition, component) {
         // Go through each property and rebind it to our data
         for (var key in value) {
@@ -39,6 +49,9 @@ export default  {
         }
         component.updateShape();
     },
+    /**
+     * Inspector definition
+     */
     inspectorConfig: [
         {
             name: 'Send Email',

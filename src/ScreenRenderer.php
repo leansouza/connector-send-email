@@ -1,4 +1,5 @@
 <?php
+
 namespace ProcessMaker\Packages\Connectors\Email;
 
 use Spatie\Ssr\Renderer;
