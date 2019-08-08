@@ -1,7 +1,16 @@
-import FormText from "@processmaker/spark-screen-builder/src/components/renderer/form-text";
-import FormMultiColumn from "@processmaker/spark-screen-builder/src/components/renderer/form-multi-column"
-import FormRecordList from "@processmaker/spark-screen-builder/src/components/renderer/form-record-list"
-import FormRecordListStatic from "@processmaker/spark-screen-builder/src/components/renderer/form-record-list-static"
+/*import FormText from "@processmaker/screen-builder/src/components/renderer/form-text";
+import FormMultiColumn from "@processmaker/screen-builder/src/components/renderer/form-multi-column";
+import FormRecordList from "@processmaker/screen-builder/src/components/renderer/form-record-list";
+import FormRecordListStatic from "@processmaker/screen-builder/src/components/renderer/form-record-list-static";*/
+
+import {renderer, FormBuilderControls} from "@processmaker/screen-builder";
+
+const {
+  FormMultiColumn,
+  FormText,
+  FormRecordList,
+  FormRecordListStatic,
+} = renderer;
 
 import {
   FormInput,
@@ -9,10 +18,11 @@ import {
   FormTextArea,
   FormCheckbox,
   FormRadioButtonGroup,
-  FormDatePicker
-} from "@processmaker/vue-form-elements/src/components";
+  FormDatePicker,
+  FormHtmlEditor,
+} from "@processmaker/vue-form-elements";
 
-import globalProperties from "@processmaker/spark-screen-builder/src/global-properties";
+import globalProperties from "@processmaker/screen-builder/src/global-properties";
 
 const bgcolorProperty = {
   type: "ColorSelect",
@@ -107,116 +117,158 @@ let initialControls = [
       label: 'Text',
       component: 'FormText',
       'editor-component': 'FormText',
-      'fa-icon': 'fas fa-align-justify',
       config: {
+        icon: 'fas fa-align-justify',
         label: 'New Text',
         fontSize: '1em',
         fontWeight: 'normal',
         textAlign: 'left',
-        color: 'black'
+        verticalAlign: 'top',
+        name: '',
       },
       inspector: [
         {
-          type: "FormTextArea",
-          field: "label",
+          type: 'FormTextArea',
+          field: 'label',
           config: {
             rows: 5,
-            label: "Text Content",
-            helper: "The text to display",
-          }
+            label: 'Text Content',
+            helper: 'The text to display',
+          },
         },
         {
-          type: "FormMultiselect",
-          field: "fontWeight",
+          type: 'FormMultiselect',
+          field: 'fontWeight',
           config: {
-            label: "Font Weight",
-            helper: "The weight of the text",
-            options: [{
-              value: 'normal',
-              content: 'Normal'
-            },
+            label: 'Font Weight',
+            name: 'Font Weight',
+            helper: 'The weight of the text',
+            validation: 'required',
+            options: [
+              {
+                value: 'normal',
+                content: 'Normal',
+              },
               {
                 value: 'bold',
-                content: 'Bold'
-              }
-            ]
-          }
+                content: 'Bold',
+              },
+            ],
+          },
         },
         {
-          type: "FormMultiselect",
-          field: "textAlign",
+          type: 'FormMultiselect',
+          field: 'textAlign',
           config: {
-            label: "Text Horizontal Alignment",
-            helper: "Horizontal alignment of the text",
-            options: [{
-              value: 'center',
-              content: 'Center'
-            },
+            label: 'Text Horizontal Alignment',
+            name: 'Text Horizontal Alignment',
+            helper: 'Horizontal alignment of the text',
+            validation: 'required',
+            options: [
+              {
+                value: 'center',
+                content: 'Center',
+              },
               {
                 value: 'left',
-                content: 'Left'
+                content: 'Left',
               },
               {
                 value: 'right',
-                content: 'Right'
+                content: 'Right',
               },
               {
                 value: 'justify',
-                content: 'Justify'
+                content: 'Justify',
               },
-            ]
-          }
+            ],
+          },
         },
         {
-          type: "FormMultiselect",
-          field: "verticalAlign",
+          type: 'FormMultiselect',
+          field: 'verticalAlign',
           config: {
-            label: "Text Vertical Alignment",
-            helper: "Vertical alignment of the text",
-            options: [{
-              value: 'top',
-              content: 'Top'
-            },
+            label: 'Text Vertical Alignment',
+            name: 'Text Vertical Alignment',
+            helper: 'Vertical alignment of the text',
+            validation: 'required',
+            options: [
+              {
+                value: 'top',
+                content: 'Top',
+              },
               {
                 value: 'middle',
-                content: 'Middle'
+                content: 'Middle',
               },
               {
                 value: 'bottom',
-                content: 'Bottom'
-              }
-            ]
-          }
+                content: 'Bottom',
+              },
+            ],
+          },
         },
         {
-          type: "FormMultiselect",
-          field: "fontSize",
+          type: 'FormMultiselect',
+          field: 'fontSize',
           config: {
-            label: "Font Size",
-            helper: "The size of the text in em",
-            options: [{
-              value: '0.5em',
-              content: '0.5'
-            },
+            label: 'Font Size',
+            name: 'Font Size',
+            helper: 'The size of the text in em',
+            validation: 'required',
+            options: [
+              {
+                value: '0.5em',
+                content: '0.5',
+              },
               {
                 value: '1em',
-                content: '1'
+                content: '1',
               },
               {
                 value: '1.5em',
-                content: '1.5'
+                content: '1.5',
               },
               {
                 value: '2em',
-                content: '2'
+                content: '2',
               },
-            ]
-          }
+            ],
+          },
         },
         bgcolorProperty,
         colorProperty,
-      ]
-    }
+      ],
+    },
+  },
+  {
+    editorComponent: FormHtmlEditor,
+    editorBinding: 'FormHtmlEditor',
+    rendererComponent: FormHtmlEditor,
+    rendererBinding: 'FormHtmlEditor',
+    control: {
+      label: 'Rich Text',
+      component: 'FormHtmlEditor',
+      'editor-component': 'FormHtmlEditor',
+      config: {
+        icon: 'fas fa-pencil-ruler',
+        interactive: true,
+        content: '<p>Rich text editor</p>',
+      },
+      inspector: [
+        {
+          type: 'FormTextArea',
+          field: 'content',
+          config: {
+            rows: 5,
+            label: 'Rich Text Content',
+            helper: 'The HTML text to display',
+            value: '',
+          },
+        },
+        bgcolorProperty,
+      ],
+    },
   },
   {
     editorComponent: FormMultiColumn,
@@ -224,39 +276,39 @@ let initialControls = [
     rendererComponent: FormMultiColumn,
     rendererBinding: 'FormMultiColumn',
     control: {
-      label: "Multi Column",
+      label: 'Table',
       component: 'FormMultiColumn',
-      "editor-component": "MultiColumn",
-      'fa-icon': 'fas fa-table',
+      'editor-component': 'MultiColumn',
       container: true,
       // Default items container
       items: [
         [],
-        []
+        [],
       ],
       config: {
+        icon: 'fas fa-table',
         options: [
           {
             value: '1',
-            content: '6'
+            content: '6',
           },
           {
             value: '2',
-            content: '6'
-          }
+            content: '6',
+          },
         ],
       },
       inspector: [
         {
-          type: "ContainerColumns",
-          field: "options",
+          type: 'ContainerColumns',
+          field: 'options',
           config: {
             label: 'Column Widths',
-          }
+          },
         },
         bgcolorProperty,
         colorProperty,
-      ]
+      ],
     },
   },
   {
@@ -268,8 +320,8 @@ let initialControls = [
       label: "Record List",
       component: 'FormRecordList',
       "editor-component": "FormText",
-      'fa-icon': 'fas fa-th-list',
       config: {
+        icon: 'fas fa-th-list',
         name: '',
         label: "New Record List",
         editable: false,

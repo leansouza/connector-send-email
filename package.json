@@ -19,7 +19,9 @@
     "laravel-mix": "1.7.2"
   },
   "dependencies": {
-    "@processmaker/spark-modeler": "^0.10.0",
+    "@processmaker/modeler": "^0.15.9",
+    "@processmaker/screen-builder": "^0.17.4",
+    "@processmaker/vue-form-elements": "^0.10.3",
     "bpmn-moddle": "^5.1.5",
     "jointjs": "^2.2.1"
   }
