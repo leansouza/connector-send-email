@@ -16,11 +16,13 @@
   "devDependencies": {
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-stage-2": "^6.24.1",
-    "laravel-mix": "1.7.2"
+    "laravel-mix": "1.7.2",
+    "sass-loader": "^7.1.0"
   },
   "dependencies": {
+    "@processmaker/modeler": "^0.15.13",
     "@processmaker/screen-builder": "^0.17.77",
-    "@processmaker/vue-form-elements": "github:ProcessMaker/vue-form-elements#feature/58",
+    "@processmaker/vue-form-elements": "^0.10.5",
     "mustache": "^3.0.1"
   }
 }
