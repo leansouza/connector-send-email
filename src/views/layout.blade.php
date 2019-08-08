@@ -73,7 +73,7 @@
       overflow: auto;
     }
 
-    .col {
+    .row>div {
       width: 50%;
       float: left;
     }

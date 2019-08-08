@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import renderVueComponentToString from 'vue-server-renderer/basic'
+import FormHtmlEditorStatic from '../../processes/screen-builder/FormHtmlEditorStatic'
 
 // This shouldn't have to be here.
 import * as VueDeepSet from 'vue-deepset'
@@ -12,6 +13,12 @@ if (typeof context == 'undefined') {
     "Are you running this using the spatie/server-side-rendering package?"
   )
 }
+
+Vue.component('FormHtmlEditorStatic', FormHtmlEditorStatic);
+
+import { renderer } from "@processmaker/screen-builder";
+const { FormRecordListStatic } = renderer;
+Vue.component('FormRecordListStatic', FormRecordListStatic);
 
 const app = new Vue({
   el: '#app',
