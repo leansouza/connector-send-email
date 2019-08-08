@@ -118,16 +118,6 @@
         width: auto;
         min-width: auto;
       }
-
-      .footer-1 .logo {
-        max-width: 100%;
-        height: auto;
-      }
-
-      .footer-2 .col {
-        float: none;
-        width: auto;
-      }
     }
   </style>
 
@@ -136,86 +126,17 @@
 <body>
   <div class="email-wrapper">
     <div class="container">
-      <div class="header">
-        <a href="https://www.processmaker.com" class="btn btn-primary">
-          SENT BY PROCESSMAKER 4
-        </a>
-      </div>
-
       <div class="email-body-wrapper">
         <div class="email-body center-block">
           {!! $body !!}
         </div>
       </div>
-
-      <div class="footer-1" style="background-color: #3397e1; padding:20px 10px; text-align: center;">
-        <a href="https://www.processmaker.com">
-          <img class="logo" alt="ProcessMaker" src="{{ $message->embed(public_path('vendor/processmaker/connectors/email/img/logo-big.png')) }}" />
-        </a>
-        <table align="center"><tr>
-          <td style="padding:20px 10px">
-            <a href="http://twitter.com/processmaker">
-              <img class="logo" alt="Twitter" src="{{ $message->embed(public_path('vendor/processmaker/connectors/email/img/twitter.png')) }}" />
-            </a>
-          </td>
-          <td style="padding:20px 10px">
-            <a href="https://www.facebook.com/processmaker">
-              <img class="logo" alt="Facebook" src="{{ $message->embed(public_path('vendor/processmaker/connectors/email/img/facebook.png')) }}" />
-            </a>
-          </td>
-          <td style="padding:20px 10px">
-            <a href="http://www.youtube.com/processmaker#play/uploads">
-              <img class="logo" alt="YouTube" src="{{ $message->embed(public_path('vendor/processmaker/connectors/email/img/youtube.png')) }}" />
-            </a>
-          </td>
-          <td style="padding:20px 10px">
-            <a href="https://www.linkedin.com/company/113435/">
-              <img class="logo" alt="LinkedIn" src="{{ $message->embed(public_path('vendor/processmaker/connectors/email/img/linkedin.png')) }}" />
-            </a>
-          </td>
-        </tr></table>
-      </div>
-      <div class="footer-2" style="background-color: #2481c5; color: #fff; padding:30px 10px ">
-        <div class="center-block" style="max-width: 500px">
-          <div align="center">
-            <h4>
-              Get the ProcessMaker workflow app
-            </h4>
-            <div class="row" style="">
-              <div class="col">
-                <a align="center" href="https://itunes.apple.com/us/app/processmaker/id992576284?ls=1&amp;mt=8">
-                  <img class="logo" alt="Apple App Store" src="{{ $message->embed(public_path('vendor/processmaker/connectors/email/img/appstore.png')) }}" />
-                </a>
-              </div>
-              <div class="col">
-                <a align="center" href="https://play.google.com/store/apps/details?id=com.colosa.processmaker">
-                  <img class="logo" alt="Google Play" src="{{ $message->embed(public_path('vendor/processmaker/connectors/email/img/googleplay.png')) }}" />
-                </a>
-              </div>
-            </div>
-
-            <div align="center">
-              <a href="https://www.processmaker.com/privacy-statement" class="text-light">
-                Privacy Statement
-              </a>
-              &nbsp;|&nbsp;
-              <a href="https://www.processmaker.com/security-statement" class="text-light">
-                Security Statement
-              </a>
-              &nbsp;|&nbsp;
-              <a href="https://www.processmaker.com/gdpr" class="text-light">
-                GDPR
-              </a>
-              &nbsp;|&nbsp;
-              <a href="https://www.processmaker.com/terms-of-service" class="text-light">
-                Terms of Service
-              </a>
-
-              <br>
-              © Copyright 2000 - 2019 ProcessMaker Inc.
-            </div>
-          </div>
-        </div>
+      <br clear="all">
+      <hr>
+      <div align="center">
+        Sent with ♥️ by <a href="https://www.processmaker.com">ProcessMaker 4</a> on {{date('Y-m-d H:i:s')}}
+        <br><br>
+        <small>&copy; {{date('Y')}} ProcessMaker Inc.</small>
       </div>
     </div>
   </div>
