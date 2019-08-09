@@ -44,13 +44,6 @@ export default  {
             name: 'Send Email',
             items: [
                 {
-                    component: 'FormText',
-                    config: {
-                        label: 'Send Email',
-                        fontSize: '2em',
-                    },
-                },
-                {
                     component: inspector,
                     config: {
                         name: 'id',

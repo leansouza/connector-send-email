@@ -1,5 +1,5 @@
 {
-  "name": "package-email-connector",
+  "name": "connector-send-email",
   "version": "1.0.0",
   "description": "Email connector for ProcessMaker 4",
   "author": "David Callizaya <david.callizaya@processmaker.com>",
@@ -16,13 +16,13 @@
   "devDependencies": {
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-stage-2": "^6.24.1",
-    "laravel-mix": "1.7.2"
+    "laravel-mix": "1.7.2",
+    "sass-loader": "^7.1.0"
   },
   "dependencies": {
-    "@processmaker/modeler": "^0.15.9",
-    "@processmaker/screen-builder": "^0.17.4",
-    "@processmaker/vue-form-elements": "^0.10.3",
-    "bpmn-moddle": "^5.1.5",
-    "jointjs": "^2.2.1"
+    "@processmaker/modeler": "^0.15.13",
+    "@processmaker/screen-builder": "^0.17.77",
+    "@processmaker/vue-form-elements": "^0.10.5",
+    "mustache": "^3.0.1"
   }
 }

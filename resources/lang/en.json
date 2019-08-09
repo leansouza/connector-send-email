@@ -8,5 +8,12 @@
     "Subject": "Subject",
     "Email subject": "Email subject",
     "Email body": "Email body",
-    "What Screen Should Be Used For Sending This Email": "What Screen Should Be Used For Sending This Email"
+    "What Screen Should Be Used For Sending This Email": "What Screen Should Be Used For Sending This Email",
+    "Configuration Send Email": "Configuration Send Email",
+    "Body": "Body",
+    "Plain Text": "Plain Text",
+    "Display Screen": "Display Screen",
+    "Recipients": "Recipients",
+    "(Select all that apply)": "(Select all that apply)",
+    "Add additional emails": "Add additional emails"
 }
