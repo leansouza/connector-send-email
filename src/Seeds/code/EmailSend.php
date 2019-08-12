@@ -16,6 +16,11 @@ $response = $client->request('POST', '/plugins/email/send', [
         'name' => $config['targetName'],
         'subject' => $config['subject'],
         'screenRef' => $config['screenRef'],
+        'users' => $config['users'],
+        'groups' => $config['groups'],
+        'addEmails' => $config['addEmails'],
+        'type' => $config['type'],
+        'textBody' => $config['textBody'],
         'json_data' => json_encode($data),
     ]
 ]);
