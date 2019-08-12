@@ -35,7 +35,6 @@
           <modeler-screen-select
             class="p-0"
             v-show="config.type === 'screen'"
-            label=""
             :helper="$t('What Screen Should Be Used For Sending This Email')"
             :params='{type:"EMAIL"}'
             v-model='config.screenRef'>
@@ -46,7 +45,6 @@
           <label>{{ $t('Recipients') }}</label>
           <label>{{ $t('(Select all that apply)') }}</label>
           <user-group-select
-            label=""
             class="p-0"
             v-bind:multiple="true"
             v-model="usersGroupsSelected"
@@ -65,7 +63,6 @@
 
       </b-collapse>
 
-
     </b-card-body>
   </b-card>
 
@@ -80,8 +77,6 @@
     data() {
       return {
         showConfiguration: false,
-        assignedUsers: [],
-        assignedGroups: [],
         usersGroupsSelected: [],
         config: {
           subject: '',
@@ -90,7 +85,9 @@
           screenRef: '',
           email: '',
           targetName: '',
-          addEmails: []
+          addEmails: [],
+          users : [],
+          groups : [],
         },
       };
     },
@@ -105,10 +102,10 @@
         deep: true,
         handler() {
           if (this.usersGroupsSelected && this.usersGroupsSelected.users) {
-            this.assignedUsers = this.usersGroupsSelected.users;
+            this.config.users = this.usersGroupsSelected.users;
           }
           if (this.usersGroupsSelected && this.usersGroupsSelected.groups) {
-            this.assignedGroups = this.usersGroupsSelected.groups;
+            this.config.groups = this.usersGroupsSelected.groups;
           }
           this.updateConfig();
         }
@@ -122,21 +119,16 @@
       loadConfig() {
         const node = this.$parent.$parent.highlightedNode.definition;
         const config = JSON.parse(_.get(node, 'config'));
-        let assignedUsers = _.get(node, 'assignedUsers');
-        let assignedGroups = _.get(node, 'assignedGroups');
-
-        Vue.set(this.usersGroupsSelected, 'users', assignedUsers ? assignedUsers.split(',') : []);
-        Vue.set(this.usersGroupsSelected, 'groups', assignedGroups ? assignedGroups.split(',') : []);
 
         Object.keys(config).forEach(key => {
           Vue.set(this.config, key, config[key]);
         });
+
+        Vue.set(this, 'usersGroupsSelected', {'users': config.users, 'groups': config.groups});
       },
       updateConfig() {
         const node = this.$parent.$parent.highlightedNode.definition;
         Vue.set(node, 'config', JSON.stringify(this.config));
-        Vue.set(node, 'assignedUsers', this.assignedUsers.join());
-        Vue.set(node, 'assignedGroups', this.assignedGroups.join());
       },
     },
     mounted() {
