@@ -23,6 +23,7 @@
     "@processmaker/modeler": "^0.15.13",
     "@processmaker/screen-builder": "^0.17.77",
     "@processmaker/vue-form-elements": "^0.10.5",
-    "mustache": "^3.0.1"
+    "mustache": "^3.0.1",
+    "vue-multiselect": "^2.1.0"
   }
 }

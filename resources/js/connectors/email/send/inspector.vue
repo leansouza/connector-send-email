@@ -71,8 +71,13 @@
 
 <script>
   import AddInput from "./AddInput";
+  import UserGroupSelect from "./UserGroupSelect";
+
   export default {
-    components: {AddInput},
+    components: {
+      AddInput,
+      UserGroupSelect
+    },
     props: ["value"],
     data() {
       return {
