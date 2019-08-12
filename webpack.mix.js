@@ -15,6 +15,11 @@ folder configured for publishing by default.
  */
 
 mix.setPublicPath('public')
+.webpackConfig({
+    resolve: {
+        symlinks: false,
+    }
+})
 .setResourceRoot('/vendor/processmaker/connectors/email/')
     .js('resources/js/email-connector.js', 'js')
     .js('resources/js/processes/screen-builder/typeEmail.js', 'js/processes/screen-builder')

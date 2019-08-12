@@ -1,5 +1,7 @@
 'use strict'
 const { VueLoaderPlugin } = require('vue-loader')
+const webpack = require('webpack')
+
 module.exports = {
   mode: 'development',
   target: 'node',
@@ -22,6 +24,6 @@ module.exports = {
     extensions: ['*', '.js', '.vue', '.json']
   },
   plugins: [
-    new VueLoaderPlugin()
-  ]
+    new VueLoaderPlugin(),
+  ],
 }
