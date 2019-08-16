@@ -56,7 +56,7 @@ class EmailController extends Controller
             $config['body'] = $rendered;
         } else {
             //Plain text
-            $config['body'] = htmlentities($config['textBody'], ENT_QUOTES, 'UTF-8');
+            $config['body'] = htmlentities($mustache->render($config['textBody'], $data), ENT_QUOTES, 'UTF-8');
         }
 
         //change mustache
