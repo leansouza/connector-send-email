@@ -3,7 +3,7 @@
 Artisan::command('connector-send-email:install', function () {
     Artisan::call('vendor:publish',
         [
-            '--tag' => 'package-email-connector',
+            '--tag' => 'connector-send-email',
             '--force' => true
         ]
     );
@@ -66,7 +66,7 @@ Artisan::command('connector-send-email:uninstall', function () {
     // Remove screen type EMAIL
     ProcessMaker\Models\ScreenType::where('name', 'EMAIL')->delete();
     // Remove the service task script
-    ProcessMaker\Models\Script::where('key', 'processmaker-communication-email-send')->delete();
+    ProcessMaker\Models\Script::where('key', 'connector-send-email/processmaker-communication-email-send')->delete();
 
     // Remove the vendor assets
     Illuminate\Support\Facades\File::deleteDirectory(public_path('vendor/processmaker/connectors/email'));

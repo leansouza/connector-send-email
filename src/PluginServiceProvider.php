@@ -34,7 +34,7 @@ class PluginServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
-        ], 'connector-send-email');
+        ], self::name);
 
         // Register translations
         $this->loadJsonTranslationsFrom(__DIR__ . '/../resources/lang');

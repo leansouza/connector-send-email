@@ -1,4 +1,4 @@
-This package allows you to send emails as a task from [ProcessMaker](https://github.com/ProcessMaker/spark)
+This package allows you to send emails as a task from [ProcessMaker](https://github.com/ProcessMaker/processmaker)
 
 ## Installation
 
