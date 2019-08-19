@@ -18,7 +18,7 @@
         <div class="input-group border-0">
 
           <input type="text" class="form-control" :placeholder="placeholder" v-model="row.email"
-                 aria-describedby="index" @change="updateConfig">
+                 aria-describedby="index" @input="updateConfig">
           <div class="input-group-prepend">
             <span class="input-group-text border-0" id="index">
               <a @click="remove(index)">
