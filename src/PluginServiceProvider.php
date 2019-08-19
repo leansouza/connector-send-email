@@ -4,8 +4,11 @@ namespace ProcessMaker\Packages\Connectors\Email;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use ProcessMaker\Events\ScreenBuilderStarting;
+use ProcessMaker\Nayra\Contracts\Bpmn\ActivityInterface;
+use ProcessMaker\Packages\Connectors\Email\Controllers\EmailController;
 use ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder;
 use ProcessMaker\Traits\PluginServiceProviderTrait;
 
@@ -44,6 +47,16 @@ class PluginServiceProvider extends ServiceProvider
             if ($event->type == 'EMAIL') {
                 $event->manager->addScript('/vendor/processmaker/connectors/email/js/processes/screen-builder/typeEmail.js');
             }
+        });
+
+        Event::listen(ActivityInterface::EVENT_ACTIVITY_ACTIVATED, function ($event) {
+            Log::info('EVENT_ACTIVITY_ACTIVATED ...............');
+            app(EmailController::class)->eventSendMail($event);
+        });
+
+        Event::listen(ActivityInterface::EVENT_ACTIVITY_COMPLETED, function ($event) {
+            Log::info('EVENT_ACTIVITY_COMPLETED ...............');
+            app(EmailController::class)->eventSendMail($event);
         });
 
         // Register email templates
