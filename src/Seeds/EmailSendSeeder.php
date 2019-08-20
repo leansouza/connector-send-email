@@ -2,9 +2,9 @@
 
 namespace ProcessMaker\Packages\Connectors\Email\Seeds;
 
+use Illuminate\Database\Seeder;
 use ProcessMaker\Models\Process;
 use ProcessMaker\Models\ProcessCategory;
-use Illuminate\Database\Seeder;
 use ProcessMaker\Models\ScreenType;
 use ProcessMaker\Models\Script;
 

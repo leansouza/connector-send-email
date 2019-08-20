@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+        xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+        xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+        xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+        xmlns:pm="http://processmaker.com/BPMN/2.0/Schema.xsd"
+        xmlns:tns="http://sourceforge.net/bpmn/definitions/_1530553328908"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://bpmn.sourceforge.net/schemas/BPMN20.xsd">
+    <bpmn:process id="ProcessId" name="ProcessName" isExecutable="true">
+        <bpmn:startEvent id="node_1" name="Start Event">
+            <bpmn:outgoing>node_4</bpmn:outgoing>
+        </bpmn:startEvent>
+        <bpmn:serviceTask id="node_2" name="Test Send Email" pm:config="{&#34;subject&#34;:&#34;RE: {{subject}}&#34;,&#34;type&#34;:&#34;text&#34;,&#34;textBody&#34;:&#34;Text plain test {{text}}&#34;,&#34;screenRef&#34;:&#34;&#34;,&#34;email&#34;:&#34;&#34;,&#34;targetName&#34;:&#34;&#34;,&#34;addEmails&#34;:[&#34;{{first_mail}}&#34;,&#34;{{second_mail}}&#34;],&#34;users&#34;:[],&#34;groups&#34;:[],&#34;template&#34;:&#34;welcome&#34;}" implementation="connector-send-email/processmaker-communication-email-send">
+            <bpmn:incoming>node_4</bpmn:incoming>
+            <bpmn:outgoing>node_6</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:endEvent id="node_3" name="End Event">
+            <bpmn:incoming>node_6</bpmn:incoming>
+        </bpmn:endEvent>
+        <bpmn:sequenceFlow id="node_4" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="" />
+        <bpmn:sequenceFlow id="node_6" name="New Sequence Flow" sourceRef="node_2" targetRef="node_3" pm:startEvent="" />
+    </bpmn:process>
+    <bpmndi:BPMNDiagram id="BPMNDiagramId">
+        <bpmndi:BPMNPlane id="BPMNPlaneId" bpmnElement="ProcessId">
+            <bpmndi:BPMNShape id="node_1_di" bpmnElement="node_1">
+                <dc:Bounds x="127" y="177" width="36" height="36" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_2_di" bpmnElement="node_2">
+                <dc:Bounds x="270" y="150" width="116" height="76" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_3_di" bpmnElement="node_3">
+                <dc:Bounds x="480" y="170" width="36" height="36" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="node_4_di" bpmnElement="node_4">
+                <di:waypoint x="145" y="195" />
+                <di:waypoint x="328.5" y="195" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="node_6_di" bpmnElement="node_6">
+                <di:waypoint x="328" y="188" />
+                <di:waypoint x="498" y="188" />
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn:definitions>
