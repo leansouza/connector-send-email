@@ -1,4 +1,8 @@
 import emailSend from './connectors/email/send/index';
+import Notification from './connectors/email/send/Notification';
+
+window.Vue.component('EmailNotificationInspector', Notification);
+
 let nodeTypes = [
     emailSend,
 ];
@@ -13,4 +17,19 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnEx
     for (const node of nodeTypes) {
         registerNode(node);
     }
+
+    let config = {
+      component: 'EmailNotificationInspector',
+      name: 'email notification',
+      container: true,
+      config: {
+        label: '',
+        helper: '',
+        name: '',
+      },
+    }
+
+    let task = ProcessMaker.nodeTypes.get('processmaker-modeler-task')
+    registerInspectorExtension(task, config);
+
 });
