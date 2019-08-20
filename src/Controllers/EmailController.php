@@ -4,6 +4,7 @@ namespace ProcessMaker\Packages\Connectors\Email\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use ProcessMaker\Http\Controllers\Controller;
 use ProcessMaker\Models\GroupMember;
@@ -15,7 +16,7 @@ use ProcessMaker\Packages\Connectors\Email\ScreenRenderer;
 class EmailController extends Controller
 {
     /**
-     * Send and email.
+     * Send and email by request
      *
      * @param Request $request
      * @return Response
@@ -24,21 +25,60 @@ class EmailController extends Controller
     {
         $config = $request->input();
 
+        //Load data
+        $data = json_decode($config['json_data']);
+
+        $this->prepareMail($config, $data);
+
+        return response()->json();
+    }
+
+    /**
+     * Load data configuration in event send mail
+     *
+     * @param $event
+     */
+    public function eventSendMail($event)
+    {
+        $activity = $event->activity;
+        $config = $activity->getProperties();
+
+        if (isset($config['config'])) {
+            $config = json_decode($config['config']);
+
+            //load data case
+            $data = $event->token->getInstance()->getDataStore()->getData();
+
+            $this->prepareMail($config, $data);
+
+        }
+    }
+
+    /**
+     * Send mail
+     *
+     * @param $config
+     * @param $data
+     */
+    private function prepareMail($config, $data)
+    {
         //Validate data
         $users  = !empty($config['groups']) ? $config['groups'] : [];
         $groups  = !empty($config['users']) ? $config['users'] : [];
         $additionalEmails =!empty( $config['addEmails']) ? $config['addEmails'] : [];
         $type =!empty( $config['type']) ? $config['type'] : 'screen';
 
-        //Load data
-        $data = json_decode($config['json_data']);
-
         //Load mails
-        $usersGroups = GroupMember::whereIn('group_id', $groups)->where('member_type', User::class)->pluck('member_id')->toArray();
+        $usersGroups = GroupMember::whereIn('group_id', $groups)
+            ->where('member_type', User::class)
+            ->pluck('member_id')
+            ->toArray();
         $users = array_merge($users, $usersGroups);
-        $emails = User::whereIn('id', $users)->pluck('email')->toArray();
+        $emails = User::whereIn('id', $users)
+            ->pluck('email')
+            ->toArray();
 
-        //change mustache
+        //Mustache
         $mustache = new \Mustache_Engine;
 
         //Add additional emails
@@ -50,8 +90,6 @@ class EmailController extends Controller
         if ($type === 'screen') {
             //screen definition
             $screen = Screen::find($config['screenRef']);
-            $data = json_decode($config['json_data']);
-
             $rendered = ScreenRenderer::render($screen->config, $data);
             $config['body'] = $rendered;
         } else {
@@ -66,7 +104,5 @@ class EmailController extends Controller
 
         //created queue job
         dispatch(new SendEmail($config));
-
-        return response()->json();
     }
 }
