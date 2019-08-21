@@ -17,11 +17,9 @@ class EmailNotificationsTest extends TestCase
         (new \ProcessSystemCategorySeeder)->run();
         (new EmailSendSeeder)->run();
 
-        // task-start or task-end
-
         $bpmn = file_get_contents(__DIR__ . '/../fixtures/ProcessWithEmailNotificationsEnabled.bpmn');
 
-        $pmConfig = ["email_notifications" => [
+        $pmConfig = ['email_notifications' => [
             'email' => 'foobar@test.com',
             'targetName' => 'Mr Foobar',
             'textBody' => "",

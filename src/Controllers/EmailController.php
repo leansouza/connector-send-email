@@ -28,40 +28,6 @@ class EmailController extends Controller
         //Load data
         $data = json_decode($config['json_data']);
 
-        $this->prepareMail($config, $data);
-
-        return response()->json();
-    }
-
-    /**
-     * Load data configuration in event send mail
-     *
-     * @param $event
-     */
-    public function eventSendMail($event)
-    {
-        $activity = $event->activity;
-        $config = $activity->getProperties();
-
-        if (isset($config['config'])) {
-            $config = json_decode($config['config']);
-
-            //load data case
-            $data = $event->token->getInstance()->getDataStore()->getData();
-
-            $this->prepareMail($config, $data);
-
-        }
-    }
-
-    /**
-     * Send mail
-     *
-     * @param $config
-     * @param $data
-     */
-    private function prepareMail($config, $data)
-    {
         //Validate data
         $users  = !empty($config['groups']) ? $config['groups'] : [];
         $groups  = !empty($config['users']) ? $config['users'] : [];
@@ -104,5 +70,8 @@ class EmailController extends Controller
 
         //created queue job
         dispatch(new SendEmail($config));
+
+        return response()->json();
     }
+
 }
