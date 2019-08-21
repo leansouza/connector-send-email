@@ -21,7 +21,7 @@ class EmailNotificationsTest extends TestCase
 
         $bpmn = file_get_contents(__DIR__ . '/../fixtures/ProcessWithEmailNotificationsEnabled.bpmn');
 
-        $pmConfig = ["email_notifications" => [
+        $pmConfig = ['email_notifications' => [
             'email' => 'foobar@test.com',
             'targetName' => 'Mr Foobar',
             'textBody' => "",
@@ -29,7 +29,7 @@ class EmailNotificationsTest extends TestCase
             'expression' => 'some_data != "def"',
             'sendAt' => 'task-start',
         ]];
-        
+
         $bpmn = str_replace('[pmConfig]', htmlspecialchars(json_encode($pmConfig)), $bpmn);
         $process = factory(Process::class)->create(['bpmn' => $bpmn]);
         $startRoute = route('api.process_events.trigger', [$process->id, 'event' => 'node_1']);
