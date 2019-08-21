@@ -4,7 +4,7 @@
     <bpmn:startEvent id="node_1" name="Start Event" pm:assignment="user">
       <bpmn:outgoing>node_3</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:task id="node_2" name="New Task" pm:assignment="requester" pm:config="{&quot;some_data&quot;:&quot;abc&quot;,&quot;email_notifications&quot;:{&quot;email&quot;:&quot;foobar@test.com&quot;,&quot;targetName&quot;:&quot;Mr Foobar&quot;,&quot;textBody&quot;:&quot;&quot;,&quot;screenRef&quot;:123,&quot;action&quot;:&quot;start&quot;,&quot;expression&quot;:&quot;some_data != \&quot;def\&quot;&quot;}}">
+    <bpmn:task id="node_2" name="New Task" pm:assignment="requester" pm:config="[pmConfig]">
       <bpmn:incoming>node_3</bpmn:incoming>
       <bpmn:outgoing>node_5</bpmn:outgoing>
     </bpmn:task>

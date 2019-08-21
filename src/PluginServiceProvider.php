@@ -11,6 +11,8 @@ use ProcessMaker\Nayra\Contracts\Bpmn\ActivityInterface;
 use ProcessMaker\Packages\Connectors\Email\Controllers\EmailController;
 use ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder;
 use ProcessMaker\Traits\PluginServiceProviderTrait;
+use ProcessMaker\Facades\WorkflowManager;
+use ProcessMaker\Models\Process;
 
 class PluginServiceProvider extends ServiceProvider
 {
@@ -50,14 +52,29 @@ class PluginServiceProvider extends ServiceProvider
         });
 
         Event::listen(ActivityInterface::EVENT_ACTIVITY_ACTIVATED, function ($event) {
-            Log::info('EVENT_ACTIVITY_ACTIVATED ...............');
-            app(EmailController::class)->eventSendMail($event);
+            if (!isset($event->token->getDefinition()['config'])) {
+                return;
+            }
+            $config = json_decode($event->token->getDefinition()['config'], true);
+            $data = $event->token->processRequest->data;
+
+            $subProcess = $this->notificationSubProcess();
+            $definitions = $subProcess->getDefinitions();
+            $event = $definitions->getEvent(EmailSendSeeder::SUB_PROCESS_START_EVENT);
+            WorkflowManager::triggerStartEvent(
+                $subProcess, $event, array_merge($data, $config)
+            );
         });
 
-        Event::listen(ActivityInterface::EVENT_ACTIVITY_COMPLETED, function ($event) {
-            Log::info('EVENT_ACTIVITY_COMPLETED ...............');
-            app(EmailController::class)->eventSendMail($event);
-        });
+        // Event::listen(ActivityInterface::EVENT_ACTIVITY_ACTIVATED, function ($event) {
+        //     Log::info('EVENT_ACTIVITY_ACTIVATED ...............');
+        //     app(EmailController::class)->eventSendMail($event);
+        // });
+
+        // Event::listen(ActivityInterface::EVENT_ACTIVITY_COMPLETED, function ($event) {
+        //     Log::info('EVENT_ACTIVITY_COMPLETED ...............');
+        //     app(EmailController::class)->eventSendMail($event);
+        // });
 
         // Register email templates
         $this->loadViewsFrom(__DIR__ . '/views', 'email');
@@ -67,5 +84,10 @@ class PluginServiceProvider extends ServiceProvider
 
         // Complete the connector boot
         $this->completePluginBoot();
+    }
+
+    private function notificationSubProcess()
+    {
+        return Process::where('package_key', EmailSendSeeder::SUB_PROCESS_ID)->firstOrFail();
     }
 }

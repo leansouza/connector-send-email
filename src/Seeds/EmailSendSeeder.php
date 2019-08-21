@@ -12,7 +12,8 @@ class EmailSendSeeder extends Seeder
 {
 
     const IMPLEMENTATION_ID = 'connector-send-email/processmaker-communication-email-send';
-    const SUB_PROCESS_ID = 'connector-send-email/sub-process';
+    const SUB_PROCESS_ID = 'connector-send-email/notification-sub-process';
+    const SUB_PROCESS_START_EVENT = 'node_1';
 
     /**
      * Creates or updates the script implementation.
@@ -47,9 +48,9 @@ class EmailSendSeeder extends Seeder
             $script->saveOrFail();
         }
 
-
         $processCategory = ProcessCategory::where('is_system', true)->firstOrFail();
 
+        Process::unguard();
         Process::updateOrCreate([
             'package_key' => self::SUB_PROCESS_ID,
         ], [
@@ -57,8 +58,9 @@ class EmailSendSeeder extends Seeder
             'process_category_id' => $processCategory->id,
             'description' => 'Sub Process to Send Email Notifications',
             'bpmn' => file_get_contents(__DIR__ . '/sub-process.bpmn'),
-            'user_id' => Script::defaultRunAsUser()->id,
+            'user_id' => \ProcessMaker\Models\User::first()->id,
         ]);
+        Process::reguard();
     }
 
     private function getCode()
