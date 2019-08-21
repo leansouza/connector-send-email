@@ -4,24 +4,32 @@ namespace ProcessMaker\Packages\Connectors\Email;
 
 use ProcessMaker\Facades\WorkflowManager;
 use ProcessMaker\Models\Process;
+use ProcessMaker\Nayra\Bpmn\Events\ActivityActivatedEvent;
+use ProcessMaker\Nayra\Bpmn\Events\ActivityCompletedEvent;
 use ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder;
 
 class Notifications
 {
+    const TASK_START = 'task-start';
+    const TASK_COMPLETED = 'task-end';
+
     /**
      * Create notification in event activity activated
      *
-     * @param $event
-     * @param $type
+     * @param ActivityActivatedEvent $event
      */
-    public function created($event)
+    public function created(ActivityActivatedEvent $event)
     {
-        if (isset($event->token->getDefinition()['config']) &&
-            isset($event->token->getDefinition()['config']['email_notifications']) &&
-            $event->token->getDefinition()['config']['email_notifications']['sendAt'] === 'task-start'
+        if (!isset($event->token->getDefinition()['config'])) {
+            return;
+        }
+        $config = json_decode($event->token->getDefinition()['config'], true);
+
+        if (isset($config['email_notifications']) &&
+            $config['email_notifications']['sendAt'] === self::TASK_START
         ) {
-            $this->$this->createNotification(
-                json_decode($event->token->getDefinition()['config'], true),
+            $this->createNotification(
+                $config,
                 $event->token->processRequest->data
             );
         }
@@ -30,20 +38,22 @@ class Notifications
     /**
      * Create notification in event activity completed
      *
-     * @param $event
-     * @param $type
+     * @param ActivityCompletedEvent $event
      */
-    public function completed($event)
+    public function completed(ActivityCompletedEvent $event)
     {
-        if (isset($event->token->getDefinition()['config']) &&
-            isset($event->token->getDefinition()['config']['email_notifications']) &&
-            $event->token->getDefinition()['config']['email_notifications']['sendAt'] === 'task-end'
-        ) {
-            $this->$this->createNotification(
-                json_decode($event->token->getDefinition()['config'], true),
-                $event->token->processRequest->data
-                );
+        if (!isset($event->token->getDefinition()['config'])) {
+            return;
+        }
+        $config = json_decode($event->token->getDefinition()['config'], true);
 
+        if (isset($config['email_notifications']) &&
+            $config['email_notifications']['sendAt'] === self::TASK_COMPLETED
+        ) {
+            $this->createNotification(
+                $config,
+                $event->token->processRequest->data
+            );
         }
     }
 
