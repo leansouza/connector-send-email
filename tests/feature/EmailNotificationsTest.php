@@ -29,8 +29,10 @@ class EmailNotificationsTest extends TestCase
             'expression' => 'some_data != "def"',
             'sendAt' => 'task-start',
         ]];
-        
-        $bpmn = str_replace('[pmConfig]', htmlspecialchars(json_encode($pmConfig)), $bpmn);
+        $jsonString = json_encode($pmConfig);
+        $jsonString = str_replace('"', '&#34;', $jsonString);
+
+        $bpmn = str_replace('[pmConfig]', $jsonString, $bpmn);
         $process = factory(Process::class)->create(['bpmn' => $bpmn]);
         $startRoute = route('api.process_events.trigger', [$process->id, 'event' => 'node_1']);
         $response = $this->apiCall('POST', $startRoute, ['some_data' => 'abc']);
