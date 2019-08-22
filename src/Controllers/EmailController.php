@@ -26,11 +26,12 @@ class EmailController extends Controller
         $config = $request->input();
 
         //Load data
-        $data = json_decode($config['json_data']);
+        $data = json_decode($config['json_data'], true);
 
         //Validate data
-        $users  = !empty($config['groups']) ? $config['groups'] : [];
-        $groups  = !empty($config['users']) ? $config['users'] : [];
+
+        $groups = !empty($config['groups']) ? $config['groups'] : [];
+        $users = !empty($config['users']) ? $config['users'] : [];
         $additionalEmails =!empty( $config['addEmails']) ? $config['addEmails'] : [];
         $type =!empty( $config['type']) ? $config['type'] : 'screen';
 

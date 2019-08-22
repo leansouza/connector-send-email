@@ -16,11 +16,14 @@ class Notifications
      */
     public function created($event)
     {
-        if (isset($event->token->getDefinition()['config']) &&
-            isset($event->token->getDefinition()['config']['email_notifications']) &&
-            $event->token->getDefinition()['config']['email_notifications']['sendAt'] === 'task-start'
-        ) {
-            $this->$this->createNotification(
+        if (!isset($event->token->getDefinition()['config'])) {
+            return;
+        }
+
+        $config = json_decode($event->token->getDefinition()['config'], true);
+
+        if (isset($config['email_notifications']) && $config['email_notifications']['sendAt'] === 'task-start') {
+            $this->createNotification(
                 json_decode($event->token->getDefinition()['config'], true),
                 $event->token->processRequest->data
             );
@@ -35,15 +38,17 @@ class Notifications
      */
     public function completed($event)
     {
-        if (isset($event->token->getDefinition()['config']) &&
-            isset($event->token->getDefinition()['config']['email_notifications']) &&
-            $event->token->getDefinition()['config']['email_notifications']['sendAt'] === 'task-end'
-        ) {
-            $this->$this->createNotification(
+        if (!isset($event->token->getDefinition()['config'])) {
+            return;
+        }
+
+        $config = json_decode($event->token->getDefinition()['config'], true);
+        
+        if (isset($config['email_notifications']) && $config['email_notifications']['sendAt'] === 'task-end') {
+            $this->createNotification(
                 json_decode($event->token->getDefinition()['config'], true),
                 $event->token->processRequest->data
                 );
-
         }
     }
 
