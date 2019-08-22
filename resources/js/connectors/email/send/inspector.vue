@@ -14,7 +14,7 @@
           class="fas fa-angle-down ml-auto"
           :class="{ 'fas fa-angle-right' : showConfiguration }"></i>
       </button>
-      <email-options :value="value" :node="node()"></email-options>
+      <email-options @usersGroupsSelected="setUsersAndGroups" @input="setConfig" :value="emailOptionsConfig" :node="node()"></email-options>
     </b-card-body>
   </b-card>
 
@@ -33,12 +33,27 @@
       node() {  
         return this.$parent.$parent.$parent.highlightedNode.definition;
       }, 
+      setConfig(event){
+        Vue.set(this.node(), 'config',  JSON.stringify(event));
+        this.emailOptionsConfig = event;
+      },
+      loadConfig() {
+        this.emailOptionsConfig = JSON.parse(_.get(this.node(), 'config'));
+        
+      },
+      setUsersAndGroups(event) {
+        Vue.set(this.node(), 'usersGroupsSelected',  JSON.stringify(event));
+      }
     },
     data() {
       return {
         showConfiguration: false,
+        emailOptionsConfig: {}
       }
     },
+    mounted() {
+      this.loadConfig();
+    }
   };
 </script>
 

@@ -3,12 +3,11 @@
 
     <div class="notification-settings-group p-3">
         <div class="custom-control custom-switch m-2">
-            <input v-model="enableNotifications" type="checkbox" class="custom-control-input" id="email-notification">
+            <input v-model="config.email_notifications.enableNotifications" type="checkbox" class="custom-control-input" id="email-notification">
             <label class="custom-control-label" for="email-notification">{{ $t('Email Notifications') }}</label>
         </div>
     </div>
-
-    <div v-show="enableNotifications" class="p-0 h-100 overflow-auto">
+    <div v-show="config.email_notifications.enableNotifications" class="p-0 h-100 overflow-auto">
         
         <button v-b-toggle.configuration
                   variant="outline"
@@ -34,13 +33,13 @@
             </div>
             <b-collapse id="email-configuration">
                 <b-card no-body :header="$t('Add Notification')">
-                    <form v-on:submit.prevent="onSubmit">
+                    <form @submit.prevent="onSubmit()">
                         
-                        <email-options :default-subject="defaultSubject" :node="node()"></email-options>     
+                        <email-options @usersGroupsSelected="setUsersAndGroups" v-model="initNotification.emailOptionsConfig" :node="node()" ></email-options>     
                         
                         <div class="form-group px-4 py-3 m-0 border-bottom">
                             <label>{{ $t('Send At') }}</label>
-                            <select class="form-control" v-model="config.sendAt">
+                            <select class="form-control" v-model="initNotification.emailOptionsConfig.sendAt">
                                 <option value="task-start">{{ $t('Task Start') }}</option>
                                 <option value="task-end">{{ $t('Task Completion') }}</option>
                             </select>
@@ -49,7 +48,7 @@
 
                         <div class="form-group px-4 py-3 m-0 border-bottom">
                             <label>{{ $t('Expression') }}</label>
-                            <input :placeholder="$t('varname == true')" class="form-control" v-model="config.expression">
+                            <input :placeholder="$t('varname == true')" class="form-control" v-model="initNotification.emailOptionsConfig.expression">
                             <small class="form-text text-muted">{{ $t('This notification will only be sent if the expression is true.') }}</small>
                         </div>
 
@@ -73,13 +72,14 @@
                 </b-card-footer>
             </b-card>
            
-             <table v-show="emailNotifications.length > 0" class="table table-sm table-striped">
+             <table class="table table-sm table-striped">
                  <tbody>
-                     <tr v-for="(notification, index) in emailNotifications">
+                     <tr v-for="(notification, index) in config.email_notifications.notifications">
+                         
                          <td>
                              <i class="far fa-envelope"></i> {{ notification.subject }}
                          </td>
-                         <td class="text-right">
+                         <td class="text-right actions">
                              <b-button variant="link" class="p-0 text-secondary" :title="$t('edit')" @click="onEdit(notification, index)"><i class="fas fa-cog"></i></b-button>
                              <b-button variant="link" class="p-0 text-secondary" :title="$t('duplicate')" @click="onDuplicate(notification)"><i class="far fa-copy"></i></b-button>
                              <b-button variant="link" class="p-0 text-secondary" :title="$t('delete')" @click="onConfirmDelete(notification, index)" ><i class="fas fa-trash-alt"></i></b-button>
@@ -101,77 +101,128 @@ export default {
     components: {
         EmailOptions
     },
-    props: [],
+    props: {
+        value: {
+        type: Array,
+        default: () => []
+      }
+    },
     data() {
         return {
-            enableNotifications: false,
             showConfiguration: false,
             showDeleteNotification: false,
             confirmDelete: false,
             defaultSubject: '',
+            config: {
+                email_notifications: {
+                    enableNotifications: false,
+                    notifications: [],
+                },
+            },
+            initNotification: {
+                emailOptionsConfig: {
+                    sendAt:'task-start',
+                    expression: '',
+                }
+            },
+            editNotificationIndex: null,
             deleteNotification: {
                 index: null,
                 notification: {}
             },
-            config: {
-                sendAt: 'task-start',
-                expression: ''
-            },
-            emailNotifications: [],
         }
     },
     watch: {
         "$parent.$parent.$parent.$parent.highlightedNode.definition.name" : {
             handler(value) {
-                this.defaultSubject = 'RE: ' + value;
-                
+                this.initNotification.emailOptionsConfig.subject = 'RE: ' + value; 
+            }
+        },
+        "config.email_notifications": {
+            deep: true,
+            handler() {
+                this.setNodeConfig();
             }
         },
     },
-    mounted() {
-        this.$root.$on('update-config', (config) => {
-            this.config = Object.assign({}, this.config, config);
-        });
-        
-    },
     methods: {
-        node() {
+        node() { 
             return this.$parent.$parent.$parent.$parent.highlightedNode.definition;
         }, 
+        setNodeConfig() {
+            let config = _.cloneDeep(this.config);
+            config.email_notifications.notifications = config.email_notifications.notifications.map(item => {
+                let newItem = Object.assign({}, item, item.emailOptionsConfig);
+                delete newItem.emailOptionsConfig;
+                return newItem;
+            });
+            Vue.set(this.node(), 'config', JSON.stringify(config));
+        },
         onSubmit() {
-            this.emailNotifications.push(this.config);
+            if (this.editNotificationIndex == null) {
+                this.config.email_notifications.notifications.push(Object.assign({},this.initNotification));
+            } else  {
+                this.editNotificationIndex = null;
+            }
+            this.clearForm();
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
+        },
+        setUsersAndGroups(event) {
+            Vue.set(this.node(), 'usersGroupsSelected',  JSON.stringify(event));
+        },
+        getNodeConfig() {
+            if (_.get(this.node(), 'config')) {
+                this.config = JSON.parse(_.get(this.node(), 'config'));
+            } 
         },
         onEdit(notification, index) {
+            this.initNotification.emailOptionsConfig = notification;
+            this.editNotificationIndex = index;
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
-            this.config = notification;
         },
         onDuplicate(notification) {
-            this.emailNotifications.push(notification);
+             this.config.email_notifications.notifications.push(Object.assign({},this.notification));
         },
         onConfirmDelete(notification, index) {
             this.showDeleteNotification = true;
-            this.deleteNotification.index = index;
-            this.deleteNotification.notification = notification;
+            this.deleteNotification =  {
+                index: index,
+                notification: notification
+            }
         },
         onDelete() {
-            this.emailNotifications.splice(this.deleteNotification.index, 1);
-            this.showDeleteNotification = false;
-            this.deleteNotification.index = null;
-            this.deleteNotification.notification = {};
+            this.config.email_notifications.notifications.splice(this.deleteNotification.index, 1);
+            this.showDeleteNotification = !this.showDeleteNotification;
+            this.deleteNotification = {
+                index: null,
+                notification: {}
+            };
         },
-       
         onCancel() {
+            this.clearForm();
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
+        },
+        clearForm() {
+            this.initNotification = {
+                emailOptionsConfig: {
+                    sendAt:'task-start',
+                    expression: '',
+                }
+            };
         }
-        
+    },
+    mounted() {
+        this.getNodeConfig();
     }
-
 }
 </script>
 
 <style scoped>
 .notification {
     padding: 0!important;
+}
+
+.table td.actions {
+    white-space: nowrap;
 }
 </style>
