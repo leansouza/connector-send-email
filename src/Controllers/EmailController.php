@@ -32,9 +32,9 @@ class EmailController extends Controller
         $mustache = new \Mustache_Engine;
 
         //Mustache data notification
-        if (isset($data['email_notifications'])) {
-            foreach ($data['email_notifications'] as $key => $value) {
-                $data['email_notifications'][$key] = $mustache->render((string)$data['email_notifications'][$key], $data);
+        if (isset($data['notification_config'])) {
+            foreach ($data['notification_config'] as $key => $value) {
+                $data['notification_config'][$key] = $mustache->render((string)$data['notification_config'][$key], $data);
             }
         }
 

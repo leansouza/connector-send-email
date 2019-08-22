@@ -20,19 +20,7 @@ class Notifications
      */
     public function created(ActivityActivatedEvent $event)
     {
-        if (!isset($event->token->getDefinition()['config'])) {
-            return;
-        }
-        $config = json_decode($event->token->getDefinition()['config'], true);
-
-        if (isset($config['email_notifications']) &&
-            $config['email_notifications']['sendAt'] === self::TASK_START
-        ) {
-            $this->createNotification(
-                $config,
-                $event->token->processRequest->data
-            );
-        }
+        $this->sendNotificationAt($event, self::TASK_START);
     }
 
     /**
@@ -42,18 +30,36 @@ class Notifications
      */
     public function completed(ActivityCompletedEvent $event)
     {
+        $this->sendNotificationAt($event, self::TASK_COMPLETED);
+    }
+
+    /**
+     * Check if we need to send a notification at the start
+     * or end of the task event
+     *
+     * @param $event
+     * @param $sendAt
+     */
+    private function sendNotificationAt($event, $sendAt)
+    {
         if (!isset($event->token->getDefinition()['config'])) {
             return;
         }
         $config = json_decode($event->token->getDefinition()['config'], true);
 
-        if (isset($config['email_notifications']) &&
-            $config['email_notifications']['sendAt'] === self::TASK_COMPLETED
+        if (
+            isset($config['email_notifications']) &&
+            $config['email_notifications']['enableNotifications'] === true
         ) {
-            $this->createNotification(
-                $config,
-                $event->token->processRequest->data
-            );
+            foreach ($config['email_notifications']['notifications'] as $notificationConfig) {
+                if ($notificationConfig['sendAt'] !== $sendAt) {
+                    continue;
+                }
+                $this->createNotification(
+                    $notificationConfig,
+                    $event->token->processRequest->data
+                );
+            }
         }
     }
 
@@ -63,13 +69,13 @@ class Notifications
      * @param $config
      * @param $data
      */
-    private function createNotification($config, $data)
+    private function createNotification($notificationConfig, $data)
     {
         $subProcess = $this->notificationSubProcess();
         $definitions = $subProcess->getDefinitions();
         $event = $definitions->getEvent(EmailSendSeeder::SUB_PROCESS_START_EVENT);
         WorkflowManager::triggerStartEvent(
-            $subProcess, $event, array_merge($data, $config)
+            $subProcess, $event, array_merge($data, ['notification_config' => $notificationConfig])
         );
     }
 
