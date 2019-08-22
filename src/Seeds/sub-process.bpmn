@@ -9,7 +9,7 @@
       <bpmn:outgoing>node_6</bpmn:outgoing>
       <bpmn:outgoing>node_7</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="node_3" name="Send Email" pm:config="{&#34;subject&#34;:&#34;{{ email_notifications.subject }}&#34;,&#34;type&#34;:&#34;text&#34;,&#34;textBody&#34;:&#34;{{ email_notifications.textBody }}&#34;,&#34;screenRef&#34;:&#34;{{ email_notifications.screenRef }}&#34;,&#34;email&#34;:&#34;&#34;,&#34;targetName&#34;:&#34;&#34;,&#34;addEmails&#34;:[&#34;{{ email_notifications.email }}&#34;],&#34;users&#34;:[1],&#34;groups&#34;:[2],&#34;template&#34;:&#34;welcome&#34;}" implementation="connector-send-email/processmaker-communication-email-send">
+    <bpmn:serviceTask id="node_3" name="Send Email" pm:config="{&#34;subject&#34;:&#34;{{ email_notifications.subject }}&#34;,&#34;type&#34;:&#34;{{ email_notifications.type }}&#34;,&#34;textBody&#34;:&#34;{{ email_notifications.textBody }}&#34;,&#34;screenRef&#34;:&#34;{{ email_notifications.screenRef }}&#34;,&#34;email&#34;:&#34;&#34;,&#34;targetName&#34;:&#34;&#34;,&#34;addEmails&#34;:[&#34;{{ email_notifications.email }}&#34;],&#34;users&#34;:[1],&#34;groups&#34;:[2],&#34;template&#34;:&#34;welcome&#34;}" implementation="connector-send-email/processmaker-communication-email-send">
       <bpmn:incoming>node_6</bpmn:incoming>
       <bpmn:incoming>node_8</bpmn:incoming>
       <bpmn:outgoing>node_12</bpmn:outgoing>

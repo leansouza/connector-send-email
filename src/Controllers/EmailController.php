@@ -34,7 +34,7 @@ class EmailController extends Controller
         //Mustache data notification
         if (isset($data['email_notifications'])) {
             foreach ($data['email_notifications'] as $key => $value) {
-                $data['email_notifications'][$key] = $mustache->render($data['email_notifications'][$key], $data);
+                $data['email_notifications'][$key] = $mustache->render((string)$data['email_notifications'][$key], $data);
             }
         }
 
@@ -42,7 +42,7 @@ class EmailController extends Controller
         $groups = !empty($config['groups']) ? $config['groups'] : [];
         $users = !empty($config['users']) ? $config['users'] : [];
         $additionalEmails =!empty( $config['addEmails']) ? $config['addEmails'] : [];
-        $type =!empty( $config['type']) ? $config['type'] : 'screen';
+        $type =!empty( $config['type']) ? $mustache->render($config['type'], $data) : 'screen';
 
         //Load mails
         $usersGroups = GroupMember::whereIn('group_id', $groups)
@@ -62,8 +62,9 @@ class EmailController extends Controller
         //load Body
         if ($type === 'screen') {
             //screen definition
-            $screen = Screen::find($config['screenRef']);
-            $rendered = ScreenRenderer::render($screen->config, $data);
+            $screen = Screen::find($mustache->render($config['screenRef'], $data));
+            $customScreenConfig = json_decode($screen->config, true);
+            $rendered = ScreenRenderer::render($customScreenConfig, $data);
             $config['body'] = $rendered;
         } else {
             //Plain text
