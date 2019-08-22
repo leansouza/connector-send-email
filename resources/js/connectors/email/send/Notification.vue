@@ -35,11 +35,11 @@
                 <b-card no-body :header="$t('Add Notification')">
                     <form @submit.prevent="onSubmit()">
                         
-                        <email-options @usersGroupsSelected="setUsersAndGroups" v-model="initNotification.emailOptionsConfig" :node="node()" ></email-options>     
+                        <email-options @usersGroupsSelected="setUsersAndGroups" v-model="initNotification" :node="node()" ></email-options>     
                         
                         <div class="form-group px-4 py-3 m-0 border-bottom">
                             <label>{{ $t('Send At') }}</label>
-                            <select class="form-control" v-model="initNotification.emailOptionsConfig.sendAt">
+                            <select class="form-control" v-model="initNotification.sendAt">
                                 <option value="task-start">{{ $t('Task Start') }}</option>
                                 <option value="task-end">{{ $t('Task Completion') }}</option>
                             </select>
@@ -48,7 +48,7 @@
 
                         <div class="form-group px-4 py-3 m-0 border-bottom">
                             <label>{{ $t('Expression') }}</label>
-                            <input :placeholder="$t('varname == true')" class="form-control" v-model="initNotification.emailOptionsConfig.expression">
+                            <input :placeholder="$t('varname == true')" class="form-control" v-model="initNotification.expression">
                             <small class="form-text text-muted">{{ $t('This notification will only be sent if the expression is true.') }}</small>
                         </div>
 
@@ -120,10 +120,9 @@ export default {
                 },
             },
             initNotification: {
-                emailOptionsConfig: {
-                    sendAt:'task-start',
-                    expression: '',
-                }
+                sendAt:'task-start',
+                expression: '',
+                subject: ''
             },
             editNotificationIndex: null,
             deleteNotification: {
@@ -135,7 +134,7 @@ export default {
     watch: {
         "$parent.$parent.$parent.$parent.highlightedNode.definition.name" : {
             handler(value) {
-                this.initNotification.emailOptionsConfig.subject = 'RE: ' + value; 
+                this.initNotification.subject = 'RE: ' + value; 
             }
         },
         "config.email_notifications": {
@@ -150,13 +149,7 @@ export default {
             return this.$parent.$parent.$parent.$parent.highlightedNode.definition;
         }, 
         setNodeConfig() {
-            let config = _.cloneDeep(this.config);
-            config.email_notifications.notifications = config.email_notifications.notifications.map(item => {
-                let newItem = Object.assign({}, item, item.emailOptionsConfig);
-                delete newItem.emailOptionsConfig;
-                return newItem;
-            });
-            Vue.set(this.node(), 'config', JSON.stringify(config));
+            Vue.set(this.node(), 'config', JSON.stringify(this.config));
         },
         onSubmit() {
             if (this.editNotificationIndex == null) {
@@ -176,7 +169,7 @@ export default {
             } 
         },
         onEdit(notification, index) {
-            this.initNotification.emailOptionsConfig = notification;
+            this.initNotification = notification;
             this.editNotificationIndex = index;
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
         },
@@ -199,7 +192,6 @@ export default {
             };
         },
         onCancel() {
-            this.clearForm();
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
         },
         clearForm() {
