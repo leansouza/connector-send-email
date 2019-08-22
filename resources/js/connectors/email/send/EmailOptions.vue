@@ -57,8 +57,8 @@
       AddInput,
       UserGroupSelect
     },
-    props: ["value", "node", "defaultSubject"],
-   data() {
+    props: ["value"],
+    data() {
       return {
         showConfiguration: false,
         usersGroupsSelected: [],
@@ -79,7 +79,7 @@
       config: {
         deep: true,
         handler() {
-          this.updateConfig();
+          this.emitConfig();
         }
       },
       usersGroupsSelected: {
@@ -91,38 +91,20 @@
           if (this.usersGroupsSelected && this.usersGroupsSelected.groups) {
             this.config.groups = this.usersGroupsSelected.groups;
           }
-          this.updateConfig();
+          this.emitConfig();
         }
       },
-      node() {
-        this.loadConfig();
+      value() {
+        this.config = this.value;
       }
     },
     computed: {},
     methods: {
-      loadConfig() {
-        if (this.node.$type == 'bpmn:Task') {
-          this.config.subject = this.$t('RE: ') + this.node.name;
-        } 
-        const config = JSON.parse(_.get(this.node, 'config'));
-
-        Object.keys(config).forEach(key => {
-          Vue.set(this.config, key, config[key]);
-        });
-        
-        Vue.set(this.node, 'usersGroupsSelected', {'users': config.users, 'groups': config.groups});
-        
+      emitConfig() {
+        this.$emit('input', this.config);
+        this.$emit('usersGroupsSelected', {'users': this.config.users, 'groups': this.config.groups});
       },
-      updateConfig() {
-        if (this.node.$type == 'bpmn:Task') {
-          this.$root.$emit('update-config', this.config);
-        }
-        Vue.set(this.node, 'config', JSON.stringify(this.config));
-      },
-    },
-    mounted() {
-      this.loadConfig(); 
-    }
+    }, 
   };
 </script>
 
