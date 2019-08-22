@@ -35,7 +35,7 @@
                 <b-card no-body :header="$t('Add Notification')">
                     <form @submit.prevent="onSubmit()">
                         
-                        <email-options @usersGroupsSelected="setUsersAndGroups" v-model="initNotification" :node="node()" ></email-options>     
+                        <email-options @usersGroupsSelected="setUsersAndGroups" v-model="initNotification" :default-subject="initNotification.subject" :node="node()" ></email-options>     
                         
                         <div class="form-group px-4 py-3 m-0 border-bottom">
                             <label>{{ $t('Send At') }}</label>
@@ -75,9 +75,8 @@
              <table class="table table-sm table-striped">
                  <tbody>
                      <tr v-for="(notification, index) in config.email_notifications.notifications">
-                         
                          <td>
-                             <i class="far fa-envelope"></i> {{ notification.subject }}
+                             <i class="far fa-envelope"></i> {{ notification.subject}} 
                          </td>
                          <td class="text-right actions">
                              <b-button variant="link" class="p-0 text-secondary" :title="$t('edit')" @click="onEdit(notification, index)"><i class="fas fa-cog"></i></b-button>
@@ -135,6 +134,9 @@ export default {
         "$parent.$parent.$parent.$parent.highlightedNode.definition.name" : {
             handler(value) {
                 this.initNotification.subject = 'RE: ' + value; 
+                // console.log(value, 'handler')
+                // console.log(this.initNotification.subject, 'subject');
+                // this.config.email_notifications.notifications.push(Object.assign({},this.initNotification));
             }
         },
         "config.email_notifications": {
@@ -154,8 +156,6 @@ export default {
         onSubmit() {
             if (this.editNotificationIndex == null) {
                 this.config.email_notifications.notifications.push(Object.assign({},this.initNotification));
-            } else  {
-                this.editNotificationIndex = null;
             }
             this.clearForm();
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
@@ -167,6 +167,8 @@ export default {
             if (_.get(this.node(), 'config')) {
                 this.config = JSON.parse(_.get(this.node(), 'config'));
             } 
+            let nodeName = _.get(this.node(), 'name');
+            this.initNotification.subject = 'RE: ' + nodeName;
         },
         onEdit(notification, index) {
             this.initNotification = notification;
@@ -174,7 +176,7 @@ export default {
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
         },
         onDuplicate(notification) {
-             this.config.email_notifications.notifications.push(Object.assign({},this.notification));
+            this.config.email_notifications.notifications.push(Object.assign({}, notification));
         },
         onConfirmDelete(notification, index) {
             this.showDeleteNotification = true;
@@ -195,6 +197,7 @@ export default {
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
         },
         clearForm() {
+            this.editNotificationIndex = null;
             this.initNotification = {
                 emailOptionsConfig: {
                     sendAt:'task-start',
@@ -205,6 +208,11 @@ export default {
     },
     mounted() {
         this.getNodeConfig();
+        this.$root.$on('bv::collapse::state', (collapseId, isJustShown) => {
+            if (collapseId === 'email-configuration' && !isJustShown) {
+                this.clearForm();
+            }
+        });
     }
 }
 </script>
