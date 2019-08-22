@@ -28,8 +28,17 @@ class EmailController extends Controller
         //Load data
         $data = json_decode($config['json_data'], true);
 
-        //Validate data
+        //Mustache
+        $mustache = new \Mustache_Engine;
 
+        //Mustache data notification
+        if (isset($data['email_notifications'])) {
+            foreach ($data['email_notifications'] as $key => $value) {
+                $data['email_notifications'][$key] = $mustache->render($data['email_notifications'][$key], $data);
+            }
+        }
+
+        //Validate data
         $groups = !empty($config['groups']) ? $config['groups'] : [];
         $users = !empty($config['users']) ? $config['users'] : [];
         $additionalEmails =!empty( $config['addEmails']) ? $config['addEmails'] : [];
@@ -44,9 +53,6 @@ class EmailController extends Controller
         $emails = User::whereIn('id', $users)
             ->pluck('email')
             ->toArray();
-
-        //Mustache
-        $mustache = new \Mustache_Engine;
 
         //Add additional emails
         foreach ($additionalEmails as $item) {
