@@ -277,7 +277,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         if (this.usersGroupsSelected && this.usersGroupsSelected.groups) {
           this.config.groups = this.usersGroupsSelected.groups;
         }
-        this.emitConfig();
+        this.emitUsersandGroups();
       }
     },
     value: function value() {
@@ -288,6 +288,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   methods: {
     emitConfig: function emitConfig() {
       this.$emit('input', this.config);
+    },
+    emitUsersandGroups: function emitUsersandGroups() {
       this.$emit('usersGroupsSelected', { 'users': this.config.users, 'groups': this.config.groups });
     }
   }
@@ -303,7 +305,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__EmailOptions__ = __webpack_require__("./resources/js/connectors/email/send/EmailOptions.vue");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__EmailOptions___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__EmailOptions__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helper__ = __webpack_require__("./resources/js/helper.js");
-//
 //
 //
 //
@@ -420,7 +421,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             showConfiguration: false,
             showDeleteNotification: false,
             confirmDelete: false,
-            defaultSubject: '',
+
             config: {
                 email_notifications: {
                     enableNotifications: false,
@@ -430,7 +431,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             initNotification: {
                 sendAt: 'task-start',
                 expression: '',
-                subject: ''
+                subject: '',
+                type: 'text'
             },
             editNotificationIndex: null,
             deleteNotification: {
@@ -463,8 +465,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         onSubmit: function onSubmit() {
             if (this.editNotificationIndex == null) {
                 this.config.email_notifications.notifications.push(Object.assign({}, this.initNotification));
-            } else {
-                this.editNotificationIndex = null;
             }
             this.clearForm();
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
@@ -483,7 +483,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
         },
         onDuplicate: function onDuplicate(notification) {
-            this.config.email_notifications.notifications.push(Object.assign({}, this.notification));
+            this.config.email_notifications.notifications.push(Object.assign({}, notification));
         },
         onConfirmDelete: function onConfirmDelete(notification, index) {
             this.showDeleteNotification = true;
@@ -504,16 +504,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
         },
         clearForm: function clearForm() {
+            this.editNotificationIndex = null;
             this.initNotification = {
-                emailOptionsConfig: {
-                    sendAt: 'task-start',
-                    expression: ''
-                }
+                sendAt: 'task-start',
+                expression: '',
+                subject: '',
+                type: 'text'
             };
         }
     },
     mounted: function mounted() {
+        var _this = this;
+
         this.getNodeConfig();
+        this.$root.$on('bv::collapse::state', function (collapseId, isJustShown) {
+            if (collapseId === 'email-configuration' && !isJustShown) {
+                _this.clearForm();
+            } else {
+                var nodeName = _.get(_this.node(), 'name');
+                _this.initNotification.subject = 'RE: ' + nodeName;
+                _this.initNotification.type = 'text';
+            }
+        });
     }
 });
 
@@ -1317,7 +1329,10 @@ var render = function() {
                       },
                       [
                         _c("email-options", {
-                          attrs: { node: _vm.node() },
+                          attrs: {
+                            "default-subject": _vm.initNotification.subject,
+                            node: _vm.node()
+                          },
                           on: { usersGroupsSelected: _vm.setUsersAndGroups },
                           model: {
                             value: _vm.initNotification,
@@ -1568,7 +1583,7 @@ var render = function() {
                       _vm._v(
                         " " +
                           _vm._s(notification.subject) +
-                          "\n                        "
+                          " \n                        "
                       )
                     ]),
                     _vm._v(" "),
@@ -1678,7 +1693,12 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-sm btn-secondary float-right",
-                  on: { click: _vm.addRow }
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.addRow($event)
+                    }
+                  }
                 },
                 [_c("i", { staticClass: "fas fa-plus" })]
               )

@@ -91,7 +91,7 @@
           if (this.usersGroupsSelected && this.usersGroupsSelected.groups) {
             this.config.groups = this.usersGroupsSelected.groups;
           }
-          this.emitConfig();
+          this.emitUsersandGroups();
         }
       },
       value() {
@@ -102,8 +102,10 @@
     methods: {
       emitConfig() {
         this.$emit('input', this.config);
-        this.$emit('usersGroupsSelected', {'users': this.config.users, 'groups': this.config.groups});
       },
+      emitUsersandGroups() {
+        this.$emit('usersGroupsSelected', {'users': this.config.users, 'groups': this.config.groups});
+      }
     }, 
   };
 </script>

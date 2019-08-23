@@ -35,7 +35,7 @@
                 <b-card no-body :header="$t('Add Notification')">
                     <form @submit.prevent="onSubmit()">
                         
-                        <email-options @usersGroupsSelected="setUsersAndGroups" v-model="initNotification" :node="node()" ></email-options>     
+                        <email-options @usersGroupsSelected="setUsersAndGroups" v-model="initNotification" :default-subject="initNotification.subject" :node="node()" ></email-options>     
                         
                         <div class="form-group px-4 py-3 m-0 border-bottom">
                             <label>{{ $t('Send At') }}</label>
@@ -75,9 +75,8 @@
              <table class="table table-sm table-striped">
                  <tbody>
                      <tr v-for="(notification, index) in config.email_notifications.notifications" :key="index">
-                         
                          <td>
-                             <i class="far fa-envelope"></i> {{ notification.subject }}
+                             <i class="far fa-envelope"></i> {{ notification.subject}} 
                          </td>
                          <td class="text-right actions">
                              <b-button variant="link" class="p-0 text-secondary" :title="$t('edit')" @click="onEdit(notification, index)"><i class="fas fa-cog"></i></b-button>
@@ -113,7 +112,7 @@ export default {
             showConfiguration: false,
             showDeleteNotification: false,
             confirmDelete: false,
-            defaultSubject: '',
+
             config: {
                 email_notifications: {
                     enableNotifications: false,
@@ -123,7 +122,8 @@ export default {
             initNotification: {
                 sendAt:'task-start',
                 expression: '',
-                subject: ''
+                subject: '',
+                type: 'text'
             },
             editNotificationIndex: null,
             deleteNotification: {
@@ -155,8 +155,6 @@ export default {
         onSubmit() {
             if (this.editNotificationIndex == null) {
                 this.config.email_notifications.notifications.push(Object.assign({},this.initNotification));
-            } else  {
-                this.editNotificationIndex = null;
             }
             this.clearForm();
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
@@ -175,7 +173,7 @@ export default {
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
         },
         onDuplicate(notification) {
-             this.config.email_notifications.notifications.push(Object.assign({},this.notification));
+            this.config.email_notifications.notifications.push(Object.assign({}, notification));
         },
         onConfirmDelete(notification, index) {
             this.showDeleteNotification = true;
@@ -196,16 +194,26 @@ export default {
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
         },
         clearForm() {
+            this.editNotificationIndex = null;            
             this.initNotification = {
-                emailOptionsConfig: {
-                    sendAt:'task-start',
-                    expression: '',
-                }
+                sendAt:'task-start',
+                expression: '',
+                subject: '',
+                type: 'text'
             };
         }
     },
     mounted() {
         this.getNodeConfig();
+        this.$root.$on('bv::collapse::state', (collapseId, isJustShown) => {
+            if (collapseId === 'email-configuration' && !isJustShown) {
+                this.clearForm();
+            } else  {
+                let nodeName = _.get(this.node(), 'name');
+                this.initNotification.subject = 'RE: ' + nodeName;
+                this.initNotification.type = 'text';
+            }
+        });
     }
 }
 </script>
