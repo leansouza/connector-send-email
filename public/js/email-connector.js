@@ -282,6 +282,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     value: function value() {
       this.config = this.value;
+      Vue.set(this, 'usersGroupsSelected', { 'users': this.config.users, 'groups': this.config.groups });
     }
   },
   computed: {},
@@ -407,7 +408,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     components: {
         EmailOptions: __WEBPACK_IMPORTED_MODULE_0__EmailOptions___default.a
     },
-    mixins: [__WEBPACK_IMPORTED_MODULE_1__helper__["default"]],
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__helper__["a" /* default */]],
     props: {
         value: {
             type: Array,
@@ -578,7 +579,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
   inheritAttrs: false,
   props: ["value", "label", "helper", "params"],
-  mixins: [__WEBPACK_IMPORTED_MODULE_1__helper__["default"]],
+  mixins: [__WEBPACK_IMPORTED_MODULE_1__helper__["a" /* default */]],
   components: {
     Multiselect: __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default.a
   },
@@ -760,7 +761,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   components: {
     EmailOptions: __WEBPACK_IMPORTED_MODULE_0__EmailOptions___default.a
   },
-  mixins: [__WEBPACK_IMPORTED_MODULE_1__helper__["default"]],
+  mixins: [__WEBPACK_IMPORTED_MODULE_1__helper__["a" /* default */]],
   props: ["value"],
   methods: {
     node: function node() {
@@ -2960,8 +2961,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', function (_ref) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony default export */ __webpack_exports__["default"] = ({
+/* harmony default export */ __webpack_exports__["a"] = ({
     data: function data() {
         return {
             highlightedNode: null,

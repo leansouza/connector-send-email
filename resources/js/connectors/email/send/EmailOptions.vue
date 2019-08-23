@@ -1,6 +1,6 @@
 <template>
     <div class="email-options">
-   
+
         <div class="form-group pl-4 pr-4 pt-3 pb-3 border-bottom m-0">
           <label>{{ $t('Subject') }}</label>
           <input v-model="config.subject" :placeholder="$t('RE:')" class="form-control">
@@ -96,6 +96,7 @@
       },
       value() {
         this.config = this.value;
+        Vue.set(this, 'usersGroupsSelected', {'users': this.config.users, 'groups': this.config.groups});
       }
     },
     computed: {},
@@ -106,7 +107,7 @@
       emitUsersandGroups() {
         this.$emit('usersGroupsSelected', {'users': this.config.users, 'groups': this.config.groups});
       }
-    }, 
+    },
   };
 </script>
 
