@@ -389,10 +389,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
 
 
 
@@ -415,14 +411,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             showConfiguration: false,
             showDeleteNotification: false,
             confirmDelete: false,
-
+            createdNotificationIndex: null,
             config: {
                 email_notifications: {
                     notifications: []
                 }
             },
             initNotification: {
-                sendAt: 'task-start',
+                sendAt: 'task-end',
                 expression: '',
                 subject: '',
                 type: 'text'
@@ -438,10 +434,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     watch: {
         "highlightedNode.definition.name": {
             handler: function handler(value) {
-                this.initNotification.subject = 'RE: ' + value;
+                if (this.initNotification !== '') {
+                    this.initNotification.subject = 'RE: ' + value;
+                }
             }
         },
-        "config.email_notifications": {
+        "initNotification": {
             deep: true,
             handler: function handler() {
                 this.setNodeConfig();
@@ -453,14 +451,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return this.highlightedNode.definition;
         },
         setNodeConfig: function setNodeConfig() {
+            if (this.createdNotificationIndex !== null) {
+                var notification = this.config.email_notifications.notifications[this.createdNotificationIndex];
+                Object.assign(notification, this.initNotification);
+            } else if (this.editNotificationIndex !== null) {
+                var _notification = this.config.email_notifications.notifications[this.editNotificationIndex];
+                Object.assign(_notification, this.initNotification);
+            }
             Vue.set(this.node(), 'config', JSON.stringify(this.config));
         },
-        onSubmit: function onSubmit() {
-            if (this.editNotificationIndex == null) {
-                this.config.email_notifications.notifications.push(Object.assign({}, this.initNotification));
-            }
-            this.clearForm();
+        addNotification: function addNotification() {
+            var _this = this;
+
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
+            this.config.email_notifications.notifications.push(Object.assign({}, this.initNotification));
+            this.createdNotificationIndex = this.config.email_notifications.notifications.findIndex(function (x) {
+                return x.subject === _this.initNotification.subject;
+            });
         },
         setUsersAndGroups: function setUsersAndGroups(event) {
             Vue.set(this.node(), 'usersGroupsSelected', JSON.stringify(event));
@@ -471,12 +478,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
         },
         onEdit: function onEdit(notification, index) {
+            this._beforeEditingCache = Object.assign({}, notification);
             this.initNotification = notification;
             this.editNotificationIndex = index;
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
         },
         onDuplicate: function onDuplicate(notification) {
-            this.config.email_notifications.notifications.push(Object.assign({}, notification));
+            var duplicateNoticiation = _.cloneDeep(notification);
+            duplicateNoticiation.subject = duplicateNoticiation.subject + ' copy';
+            this.config.email_notifications.notifications.push(Object.assign({}, duplicateNoticiation));
         },
         onConfirmDelete: function onConfirmDelete(notification, index) {
             this.showDeleteNotification = true;
@@ -494,31 +504,40 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             };
         },
         onCancel: function onCancel() {
+            this.config.email_notifications.notifications.splice(this.createdNotificationIndex, 1);
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
+            this.clearForm();
+        },
+        closeForm: function closeForm() {
+            this.editNotificationIndex = null;
+            this.createdNotificationIndex = null;
+            this.$root.$emit('bv::toggle::collapse', 'email-configuration');
+            this.clearForm();
         },
         clearForm: function clearForm() {
             this.editNotificationIndex = null;
+            this.createdNotificationIndex = null;
             this.initNotification = {
                 sendAt: 'task-start',
                 expression: '',
-                subject: '',
                 type: 'text'
             };
         }
     },
     mounted: function mounted() {
-        var _this = this;
-
         this.getNodeConfig();
-        this.$root.$on('bv::collapse::state', function (collapseId, isJustShown) {
-            if (collapseId === 'email-configuration' && !isJustShown) {
-                _this.clearForm();
-            } else {
-                var nodeName = _.get(_this.node(), 'name');
-                _this.initNotification.subject = 'RE: ' + nodeName;
-                _this.initNotification.type = 'text';
-            }
-        });
+        // this.$root.$on('bv::collapse::state', (collapseId, isJustShown) => {
+        //     if (collapseId === 'email-configuration' && !isJustShown) {
+        //         this.clearForm();
+        //     } else  {
+        //         if (this.initNotification.subject == '') {
+        //             let nodeName = _.get(this.node(), 'name');
+        //             this.initNotification.subject = 'RE: ' + nodeName;
+        //             this.initNotification.type = 'text';
+        //         }
+
+        //     }
+        // });
     }
 });
 
@@ -1206,15 +1225,13 @@ var render = function() {
                 _c(
                   "b-button",
                   {
-                    directives: [
-                      {
-                        name: "b-toggle",
-                        rawName: "v-b-toggle.email-configuration",
-                        modifiers: { "email-configuration": true }
-                      }
-                    ],
                     staticClass: "p-0 text-secondary",
-                    attrs: { variant: "link" }
+                    attrs: { variant: "link" },
+                    on: {
+                      click: function($event) {
+                        return _vm.addNotification()
+                      }
+                    }
                   },
                   [_c("i", { staticClass: "fas fa-plus-square" })]
                 )
@@ -1232,190 +1249,153 @@ var render = function() {
                     attrs: { "no-body": "", header: _vm.$t("Add Notification") }
                   },
                   [
+                    _c("email-options", {
+                      attrs: { node: _vm.node() },
+                      on: { usersGroupsSelected: _vm.setUsersAndGroups },
+                      model: {
+                        value: _vm.initNotification,
+                        callback: function($$v) {
+                          _vm.initNotification = $$v
+                        },
+                        expression: "initNotification"
+                      }
+                    }),
+                    _vm._v(" "),
                     _c(
-                      "form",
-                      {
-                        on: {
-                          submit: function($event) {
-                            $event.preventDefault()
-                            return _vm.onSubmit()
-                          }
-                        }
-                      },
+                      "div",
+                      { staticClass: "form-group px-4 py-3 m-0 border-bottom" },
                       [
-                        _c("email-options", {
-                          attrs: {
-                            "default-subject": _vm.initNotification.subject,
-                            node: _vm.node()
+                        _c("label", [_vm._v(_vm._s(_vm.$t("Send At")))]),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.initNotification.sendAt,
+                                expression: "initNotification.sendAt"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.initNotification,
+                                  "sendAt",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
                           },
-                          on: { usersGroupsSelected: _vm.setUsersAndGroups },
-                          model: {
-                            value: _vm.initNotification,
-                            callback: function($$v) {
-                              _vm.initNotification = $$v
-                            },
-                            expression: "initNotification"
+                          [
+                            _c("option", { attrs: { value: "task-start" } }, [
+                              _vm._v(_vm._s(_vm.$t("Task Start")))
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "task-end" } }, [
+                              _vm._v(_vm._s(_vm.$t("Task Completion")))
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("small", { staticClass: "form-text text-muted" }, [
+                          _vm._v(
+                            _vm._s(
+                              _vm.$t(
+                                "Choose when this email will be sent to recipients"
+                              )
+                            )
+                          )
+                        ])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group px-4 py-3 m-0 border-bottom" },
+                      [
+                        _c("label", [_vm._v(_vm._s(_vm.$t("Expression")))]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.initNotification.expression,
+                              expression: "initNotification.expression"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { placeholder: _vm.$t("varname == true") },
+                          domProps: { value: _vm.initNotification.expression },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.initNotification,
+                                "expression",
+                                $event.target.value
+                              )
+                            }
                           }
                         }),
                         _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass:
-                              "form-group px-4 py-3 m-0 border-bottom"
-                          },
-                          [
-                            _c("label", [_vm._v(_vm._s(_vm.$t("Send At")))]),
-                            _vm._v(" "),
-                            _c(
-                              "select",
-                              {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.initNotification.sendAt,
-                                    expression: "initNotification.sendAt"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                on: {
-                                  change: function($event) {
-                                    var $$selectedVal = Array.prototype.filter
-                                      .call($event.target.options, function(o) {
-                                        return o.selected
-                                      })
-                                      .map(function(o) {
-                                        var val =
-                                          "_value" in o ? o._value : o.value
-                                        return val
-                                      })
-                                    _vm.$set(
-                                      _vm.initNotification,
-                                      "sendAt",
-                                      $event.target.multiple
-                                        ? $$selectedVal
-                                        : $$selectedVal[0]
-                                    )
-                                  }
-                                }
-                              },
-                              [
-                                _c(
-                                  "option",
-                                  { attrs: { value: "task-start" } },
-                                  [_vm._v(_vm._s(_vm.$t("Task Start")))]
-                                ),
-                                _vm._v(" "),
-                                _c("option", { attrs: { value: "task-end" } }, [
-                                  _vm._v(_vm._s(_vm.$t("Task Completion")))
-                                ])
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "small",
-                              { staticClass: "form-text text-muted" },
-                              [
-                                _vm._v(
-                                  _vm._s(
-                                    _vm.$t(
-                                      "Choose when this email will be sent to recipients"
-                                    )
-                                  )
-                                )
-                              ]
+                        _c("small", { staticClass: "form-text text-muted" }, [
+                          _vm._v(
+                            _vm._s(
+                              _vm.$t(
+                                "This notification will only be sent if the expression is true."
+                              )
                             )
-                          ]
+                          )
+                        ])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "b-card-footer",
+                      { staticClass: "text-right" },
+                      [
+                        _c(
+                          "b-button",
+                          {
+                            attrs: { size: "sm", variant: "outline-secondary" },
+                            on: { click: _vm.onCancel }
+                          },
+                          [_vm._v(_vm._s(_vm.$t("Cancel")))]
                         ),
                         _vm._v(" "),
                         _c(
-                          "div",
+                          "b-button",
                           {
-                            staticClass:
-                              "form-group px-4 py-3 m-0 border-bottom"
+                            attrs: {
+                              type: "submit",
+                              size: "sm",
+                              variant: "secondary"
+                            },
+                            on: { click: _vm.closeForm }
                           },
-                          [
-                            _c("label", [_vm._v(_vm._s(_vm.$t("Expression")))]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.initNotification.expression,
-                                  expression: "initNotification.expression"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              attrs: { placeholder: _vm.$t("varname == true") },
-                              domProps: {
-                                value: _vm.initNotification.expression
-                              },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.$set(
-                                    _vm.initNotification,
-                                    "expression",
-                                    $event.target.value
-                                  )
-                                }
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c(
-                              "small",
-                              { staticClass: "form-text text-muted" },
-                              [
-                                _vm._v(
-                                  _vm._s(
-                                    _vm.$t(
-                                      "This notification will only be sent if the expression is true."
-                                    )
-                                  )
-                                )
-                              ]
-                            )
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "b-card-footer",
-                          { staticClass: "text-right" },
-                          [
-                            _c(
-                              "b-button",
-                              {
-                                attrs: {
-                                  size: "sm",
-                                  variant: "outline-secondary"
-                                },
-                                on: { click: _vm.onCancel }
-                              },
-                              [_vm._v(_vm._s(_vm.$t("Cancel")))]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "b-button",
-                              {
-                                attrs: {
-                                  type: "submit",
-                                  size: "sm",
-                                  variant: "secondary"
-                                }
-                              },
-                              [_vm._v(_vm._s(_vm.$t("Save")))]
-                            )
-                          ],
-                          1
+                          [_vm._v(_vm._s(_vm.$t("Close")))]
                         )
                       ],
                       1
                     )
-                  ]
+                  ],
+                  1
                 )
               ],
               1

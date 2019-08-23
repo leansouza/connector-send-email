@@ -18,7 +18,7 @@
         <b-collapse id="configuration" class="px-3 py-2" visible>
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h6 class="m-0">{{ $t('Notifications') }}</h6>
-                <b-button v-b-toggle.email-configuration 
+                <b-button @click="addNotification()"
                           variant="link" 
                           class="p-0 text-secondary" 
                 >
@@ -27,31 +27,27 @@
             </div>
             <b-collapse id="email-configuration">
                 <b-card no-body :header="$t('Add Notification')">
-                    <form @submit.prevent="onSubmit()">
-                        
-                        <email-options @usersGroupsSelected="setUsersAndGroups" v-model="initNotification" :default-subject="initNotification.subject" :node="node()" ></email-options>     
-                        
-                        <div class="form-group px-4 py-3 m-0 border-bottom">
-                            <label>{{ $t('Send At') }}</label>
-                            <select class="form-control" v-model="initNotification.sendAt">
-                                <option value="task-start">{{ $t('Task Start') }}</option>
-                                <option value="task-end">{{ $t('Task Completion') }}</option>
-                            </select>
-                            <small class="form-text text-muted">{{ $t('Choose when this email will be sent to recipients') }}</small>
-                        </div>
+                    <email-options @usersGroupsSelected="setUsersAndGroups" v-model="initNotification" :node="node()" ></email-options>     
+                    
+                    <div class="form-group px-4 py-3 m-0 border-bottom">
+                        <label>{{ $t('Send At') }}</label>
+                        <select class="form-control" v-model="initNotification.sendAt">
+                            <option value="task-start">{{ $t('Task Start') }}</option>
+                            <option value="task-end">{{ $t('Task Completion') }}</option>
+                        </select>
+                        <small class="form-text text-muted">{{ $t('Choose when this email will be sent to recipients') }}</small>
+                    </div>
 
-                        <div class="form-group px-4 py-3 m-0 border-bottom">
-                            <label>{{ $t('Expression') }}</label>
-                            <input :placeholder="$t('varname == true')" class="form-control" v-model="initNotification.expression">
-                            <small class="form-text text-muted">{{ $t('This notification will only be sent if the expression is true.') }}</small>
-                        </div>
+                    <div class="form-group px-4 py-3 m-0 border-bottom">
+                        <label>{{ $t('Expression') }}</label>
+                        <input :placeholder="$t('varname == true')" class="form-control" v-model="initNotification.expression">
+                        <small class="form-text text-muted">{{ $t('This notification will only be sent if the expression is true.') }}</small>
+                    </div>
 
-                        <b-card-footer class="text-right">
-                            <b-button size="sm" variant="outline-secondary" @click="onCancel" >{{ $t('Cancel') }}</b-button>
-                            <b-button type="submit" size="sm" variant="secondary" >{{ $t('Save') }}</b-button>
-                        </b-card-footer>
-
-                    </form>
+                    <b-card-footer class="text-right">
+                        <b-button size="sm" variant="outline-secondary" @click="onCancel" >{{ $t('Cancel') }}</b-button>
+                        <b-button type="submit" size="sm" variant="secondary" @click="closeForm">{{ $t('Close') }}</b-button>
+                    </b-card-footer>
                 </b-card>
             </b-collapse>
          
@@ -106,14 +102,14 @@ export default {
             showConfiguration: false,
             showDeleteNotification: false,
             confirmDelete: false,
-
+            createdNotificationIndex: null,
             config: {
                 email_notifications: {
                     notifications: [],
                 },
             },
             initNotification: {
-                sendAt:'task-start',
+                sendAt:'task-end',
                 expression: '',
                 subject: '',
                 type: 'text'
@@ -128,10 +124,12 @@ export default {
     watch: {
         "highlightedNode.definition.name" : {
             handler(value) {
-                this.initNotification.subject = 'RE: ' + value; 
+                if (this.initNotification !== '') {
+                    this.initNotification.subject = 'RE: ' + value; 
+                }
             }
         },
-        "config.email_notifications": {
+        "initNotification": {
             deep: true,
             handler() {
                 this.setNodeConfig();
@@ -143,14 +141,19 @@ export default {
             return this.highlightedNode.definition;
         }, 
         setNodeConfig() {
+            if (this.createdNotificationIndex !== null) {
+                let notification = this.config.email_notifications.notifications[this.createdNotificationIndex];
+                Object.assign(notification, this.initNotification);
+            } else if(this.editNotificationIndex !== null) {
+                let notification = this.config.email_notifications.notifications[this.editNotificationIndex];
+                Object.assign(notification, this.initNotification);
+            }
             Vue.set(this.node(), 'config', JSON.stringify(this.config));
         },
-        onSubmit() {
-            if (this.editNotificationIndex == null) {
-                this.config.email_notifications.notifications.push(Object.assign({},this.initNotification));
-            }
-            this.clearForm();
+        addNotification() {
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
+            this.config.email_notifications.notifications.push(Object.assign({}, this.initNotification));
+            this.createdNotificationIndex = this.config.email_notifications.notifications.findIndex(x => x.subject === this.initNotification.subject);
         },
         setUsersAndGroups(event) {
             Vue.set(this.node(), 'usersGroupsSelected',  JSON.stringify(event));
@@ -161,12 +164,15 @@ export default {
             } 
         },
         onEdit(notification, index) {
+            this._beforeEditingCache = Object.assign({}, notification);
             this.initNotification = notification;
             this.editNotificationIndex = index;
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
         },
         onDuplicate(notification) {
-            this.config.email_notifications.notifications.push(Object.assign({}, notification));
+            let duplicateNoticiation = _.cloneDeep(notification);
+            duplicateNoticiation.subject = duplicateNoticiation.subject + ' copy';
+            this.config.email_notifications.notifications.push(Object.assign({}, duplicateNoticiation));
         },
         onConfirmDelete(notification, index) {
             this.showDeleteNotification = true;
@@ -184,29 +190,40 @@ export default {
             };
         },
         onCancel() {
+            this.config.email_notifications.notifications.splice(this.createdNotificationIndex, 1);
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
+            this.clearForm();
+        },
+        closeForm() {
+            this.editNotificationIndex = null;
+            this.createdNotificationIndex = null;
+            this.$root.$emit('bv::toggle::collapse', 'email-configuration');
+            this.clearForm();
         },
         clearForm() {
-            this.editNotificationIndex = null;            
+            this.editNotificationIndex = null;
+            this.createdNotificationIndex = null;  
             this.initNotification = {
                 sendAt:'task-start',
                 expression: '',
-                subject: '',
                 type: 'text'
             };
         }
     },
     mounted() {
         this.getNodeConfig();
-        this.$root.$on('bv::collapse::state', (collapseId, isJustShown) => {
-            if (collapseId === 'email-configuration' && !isJustShown) {
-                this.clearForm();
-            } else  {
-                let nodeName = _.get(this.node(), 'name');
-                this.initNotification.subject = 'RE: ' + nodeName;
-                this.initNotification.type = 'text';
-            }
-        });
+        // this.$root.$on('bv::collapse::state', (collapseId, isJustShown) => {
+        //     if (collapseId === 'email-configuration' && !isJustShown) {
+        //         this.clearForm();
+        //     } else  {
+        //         if (this.initNotification.subject == '') {
+        //             let nodeName = _.get(this.node(), 'name');
+        //             this.initNotification.subject = 'RE: ' + nodeName;
+        //             this.initNotification.type = 'text';
+        //         }
+                
+        //     }
+        // });
     }
 }
 </script>
