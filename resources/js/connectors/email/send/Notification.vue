@@ -1,13 +1,7 @@
 <template>
  <div class="p-0 notification">
-
-    <div class="notification-settings-group p-3">
-        <div class="custom-control custom-switch m-2">
-            <input v-model="config.email_notifications.enableNotifications" type="checkbox" class="custom-control-input" id="email-notification">
-            <label class="custom-control-label" for="email-notification">{{ $t('Email Notifications') }}</label>
-        </div>
-    </div>
-    <div v-show="config.email_notifications.enableNotifications" class="p-0 h-100 overflow-auto">
+     
+    <div class="p-0 h-100 overflow-auto">
         
         <button v-b-toggle.configuration
                   variant="outline"
@@ -115,7 +109,6 @@ export default {
 
             config: {
                 email_notifications: {
-                    enableNotifications: false,
                     notifications: [],
                 },
             },

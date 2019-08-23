@@ -393,12 +393,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
 
 
 
@@ -407,7 +401,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     components: {
         EmailOptions: __WEBPACK_IMPORTED_MODULE_0__EmailOptions___default.a
     },
-    mixins: [__WEBPACK_IMPORTED_MODULE_1__helper__["default"]],
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__helper__["a" /* default */]],
     props: {
         value: {
             type: Array,
@@ -424,7 +418,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             config: {
                 email_notifications: {
-                    enableNotifications: false,
                     notifications: []
                 }
             },
@@ -578,7 +571,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
   inheritAttrs: false,
   props: ["value", "label", "helper", "params"],
-  mixins: [__WEBPACK_IMPORTED_MODULE_1__helper__["default"]],
+  mixins: [__WEBPACK_IMPORTED_MODULE_1__helper__["a" /* default */]],
   components: {
     Multiselect: __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default.a
   },
@@ -760,7 +753,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   components: {
     EmailOptions: __WEBPACK_IMPORTED_MODULE_0__EmailOptions___default.a
   },
-  mixins: [__WEBPACK_IMPORTED_MODULE_1__helper__["default"]],
+  mixins: [__WEBPACK_IMPORTED_MODULE_1__helper__["a" /* default */]],
   props: ["value"],
   methods: {
     node: function node() {
@@ -1155,87 +1148,9 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "p-0 notification" }, [
-    _c("div", { staticClass: "notification-settings-group p-3" }, [
-      _c("div", { staticClass: "custom-control custom-switch m-2" }, [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.config.email_notifications.enableNotifications,
-              expression: "config.email_notifications.enableNotifications"
-            }
-          ],
-          staticClass: "custom-control-input",
-          attrs: { type: "checkbox", id: "email-notification" },
-          domProps: {
-            checked: Array.isArray(
-              _vm.config.email_notifications.enableNotifications
-            )
-              ? _vm._i(
-                  _vm.config.email_notifications.enableNotifications,
-                  null
-                ) > -1
-              : _vm.config.email_notifications.enableNotifications
-          },
-          on: {
-            change: function($event) {
-              var $$a = _vm.config.email_notifications.enableNotifications,
-                $$el = $event.target,
-                $$c = $$el.checked ? true : false
-              if (Array.isArray($$a)) {
-                var $$v = null,
-                  $$i = _vm._i($$a, $$v)
-                if ($$el.checked) {
-                  $$i < 0 &&
-                    _vm.$set(
-                      _vm.config.email_notifications,
-                      "enableNotifications",
-                      $$a.concat([$$v])
-                    )
-                } else {
-                  $$i > -1 &&
-                    _vm.$set(
-                      _vm.config.email_notifications,
-                      "enableNotifications",
-                      $$a.slice(0, $$i).concat($$a.slice($$i + 1))
-                    )
-                }
-              } else {
-                _vm.$set(
-                  _vm.config.email_notifications,
-                  "enableNotifications",
-                  $$c
-                )
-              }
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c(
-          "label",
-          {
-            staticClass: "custom-control-label",
-            attrs: { for: "email-notification" }
-          },
-          [_vm._v(_vm._s(_vm.$t("Email Notifications")))]
-        )
-      ])
-    ]),
-    _vm._v(" "),
     _c(
       "div",
-      {
-        directives: [
-          {
-            name: "show",
-            rawName: "v-show",
-            value: _vm.config.email_notifications.enableNotifications,
-            expression: "config.email_notifications.enableNotifications"
-          }
-        ],
-        staticClass: "p-0 h-100 overflow-auto"
-      },
+      { staticClass: "p-0 h-100 overflow-auto" },
       [
         _c(
           "button",
@@ -2960,8 +2875,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', function (_ref) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony default export */ __webpack_exports__["default"] = ({
+/* harmony default export */ __webpack_exports__["a"] = ({
     data: function data() {
         return {
             highlightedNode: null,
