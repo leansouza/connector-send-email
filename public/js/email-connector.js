@@ -282,6 +282,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     value: function value() {
       this.config = this.value;
+      Vue.set(this, 'usersGroupsSelected', { 'users': this.config.users, 'groups': this.config.groups });
     }
   },
   computed: {},
