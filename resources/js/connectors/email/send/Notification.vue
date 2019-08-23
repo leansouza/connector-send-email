@@ -121,7 +121,8 @@ export default {
             initNotification: {
                 sendAt:'task-start',
                 expression: '',
-                subject: ''
+                subject: '',
+                type: 'text'
             },
             editNotificationIndex: null,
             deleteNotification: {
@@ -192,11 +193,12 @@ export default {
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
         },
         clearForm() {
-            this.editNotificationIndex = null;
+            this.editNotificationIndex = null;            
             this.initNotification = {
                 sendAt:'task-start',
                 expression: '',
-                subject: ''
+                subject: '',
+                type: 'text'
             };
         }
     },

@@ -429,7 +429,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             initNotification: {
                 sendAt: 'task-start',
                 expression: '',
-                subject: ''
+                subject: '',
+                type: 'text'
             },
             editNotificationIndex: null,
             deleteNotification: {
@@ -505,7 +506,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.initNotification = {
                 sendAt: 'task-start',
                 expression: '',
-                subject: ''
+                subject: '',
+                type: 'text'
             };
         }
     },
