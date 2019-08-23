@@ -43,9 +43,9 @@ class EmailController extends Controller
         }
 
         //Validate data
-        $groups = !empty($config['groups']) ? $config['groups'] : [];
-        $users = !empty($config['users']) ? $config['users'] : [];
-        $additionalEmails =!empty( $config['addEmails']) ? $config['addEmails'] : [];
+        $groups = !empty($config['groups']) ? $this->getData($config['groups'], $data) : [];
+        $users = !empty($config['users']) ? $this->getData($config['users'], $data) : [];
+        $additionalEmails = !empty($config['addEmails']) ? $this->getData($config['addEmails'], $data) : [];
         $type =!empty( $config['type']) ? $mustache->render($config['type'], $data) : 'screen';
 
         //Load mails
@@ -87,6 +87,22 @@ class EmailController extends Controller
         dispatch(new SendEmail($config));
 
         return response()->json();
+    }
+
+    private function getData($config, $data)
+    {
+        //Mustache
+        $mustache = new \Mustache_Engine;
+        if (is_array($config)) {
+            return $config;
+        }
+        $data = $mustache->render($config, $data);
+
+        if (!is_array($data)) {
+            $data = explode(',', $data);
+        }
+
+        return $data;
     }
 
 }

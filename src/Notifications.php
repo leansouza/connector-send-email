@@ -66,7 +66,7 @@ class Notifications
     /**
      * Create notification with sub-process
      *
-     * @param $config
+     * @param $notificationConfig
      * @param $data
      */
     private function createNotification($notificationConfig, $data)
