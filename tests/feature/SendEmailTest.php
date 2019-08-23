@@ -11,23 +11,7 @@ use ProcessMaker\Models\Process;
 use ProcessMaker\Models\ProcessRequest;
 use Tests\Feature\Shared\RequestHelper;
 use Tests\TestCase;
-
-class MockGuzzleResponse {
-    public function __construct($phpunitResponse)
-    {
-        $this->response = $phpunitResponse;
-    }
-
-    public function getStatusCode()
-    {
-        return $this->response->status();
-    }
-
-    public function getBody()
-    {
-        return $this->response->getContent();
-    }
-}
+use Tests\MockGuzzleResponse;
 
 class SendEmailTest extends TestCase
 {
