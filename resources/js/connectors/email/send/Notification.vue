@@ -111,7 +111,7 @@ export default {
             showConfiguration: false,
             showDeleteNotification: false,
             confirmDelete: false,
-            defaultSubject: '',
+
             config: {
                 email_notifications: {
                     enableNotifications: false,
@@ -134,9 +134,6 @@ export default {
         "$parent.$parent.$parent.$parent.highlightedNode.definition.name" : {
             handler(value) {
                 this.initNotification.subject = 'RE: ' + value; 
-                // console.log(value, 'handler')
-                // console.log(this.initNotification.subject, 'subject');
-                // this.config.email_notifications.notifications.push(Object.assign({},this.initNotification));
             }
         },
         "config.email_notifications": {
@@ -167,8 +164,6 @@ export default {
             if (_.get(this.node(), 'config')) {
                 this.config = JSON.parse(_.get(this.node(), 'config'));
             } 
-            let nodeName = _.get(this.node(), 'name');
-            this.initNotification.subject = 'RE: ' + nodeName;
         },
         onEdit(notification, index) {
             this.initNotification = notification;
@@ -199,10 +194,9 @@ export default {
         clearForm() {
             this.editNotificationIndex = null;
             this.initNotification = {
-                emailOptionsConfig: {
-                    sendAt:'task-start',
-                    expression: '',
-                }
+                sendAt:'task-start',
+                expression: '',
+                subject: ''
             };
         }
     },
@@ -211,6 +205,10 @@ export default {
         this.$root.$on('bv::collapse::state', (collapseId, isJustShown) => {
             if (collapseId === 'email-configuration' && !isJustShown) {
                 this.clearForm();
+            } else  {
+                let nodeName = _.get(this.node(), 'name');
+                this.initNotification.subject = 'RE: ' + nodeName;
+                this.initNotification.type = 'text';
             }
         });
     }
