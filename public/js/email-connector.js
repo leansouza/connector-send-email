@@ -1683,7 +1683,12 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-sm btn-secondary float-right",
-                  on: { click: _vm.addRow }
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.addRow($event)
+                    }
+                  }
                 },
                 [_c("i", { staticClass: "fas fa-plus" })]
               )

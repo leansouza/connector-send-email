@@ -9,7 +9,7 @@
 
     <template v-if="selected">
       <div class="form-control p-0 border-0">
-        <button @click="addRow" class="btn btn-sm btn-secondary float-right">
+        <button @click.prevent="addRow" class="btn btn-sm btn-secondary float-right">
           <i class="fas fa-plus"></i>
         </button>
       </div>
