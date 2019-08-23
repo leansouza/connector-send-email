@@ -48,13 +48,16 @@ class EmailNotificationsTest extends TestCase
         $bpmn = file_get_contents(__DIR__ . '/../fixtures/ProcessWithEmailNotificationsEnabled.bpmn');
 
         $pmConfig = ['email_notifications' => [
-            'email' => 'foobar@test.com',
-            'targetName' => 'Mr Foobar',
-            'textBody' => "Here is a plain text body with some_data: {{ some_data }}",
-            'screenRef' => 123,
-            'expression' => 'some_data != "def"',
-            'sendAt' => 'task-start',
-            'type' => 'text' // vs. 'screen'
+            'enableNotifications' => true,
+            'notifications' => [[
+                'email' => 'foobar@test.com',
+                'targetName' => 'Mr Foobar',
+                'textBody' => "Here is a plain text body with some_data: {{ some_data }}",
+                'screenRef' => 123,
+                'expression' => 'some_data != "def"',
+                'sendAt' => 'task-start',
+                'type' => 'text' // vs. 'screen'
+            ]]
         ]];
         $jsonString = json_encode($pmConfig);
         $jsonString = str_replace('"', '&#34;', $jsonString);
@@ -99,14 +102,18 @@ class EmailNotificationsTest extends TestCase
             'config' => file_get_contents(__DIR__ . '/../fixtures/screen.json')
         ]);
 
+        // test enableNotifications
         $pmConfig = ['email_notifications' => [
-            'email' => 'foobar@test.com',
-            'targetName' => 'Mr Foobar',
-            'textBody' => "Here is a plain text body with some_data: {{ some_data }}",
-            'screenRef' => $customEmailScreen->id,
-            'expression' => 'some_data != "def"',
-            'sendAt' => 'task-start',
-            'type' => 'screen'
+            'enableNotifications' => true,
+            'notifications' => [[
+                'email' => 'foobar@test.com',
+                'targetName' => 'Mr Foobar',
+                'textBody' => "Here is a plain text body with some_data: {{ some_data }}",
+                'screenRef' => $customEmailScreen->id,
+                'expression' => 'some_data != "def"',
+                'sendAt' => 'task-start',
+                'type' => 'screen'
+            ]]
         ]];
         $jsonString = json_encode($pmConfig);
         $jsonString = str_replace('"', '&#34;', $jsonString);
