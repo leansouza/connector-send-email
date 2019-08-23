@@ -34,7 +34,11 @@ class EmailController extends Controller
         //Mustache data notification
         if (isset($data['notification_config'])) {
             foreach ($data['notification_config'] as $key => $value) {
-                $data['notification_config'][$key] = $mustache->render((string)$data['notification_config'][$key], $data);
+                if (is_array($value)) {
+                    $data['notification_config'][$key] = $mustache->render(implode(", ", $value), $data);
+                } else {
+                    $data['notification_config'][$key] = $mustache->render((string) $value, $data);
+                }
             }
         }
 
@@ -56,7 +60,10 @@ class EmailController extends Controller
 
         //Add additional emails
         foreach ($additionalEmails as $item) {
-            $emails[] = $mustache->render($item, $data);
+            $item = $mustache->render($item, $data);
+            foreach (explode(",", $item) as $email) {
+                $emails[] = trim($email);
+            }
         }
 
         //load Body

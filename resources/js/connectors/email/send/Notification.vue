@@ -74,7 +74,7 @@
            
              <table class="table table-sm table-striped">
                  <tbody>
-                     <tr v-for="(notification, index) in config.email_notifications.notifications">
+                     <tr v-for="(notification, index) in config.email_notifications.notifications" :key="index">
                          
                          <td>
                              <i class="far fa-envelope"></i> {{ notification.subject }}
@@ -82,8 +82,7 @@
                          <td class="text-right actions">
                              <b-button variant="link" class="p-0 text-secondary" :title="$t('edit')" @click="onEdit(notification, index)"><i class="fas fa-cog"></i></b-button>
                              <b-button variant="link" class="p-0 text-secondary" :title="$t('duplicate')" @click="onDuplicate(notification)"><i class="far fa-copy"></i></b-button>
-                             <b-button variant="link" class="p-0 text-secondary" :title="$t('delete')" @click="onConfirmDelete(notification, index)" ><i class="fas fa-trash-alt"></i></b-button>
-                         </td>
+                             <b-button variant="link" class="p-0 text-secondary" :title="$t('delete')" @click="onConfirmDelete(notification, index)" ><i class="fas fa-trash-alt"></i></b-button> </td>
                      </tr>
                  </tbody>
              </table>
@@ -96,11 +95,13 @@
 
 <script>
 import EmailOptions from "./EmailOptions";
+import helper from '../../../helper';
 
 export default {
     components: {
         EmailOptions
     },
+    mixins: [helper],
     props: {
         value: {
         type: Array,
@@ -132,7 +133,7 @@ export default {
         }
     },
     watch: {
-        "$parent.$parent.$parent.$parent.highlightedNode.definition.name" : {
+        "highlightedNode.definition.name" : {
             handler(value) {
                 this.initNotification.subject = 'RE: ' + value; 
             }
@@ -146,7 +147,7 @@ export default {
     },
     methods: {
         node() { 
-            return this.$parent.$parent.$parent.$parent.highlightedNode.definition;
+            return this.highlightedNode.definition;
         }, 
         setNodeConfig() {
             Vue.set(this.node(), 'config', JSON.stringify(this.config));

@@ -23,15 +23,17 @@
 
 <script>
   import EmailOptions from "./EmailOptions";
+  import helper from '../../../helper';
 
   export default {
     components: {
       EmailOptions
     },
+    mixins: [helper],
     props: ["value"],
     methods: {
       node() {  
-        return this.$parent.$parent.$parent.highlightedNode.definition;
+        return this.highlightedNode.definition;
       }, 
       setConfig(event){
         Vue.set(this.node(), 'config',  JSON.stringify(event));

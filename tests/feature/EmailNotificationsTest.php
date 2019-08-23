@@ -50,10 +50,12 @@ class EmailNotificationsTest extends TestCase
         $pmConfig = ['email_notifications' => [
             'enableNotifications' => true,
             'notifications' => [[
-                'email' => 'foobar@test.com',
-                'targetName' => 'Mr Foobar',
+                'addEmails' => ['foobar@test.com', 'bar@baz.com'],
+                'users' => [],
+                'groups' => [],
+                'subject' => "Test Subject",
                 'textBody' => "Here is a plain text body with some_data: {{ some_data }}",
-                'screenRef' => 123,
+                'screenRef' => null,
                 'expression' => 'some_data != "def"',
                 'sendAt' => 'task-start',
                 'type' => 'text' // vs. 'screen'
@@ -71,6 +73,7 @@ class EmailNotificationsTest extends TestCase
         $messages = $this->getEmails();
         $tos = array_keys($messages[0]->getTo());
         $this->assertContains('foobar@test.com', $tos);
+        $this->assertContains('bar@baz.com', $tos);
         $this->assertContains('Here is a plain text body with some_data: abc', $messages[0]->getBody());
     }
 
@@ -106,8 +109,10 @@ class EmailNotificationsTest extends TestCase
         $pmConfig = ['email_notifications' => [
             'enableNotifications' => true,
             'notifications' => [[
-                'email' => 'foobar@test.com',
-                'targetName' => 'Mr Foobar',
+                'addEmails' => ['foobar@test.com', 'bar@baz.com'],
+                'users' => [],
+                'groups' => [],
+                'subject' => "Test Subject",
                 'textBody' => "Here is a plain text body with some_data: {{ some_data }}",
                 'screenRef' => $customEmailScreen->id,
                 'expression' => 'some_data != "def"',
@@ -130,6 +135,7 @@ class EmailNotificationsTest extends TestCase
         $messages = $this->getEmails();
         $tos = array_keys($messages[0]->getTo());
         $this->assertContains('foobar@test.com', $tos);
+        $this->assertContains('bar@baz.com', $tos);
         $this->assertContains($text1, $messages[0]->getBody());
         $this->assertContains($text2, $messages[0]->getBody());
         $this->assertContains($text3, $messages[0]->getBody());

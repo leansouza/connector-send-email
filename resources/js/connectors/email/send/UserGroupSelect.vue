@@ -32,10 +32,12 @@
 
 <script>
   import Multiselect from "vue-multiselect";
+  import helper from "../../../helper";
 
   export default {
     inheritAttrs: false,
     props: ["value", "label", "helper", "params"],
+    mixins: [helper],
     components: {
       Multiselect
     },
@@ -49,7 +51,7 @@
     },
     computed: {
       node() {
-        return this.$parent.$parent.highlightedNode.definition;
+        return this.highlightedNode.definition;
       }
     },
     watch: {
