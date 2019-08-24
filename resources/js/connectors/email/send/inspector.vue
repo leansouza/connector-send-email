@@ -16,6 +16,13 @@
       </button>
 
       <b-collapse id="configuration" visible>
+
+        <div class="form-group pl-4 pr-4 pt-3 pb-3 border-bottom m-0">
+          <label>{{ $t('Name') }}</label>
+          <input v-model="name" class="form-control">
+          <small class="form-text text-muted">{{ $t('The name of the Send Email Task') }}</small>
+        </div>
+
         <div class="form-group pl-4 pr-4 pt-3 pb-3 border-bottom m-0">
           <label>{{ $t('Subject') }}</label>
           <input v-model="config.subject" class="form-control">
@@ -83,6 +90,7 @@
       return {
         showConfiguration: false,
         usersGroupsSelected: [],
+        name: '',
         config: {
           subject: '',
           type: 'screen',
@@ -99,6 +107,11 @@
     watch: {
       config: {
         deep: true,
+        handler() {
+          this.updateConfig();
+        }
+      },
+      name: {
         handler() {
           this.updateConfig();
         }
@@ -128,12 +141,13 @@
         Object.keys(config).forEach(key => {
           Vue.set(this.config, key, config[key]);
         });
-
+        Vue.set(this, 'name', _.get(node, 'name'));
         Vue.set(this, 'usersGroupsSelected', {'users': config.users, 'groups': config.groups});
       },
       updateConfig() {
         const node = this.$parent.$parent.highlightedNode.definition;
         Vue.set(node, 'config', JSON.stringify(this.config));
+        Vue.set(node, 'name', this.name);
       },
     },
     mounted() {
