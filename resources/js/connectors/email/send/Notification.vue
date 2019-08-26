@@ -1,14 +1,14 @@
 <template>
  <div class="p-0 notification">
-     
+
     <div class="p-0 h-100 overflow-auto">
-        
+
         <button v-b-toggle.configuration
                   variant="outline"
                   class="accordion-button text-left card-header d-flex align-items-center w-100 border-right-0 border-left-0 border-top-0"
                   @click="showConfiguration = !showConfiguration"
         >
-            <i class="fas fa-paper-plane mr-2"/> 
+            <i class="fas fa-paper-plane mr-2"/>
             {{ $t('Notifications' ) }}
             <i class="fas fa-angle-down ml-auto"
             :class="{ 'fas fa-angle-right' : showConfiguration }">
@@ -19,16 +19,16 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h6 class="m-0">{{ $t('Notifications') }}</h6>
                 <b-button @click="addNotification()"
-                          variant="link" 
-                          class="p-0 text-secondary" 
+                          variant="link"
+                          class="p-0 text-secondary"
                 >
                     <i class="fas fa-plus-square"></i>
                 </b-button>
             </div>
             <b-collapse id="email-configuration">
                 <b-card no-body :header="$t('Add Notification')">
-                    <email-options @usersGroupsSelected="setUsersAndGroups" v-model="initNotification" :node="node()" ></email-options>     
-                    
+                    <email-options @usersGroupsSelected="setUsersAndGroups" v-model="initNotification" :node="node()" ></email-options>
+
                     <div class="form-group px-4 py-3 m-0 border-bottom">
                         <label>{{ $t('Send At') }}</label>
                         <select class="form-control" v-model="initNotification.sendAt">
@@ -50,8 +50,8 @@
                     </b-card-footer>
                 </b-card>
             </b-collapse>
-         
-            <b-card no-body v-show="showDeleteNotification" 
+
+            <b-card no-body v-show="showDeleteNotification"
                     bg-variant="danger"
                     text-variant="white"
             >
@@ -61,12 +61,12 @@
                     <b-button size="sm" variant="link text-white" @click="onDelete()">{{ $t('Delete') }}</b-button>
                 </b-card-footer>
             </b-card>
-           
+
              <table class="table table-sm table-striped">
                  <tbody>
                      <tr v-for="(notification, index) in config.email_notifications.notifications" :key="index">
                          <td>
-                             <i class="far fa-envelope"></i> {{ notification.subject}} 
+                             <i class="far fa-envelope"></i> {{ notification.subject}}
                          </td>
                          <td class="text-right actions">
                              <b-button variant="link" class="p-0 text-secondary" :title="$t('edit')" @click="onEdit(notification, index)"><i class="fas fa-cog"></i></b-button>
@@ -77,7 +77,7 @@
              </table>
         </b-collapse>
 
-        
+
     </div>
  </div>
 </template>
@@ -125,7 +125,8 @@ export default {
         "highlightedNode.definition.name" : {
             handler(value) {
                 if (this.initNotification !== '') {
-                    this.initNotification.subject = 'RE: ' + value; 
+                    this.initNotification.subject = 'RE: ' + value;
+                    this.initNotification.textBody = this.$t('You have a pending task') + ': ' + value;
                 }
             }
         },
@@ -137,9 +138,9 @@ export default {
         },
     },
     methods: {
-        node() { 
+        node() {
             return this.highlightedNode.definition;
-        }, 
+        },
         setNodeConfig() {
             if (this.createdNotificationIndex !== null) {
                 let notification = this.config.email_notifications.notifications[this.createdNotificationIndex];
@@ -161,7 +162,7 @@ export default {
         getNodeConfig() {
             if (_.get(this.node(), 'config')) {
                 this.config = JSON.parse(_.get(this.node(), 'config'));
-            } 
+            }
         },
         onEdit(notification, index) {
             this._beforeEditingCache = Object.assign({}, notification);
@@ -202,7 +203,7 @@ export default {
         },
         clearForm() {
             this.editNotificationIndex = null;
-            this.createdNotificationIndex = null;  
+            this.createdNotificationIndex = null;
             this.initNotification = {
                 sendAt:'task-start',
                 expression: '',
@@ -221,7 +222,7 @@ export default {
         //             this.initNotification.subject = 'RE: ' + nodeName;
         //             this.initNotification.type = 'text';
         //         }
-                
+
         //     }
         // });
     }

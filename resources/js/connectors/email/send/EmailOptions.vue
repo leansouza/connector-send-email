@@ -94,10 +94,13 @@
           this.emitUsersandGroups();
         }
       },
-      value() {
-        this.config = this.value;
-        Vue.set(this, 'usersGroupsSelected', {'users': this.config.users, 'groups': this.config.groups});
-      }
+      value: {
+        immediate: true,
+        handler() {
+          this.config = this.value;
+          Vue.set(this, 'usersGroupsSelected', {'users': this.config.users, 'groups': this.config.groups});
+        }
+      },
     },
     computed: {},
     methods: {
