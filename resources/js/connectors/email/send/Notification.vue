@@ -191,7 +191,12 @@ export default {
             };
         },
         onCancel() {
-            this.config.email_notifications.notifications.splice(this.createdNotificationIndex, 1);
+            if (this.editNotificationIndex !== null) {
+                let notification = this.config.email_notifications.notifications[this.editNotificationIndex];
+                Object.assign(notification, this._beforeEditingCache);
+            } else  {
+                this.config.email_notifications.notifications.splice(this.createdNotificationIndex, 1);
+            }
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
             this.clearForm();
         },
@@ -213,18 +218,6 @@ export default {
     },
     mounted() {
         this.getNodeConfig();
-        // this.$root.$on('bv::collapse::state', (collapseId, isJustShown) => {
-        //     if (collapseId === 'email-configuration' && !isJustShown) {
-        //         this.clearForm();
-        //     } else  {
-        //         if (this.initNotification.subject == '') {
-        //             let nodeName = _.get(this.node(), 'name');
-        //             this.initNotification.subject = 'RE: ' + nodeName;
-        //             this.initNotification.type = 'text';
-        //         }
-
-        //     }
-        // });
     }
 }
 </script>
