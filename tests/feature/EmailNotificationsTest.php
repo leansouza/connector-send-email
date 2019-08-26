@@ -3,7 +3,9 @@
 namespace Tests\ProcessMaker\Packages\Connectors\Email\Feature;
 
 use Mockery;
+use ProcessMaker\Facades\WorkflowManager;
 use ProcessMaker\Models\GroupMember;
+use ProcessMaker\Models\ProcessRequestToken;
 use ProcessMaker\Models\User;
 use ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder;
 use ProcessMaker\Models\Screen;
@@ -32,7 +34,7 @@ class EmailNotificationsTest extends TestCase
                 'screenRef' => null,
                 'expression' => 'some_data != "def"',
                 'sendAt' => 'task-start',
-                'type' => 'text' // vs. 'screen'
+                'type' => 'text'
             ]]
         ]];
 
@@ -144,6 +146,124 @@ class EmailNotificationsTest extends TestCase
         $this->assertContains('Here is a plain text body with some_data: abc', $messages->getBody());
     }
 
+    public function testSentNotificationOnlyStartTask()
+    {
+        $this->headerMockery();
+
+        $pmConfig = ['email_notifications' => [
+            'enableNotifications' => true,
+            'notifications' => [[
+                'addEmails' => ['foobar@test.com', 'bar@baz.com'],
+                'users' => [],
+                'groups' => [],
+                'subject' => "Test Subject",
+                'textBody' => "Here is a plain text body with some_data: {{ some_data }}",
+                'screenRef' => null,
+                'expression' => 'some_data != "def"',
+                'sendAt' => 'task-start',
+                'type' => 'text'
+            ]]
+        ]];
+
+        $process = $this->createProcess(
+            file_get_contents(__DIR__ . '/../fixtures/ProcessWithEmailNotificationsEnabled.bpmn'),
+            $pmConfig
+        );
+
+        $definitions = $process->getDefinitions();
+        $startEvent = $definitions->getEvent('node_1');
+        $request = WorkflowManager::triggerStartEvent($process, $startEvent,  ['some_data' => 'abc']);
+
+        //Validate data in start task
+        $messages = $this->getEmails();
+        $tos = array_keys($messages->getTo());
+        $this->assertCount(2, $messages->getTo());
+        $this->assertContains('foobar@test.com', $tos);
+        $this->assertContains('bar@baz.com', $tos);
+        $this->assertContains('Here is a plain text body with some_data: abc', $messages->getBody());
+
+        // Complete task.
+        $token = $request->tokens()->where('element_id', 'node_2')->first();
+        $this->completeTask($token);
+
+        //Notifications are not sent when completing the task.
+        $messages = $this->getEmails();
+        $this->assertCount(0, $messages);
+    }
+
+    public function testSentNotificationOnlyCompletedTask()
+    {
+        $this->headerMockery();
+
+        $pmConfig = ['email_notifications' => [
+            'enableNotifications' => true,
+            'notifications' => [[
+                'addEmails' => ['foobar@test.com', 'bar@baz.com'],
+                'users' => [],
+                'groups' => [],
+                'subject' => "Test Subject",
+                'textBody' => "Here is a plain text body with some_data: {{ some_data }}",
+                'screenRef' => null,
+                'expression' => 'some_data != "def"',
+                'sendAt' => 'task-end',
+                'type' => 'text'
+            ]]
+        ]];
+
+        $process = $this->createProcess(
+            file_get_contents(__DIR__ . '/../fixtures/ProcessWithEmailNotificationsEnabled.bpmn'),
+            $pmConfig
+        );
+
+        $definitions = $process->getDefinitions();
+        $startEvent = $definitions->getEvent('node_1');
+        $request = WorkflowManager::triggerStartEvent($process, $startEvent,  ['some_data' => 'abc']);
+
+        //Notifications are not sent when starting the task.
+        $messages = $this->getEmails();
+        $this->assertCount(0, $messages);
+
+        // Complete task
+        $token = $request->tokens()->where('element_id', 'node_2')->first();
+        $this->completeTask($token);
+
+        //Validate data in end task
+        $messages = $this->getEmails();
+        $tos = array_keys($messages->getTo());
+        $this->assertCount(2, $messages->getTo());
+        $this->assertContains('foobar@test.com', $tos);
+        $this->assertContains('bar@baz.com', $tos);
+        $this->assertContains('Here is a plain text body with some_data: abc', $messages->getBody());
+    }
+
+    public function testNoNotifications()
+    {
+        $this->headerMockery();
+
+        $pmConfig = [];
+
+        $process = $this->createProcess(
+            file_get_contents(__DIR__ . '/../fixtures/ProcessWithEmailNotificationsEnabled.bpmn'),
+            $pmConfig
+        );
+
+        $definitions = $process->getDefinitions();
+        $startEvent = $definitions->getEvent('node_1');
+        $request = WorkflowManager::triggerStartEvent($process, $startEvent,  []);
+
+        //Notifications are not sent when starting the task.
+        $messages = $this->getEmails();
+        $this->assertCount(0, $messages);
+
+        // Complete task.
+        $token = $request->tokens()->where('element_id', 'node_2')->first();
+        $this->completeTask($token);
+
+        //Notifications are not sent when completing the task.
+        $messages = $this->getEmails();
+        $this->assertCount(0, $messages);
+    }
+
     private function createProcess($bpmn, $config)
     {
         $jsonString = str_replace('"', '&#34;', json_encode($config));
@@ -173,5 +293,25 @@ class EmailNotificationsTest extends TestCase
         // Clear all emails
         app()->make('swift.transport')->driver()->flush();
         return isset($messages[0]) ? $messages[0] : [];
+    }
+
+    /**
+     * Complete a task by $token
+     *
+     * @param ProcessRequestToken $token
+     * @param array $data
+     *
+     * @return ProcessRequestToken
+     */
+    private function completeTask(ProcessRequestToken $token, array $data = [])
+    {
+        $route = route('api.tasks.update', [$token->getKey()]);
+        $response = $this->apiCall('PUT', $route, [
+            'status' => 'COMPLETED',
+            'data' => $data,
+        ]);
+        $requestJson = $response->json();
+        $response->assertStatus(200, $requestJson);
+        return ProcessRequestToken::find($requestJson['id']);
     }
 }
