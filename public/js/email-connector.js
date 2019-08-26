@@ -415,17 +415,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             showConfiguration: false,
             showDeleteNotification: false,
             confirmDelete: false,
-            createdNotificationIndex: null,
+            newNotificationIndex: null,
             config: {
                 email_notifications: {
                     notifications: []
                 }
             },
             initNotification: {
-                sendAt: 'task-end',
+                sendAt: this.$t('task-end'),
                 expression: '',
                 subject: '',
-                type: 'text'
+                type: this.$t('text')
             },
             editNotificationIndex: null,
             deleteNotification: {
@@ -439,7 +439,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         "highlightedNode.definition.name": {
             handler: function handler(value) {
                 if (this.initNotification !== '') {
-                    this.initNotification.subject = 'RE: ' + value;
+                    this.initNotification.subject = this.$t('RE: ') + value;
                     this.initNotification.textBody = this.$t('You have a pending task') + ': ' + value;
                 }
             }
@@ -455,32 +455,36 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         node: function node() {
             return this.highlightedNode.definition;
         },
-        setNodeConfig: function setNodeConfig() {
-            if (this.createdNotificationIndex !== null) {
-                var notification = this.config.email_notifications.notifications[this.createdNotificationIndex];
-                Object.assign(notification, this.initNotification);
-            } else if (this.editNotificationIndex !== null) {
-                var _notification = this.config.email_notifications.notifications[this.editNotificationIndex];
-                Object.assign(_notification, this.initNotification);
-            }
-            Vue.set(this.node(), 'config', JSON.stringify(this.config));
-        },
         addNotification: function addNotification() {
             var _this = this;
 
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
             this.config.email_notifications.notifications.push(Object.assign({}, this.initNotification));
-            this.createdNotificationIndex = this.config.email_notifications.notifications.findIndex(function (x) {
-                return x.subject === _this.initNotification.subject;
+            this.newNotificationIndex = this.config.email_notifications.notifications.findIndex(function (notification) {
+                return notification.subject == _this.initNotification.subject;
             });
-        },
-        setUsersAndGroups: function setUsersAndGroups(event) {
-            Vue.set(this.node(), 'usersGroupsSelected', JSON.stringify(event));
         },
         getNodeConfig: function getNodeConfig() {
             if (_.get(this.node(), 'config')) {
                 this.config = JSON.parse(_.get(this.node(), 'config'));
             }
+        },
+        setNodeConfig: function setNodeConfig() {
+            if (this.newNotificationIndex !== null) {
+                this.updateNodeConfig(this.newNotificationIndex);
+            }
+
+            if (this.editNotificationIndex !== null) {
+                this.updateNodeConfig(this.editNotificationIndex);
+            }
+            Vue.set(this.node(), 'config', JSON.stringify(this.config));
+        },
+        updateNodeConfig: function updateNodeConfig(index) {
+            var notification = this.config.email_notifications.notifications[index];
+            Object.assign(notification, this.initNotification);
+        },
+        setUsersAndGroups: function setUsersAndGroups(event) {
+            Vue.set(this.node(), 'usersGroupsSelected', JSON.stringify(event));
         },
         onEdit: function onEdit(notification, index) {
             this._beforeEditingCache = Object.assign({}, notification);
@@ -490,7 +494,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         onDuplicate: function onDuplicate(notification) {
             var duplicateNoticiation = _.cloneDeep(notification);
-            duplicateNoticiation.subject = duplicateNoticiation.subject + ' copy';
+            duplicateNoticiation.subject = duplicateNoticiation.subject + this.$t(' copy');
             this.config.email_notifications.notifications.push(Object.assign({}, duplicateNoticiation));
         },
         onConfirmDelete: function onConfirmDelete(notification, index) {
@@ -513,24 +517,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 var notification = this.config.email_notifications.notifications[this.editNotificationIndex];
                 Object.assign(notification, this._beforeEditingCache);
             } else {
-                this.config.email_notifications.notifications.splice(this.createdNotificationIndex, 1);
+                this.config.email_notifications.notifications.splice(this.newNotificationIndex, 1);
             }
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
             this.clearForm();
         },
         closeForm: function closeForm() {
             this.editNotificationIndex = null;
-            this.createdNotificationIndex = null;
+            this.newNotificationIndex = null;
             this.$root.$emit('bv::toggle::collapse', 'email-configuration');
             this.clearForm();
         },
         clearForm: function clearForm() {
             this.editNotificationIndex = null;
-            this.createdNotificationIndex = null;
+            this.newNotificationIndex = null;
             this.initNotification = {
-                sendAt: 'task-start',
+                sendAt: this.$t('task-start'),
                 expression: '',
-                type: 'text'
+                type: this.$t('text')
             };
         }
     },
