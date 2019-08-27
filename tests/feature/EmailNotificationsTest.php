@@ -11,6 +11,7 @@ use ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder;
 use ProcessMaker\Models\Screen;
 use ProcessMaker\Models\Process;
 use ProcessMaker\Models\ProcessRequest;
+use ProcessMaker\Models\Comment;
 use Tests\Feature\Shared\RequestHelper;
 use Tests\TestCase;
 use Tests\MockGuzzleResponse;
@@ -227,6 +228,16 @@ class EmailNotificationsTest extends TestCase
         $this->assertContains('foobar@test.com', $tos);
         $this->assertContains('bar@baz.com', $tos);
         $this->assertContains('Here is a plain text body with some_data: abc', $messages->getBody());
+
+        // Check that comment was created
+        $comments = Comment::where('subject', 'Email Notification Sent')->get();
+        $this->assertCount(1, $comments);
+        $comment = $comments[0];
+        $this->assertEquals($request->id, $comment->commentable_id);
+        $this->assertEquals(ProcessRequest::class, $comment->commentable_type);
+        $this->assertContains('foobar@test.com', $comment->body);
+        $this->assertContains('bar@baz.com', $comment->body);
+        $this->assertContains('Task With Notification', $comment->body);
     }
 
     public function testNoNotifications()

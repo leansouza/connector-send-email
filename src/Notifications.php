@@ -54,7 +54,7 @@ class Notifications
                 }
                 $this->createNotification(
                     $notificationConfig,
-                    $event->token->processRequest->data
+                    $event->token
                 );
             }
         }
@@ -66,13 +66,17 @@ class Notifications
      * @param $notificationConfig
      * @param $data
      */
-    private function createNotification($notificationConfig, $data)
+    private function createNotification($notificationConfig, $token)
     {
         $subProcess = $this->notificationSubProcess();
         $definitions = $subProcess->getDefinitions();
         $event = $definitions->getEvent(EmailSendSeeder::SUB_PROCESS_START_EVENT);
         WorkflowManager::triggerStartEvent(
-            $subProcess, $event, array_merge($data, ['notification_config' => $notificationConfig])
+            $subProcess, $event, array_merge($token->processRequest->data, [
+                '_request_id' => $token->processRequest->id,
+                '_task_name' => $token->element_name,
+                'notification_config' => $notificationConfig
+            ])
         );
     }
 

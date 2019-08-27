@@ -4,7 +4,7 @@
     <bpmn:startEvent id="node_1" name="Start Event" pm:assignment="user">
       <bpmn:outgoing>node_3</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:task id="node_2" name="New Task" pm:assignment="requester" pm:config="[pmConfig]">
+    <bpmn:task id="node_2" name="Task With Notification" pm:assignment="requester" pm:config="[pmConfig]">
       <bpmn:incoming>node_3</bpmn:incoming>
       <bpmn:outgoing>node_5</bpmn:outgoing>
     </bpmn:task>

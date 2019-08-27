@@ -10,6 +10,8 @@ use ProcessMaker\Http\Controllers\Controller;
 use ProcessMaker\Models\GroupMember;
 use ProcessMaker\Models\Screen;
 use ProcessMaker\Models\User;
+use ProcessMaker\Models\Comment;
+use ProcessMaker\Models\ProcessRequest;
 use ProcessMaker\Packages\Connectors\Email\Jobs\SendEmail;
 use ProcessMaker\Packages\Connectors\Email\ScreenRenderer;
 
@@ -79,10 +81,27 @@ class EmailController extends Controller
 
         //change mustache
         $config['subject'] = $mustache->render($config['subject'], $data);
-        $config['email'] = $emails;
+        $config['email'] = array_filter($emails);
 
         //created queue job
         dispatch(new SendEmail($config));
+
+        if (isset($data['notification_config'])) {
+            Comment::create([
+                'type' => 'LOG',
+                'user_id' => null,
+                'commentable_type' => ProcessRequest::class,
+                'commentable_id' => $data['_request_id'],
+                'subject' => 'Email Notification Sent',
+                'body' => __(
+                    'System has sent a notification to :emails for :task',
+                    [
+                        "emails" => join(", ", $config['email']),
+                        "task" => $data['_task_name']
+                    ]
+                )
+            ]);
+        }
 
         return response()->json();
     }

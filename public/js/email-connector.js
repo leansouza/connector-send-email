@@ -412,7 +412,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }
             },
             initNotification: {
-                sendAt: this.$t('task-end'),
+                sendAt: 'task-start',
                 expression: '',
                 subject: '',
                 type: 'text',

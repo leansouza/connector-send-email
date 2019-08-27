@@ -109,7 +109,7 @@ export default {
                 },
             },
             initNotification: {
-                sendAt: this.$t('task-end'),
+                sendAt: 'task-start',
                 expression: '',
                 subject: '',
                 type: 'text',
