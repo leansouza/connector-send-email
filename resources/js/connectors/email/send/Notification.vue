@@ -102,14 +102,14 @@ export default {
             showConfiguration: false,
             showDeleteNotification: false,
             confirmDelete: false,
-            createdNotificationIndex: null,
+            newNotificationIndex: null,
             config: {
                 email_notifications: {
                     notifications: [],
                 },
             },
             initNotification: {
-                sendAt:'task-end',
+                sendAt: this.$t('task-end'),
                 expression: '',
                 subject: '',
                 type: 'text',
@@ -131,7 +131,7 @@ export default {
         "highlightedNode.definition.name" : {
             handler(value) {
                 if (this.initNotification !== '') {
-                    this.initNotification.subject = 'RE: ' + value;
+                    this.initNotification.subject = this.$t('RE: ') + value;
                     this.initNotification.textBody = this.$t('You have a pending task') + ': ' + value;
                 }
             }
@@ -153,16 +153,6 @@ export default {
         node() {
             return this.highlightedNode.definition;
         },
-        setNodeConfig() {
-            if (this.createdNotificationIndex !== null) {
-                let notification = this.config.email_notifications.notifications[this.createdNotificationIndex];
-                Object.assign(notification, this.initNotification);
-            } else if(this.editNotificationIndex !== null) {
-                let notification = this.config.email_notifications.notifications[this.editNotificationIndex];
-                Object.assign(notification, this.initNotification);
-            }
-            Vue.set(this.node(), 'config', JSON.stringify(this.config));
-        },
         addNotification() {
             this.config.email_notifications.notifications.push(Object.assign({}, this.initNotification));
             this.createdNotificationIndex = this.config.email_notifications.notifications.findIndex(x => x.subject === this.initNotification.subject);
@@ -171,6 +161,23 @@ export default {
             if (_.get(this.node(), 'config')) {
                 this.config = JSON.parse(_.get(this.node(), 'config'));
             }
+        },
+        setNodeConfig() {
+            if (this.newNotificationIndex !== null) {
+                this.updateNodeConfig(this.newNotificationIndex);
+            } 
+            
+            if (this.editNotificationIndex !== null) {
+                this.updateNodeConfig(this.editNotificationIndex);
+            }
+            Vue.set(this.node(), 'config', JSON.stringify(this.config));
+        },
+        updateNodeConfig(index) {
+            let notification = this.config.email_notifications.notifications[index];
+            Object.assign(notification, this.initNotification);
+        },
+        setUsersAndGroups(event) {
+            Vue.set(this.node(), 'usersGroupsSelected',  JSON.stringify(event));
         },
         onEdit(notification, index) {
             if (this.showConfig) {
@@ -185,7 +192,7 @@ export default {
         },
         onDuplicate(notification) {
             let duplicateNoticiation = _.cloneDeep(notification);
-            duplicateNoticiation.subject = duplicateNoticiation.subject + ' copy';
+            duplicateNoticiation.subject = duplicateNoticiation.subject + this.$t(' copy');
             this.config.email_notifications.notifications.push(Object.assign({}, duplicateNoticiation));
         },
         onConfirmDelete(notification, index) {
