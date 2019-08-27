@@ -70,8 +70,7 @@ class EmailController extends Controller
         if ($type === 'screen') {
             //screen definition
             $screen = Screen::find($mustache->render($config['screenRef'], $data));
-            $customScreenConfig = json_decode($screen->config, true);
-            $rendered = ScreenRenderer::render($customScreenConfig, $data);
+            $rendered = ScreenRenderer::render($screen->config, $data);
             $config['body'] = $rendered;
         } else {
             //Plain text

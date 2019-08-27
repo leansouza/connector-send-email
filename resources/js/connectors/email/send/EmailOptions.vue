@@ -32,6 +32,7 @@
             class="p-0 mb-0"
             v-bind:multiple="true"
             v-model="usersGroupsSelected"
+            ref="userGoupSelect"
           >
           </user-group-select>
           <small class="form-text text-muted">{{ $t('(Select all that apply)') }}</small>
@@ -61,7 +62,7 @@
     data() {
       return {
         showConfiguration: false,
-        usersGroupsSelected: [],
+        usersGroupsSelected: { users: [], groups: [] },
         config: {
           subject: '',
           type: 'screen',
@@ -79,38 +80,28 @@
       config: {
         deep: true,
         handler() {
-          this.emitConfig();
+          this.$emit('input', this.config);
         }
       },
       usersGroupsSelected: {
         deep: true,
         handler() {
-          if (this.usersGroupsSelected && this.usersGroupsSelected.users) {
-            this.config.users = this.usersGroupsSelected.users;
-          }
-          if (this.usersGroupsSelected && this.usersGroupsSelected.groups) {
-            this.config.groups = this.usersGroupsSelected.groups;
-          }
-          this.emitUsersandGroups();
+          this.config.users = this.usersGroupsSelected.users;
+          this.config.groups = this.usersGroupsSelected.groups;
         }
       },
       value: {
-        immediate: true,
         handler() {
-          this.config = this.value;
-          Vue.set(this, 'usersGroupsSelected', {'users': this.config.users, 'groups': this.config.groups});
+          Vue.set(this, 'config', this.value);
+
+          if ('userGoupSelect' in this.$refs) {
+            Vue.set(this, 'usersGroupsSelected', {'users': this.config.users, 'groups': this.config.groups});
+          }
         }
       },
     },
     computed: {},
-    methods: {
-      emitConfig() {
-        this.$emit('input', this.config);
-      },
-      emitUsersandGroups() {
-        this.$emit('usersGroupsSelected', {'users': this.config.users, 'groups': this.config.groups});
-      }
-    },
+    methods: {},
   };
 </script>
 
