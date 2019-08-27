@@ -79,7 +79,6 @@
         handler() {
           this.loading = true;
           this.content = [];
-          console.log("In UGS, value has changed to", this.value, "LOADING")
 
           let usersPromise = Promise.all(
               this.value.users.map(item => {

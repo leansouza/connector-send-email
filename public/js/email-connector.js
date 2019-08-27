@@ -624,7 +624,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         this.loading = true;
         this.content = [];
-        console.log("In UGS, value has changed to", this.value, "LOADING");
 
         var usersPromise = Promise.all(this.value.users.map(function (item) {
           return ProcessMaker.apiClient.get('users/' + item);
