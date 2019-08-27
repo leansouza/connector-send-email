@@ -1,5 +1,6 @@
 {
     "name": "processmaker/connector-send-email",
+    "version": "1.0.0",
     "description": "ProcessMaker BPM Connectors that provide Email service",
     "type": "library",
     "require": {

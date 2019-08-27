@@ -22,7 +22,7 @@ export default  {
         return moddle.create('bpmn:ServiceTask', {
             name: 'Send Email',
             implementation,
-            config: JSON.stringify({ email: '', targetName: '', subject: '', template: 'welcome' }),
+            config: JSON.stringify({ type: 'text', subject: '', textBody: '', screenRef: null, users: [], groups: [] }),
         });
     },
     /**

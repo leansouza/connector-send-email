@@ -69,7 +69,6 @@
           textBody: '',
           screenRef: '',
           email: '',
-          targetName: '',
           addEmails: [],
           users : [],
           groups : [],

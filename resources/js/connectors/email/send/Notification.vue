@@ -178,7 +178,6 @@ export default {
                 this.showConfig = false;
                 return;
             }
-            console.log("loaded notification from bpmn: ", index, notification)
             this._beforeEditingCache = _.cloneDeep(notification);
             this.initNotification = notification;
             this.editNotificationIndex = index;

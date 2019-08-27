@@ -254,7 +254,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         textBody: '',
         screenRef: '',
         email: '',
-        targetName: '',
         addEmails: [],
         users: [],
         groups: []
@@ -487,7 +486,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 this.showConfig = false;
                 return;
             }
-            console.log("loaded notification from bpmn: ", index, notification);
             this._beforeEditingCache = _.cloneDeep(notification);
             this.initNotification = notification;
             this.editNotificationIndex = index;
@@ -2675,7 +2673,7 @@ var nodeId = 'processmaker-communication-email-send';
         return moddle.create('bpmn:ServiceTask', {
             name: 'Send Email',
             implementation: implementation,
-            config: JSON.stringify({ email: '', targetName: '', subject: '', template: 'welcome' })
+            config: JSON.stringify({ type: 'text', subject: '', textBody: '', screenRef: null, users: [], groups: [] })
         });
     },
     /**

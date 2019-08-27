@@ -80,7 +80,6 @@ class EmailController extends Controller
         //change mustache
         $config['subject'] = $mustache->render($config['subject'], $data);
         $config['email'] = $emails;
-        $config['name'] = $mustache->render($config['name'], $data);
 
         //created queue job
         dispatch(new SendEmail($config));
