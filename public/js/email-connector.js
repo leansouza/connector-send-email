@@ -105,7 +105,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -128,48 +127,49 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     return {
       selected: false,
       rows: []
-
     };
   },
 
   watch: {
     value: {
-      deep: true,
       handler: function handler() {
-        var _this = this;
+        this.rows = this.value;
 
-        this.selected = false;
-        if (this.rows.length === 0 && this.value) {
-          this.value.map(function (item) {
-            _this.rows.push({ email: item });
-          });
-        }
         if (this.rows.length > 0) {
           this.selected = true;
+        } else {
+          this.selected = false;
         }
       }
+    },
+    selected: function selected() {
+      if (!this.selected) {
+        this.rows = [];
+      } else {
+        if (this.rows.length === 0) {
+          // have an empty one ready when they check the box
+          this.addRow();
+        }
+      }
+    },
+
+    rows: {
+      handler: function handler() {
+        this.$emit("input", this.rows);
+      },
+
+      deep: true
     }
   },
   computed: {},
   methods: {
     addRow: function addRow() {
-      this.rows.push({ email: "" });
+      this.rows.push("");
     },
     remove: function remove(index) {
-      this.rows.splice(index, 1);
-      this.updateConfig();
-    },
-    updateConfig: function updateConfig() {
-      var data = [];
-      if (this.selected) {
-        this.rows.map(function (item) {
-          data.push(item.email);
-        });
-      }
-      this.$emit("input", data);
+      this.$delete(this.rows, index);
     }
-  },
-  mounted: function mounted() {}
+  }
 });
 
 /***/ }),
@@ -233,6 +233,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -246,7 +247,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   data: function data() {
     return {
       showConfiguration: false,
-      usersGroupsSelected: [],
+      usersGroupsSelected: { users: [], groups: [] },
       config: {
         subject: '',
         type: 'screen',
@@ -265,38 +266,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     config: {
       deep: true,
       handler: function handler() {
-        this.emitConfig();
+        this.$emit('input', this.config);
       }
     },
     usersGroupsSelected: {
       deep: true,
       handler: function handler() {
-        if (this.usersGroupsSelected && this.usersGroupsSelected.users) {
-          this.config.users = this.usersGroupsSelected.users;
-        }
-        if (this.usersGroupsSelected && this.usersGroupsSelected.groups) {
-          this.config.groups = this.usersGroupsSelected.groups;
-        }
-        this.emitUsersandGroups();
+        this.config.users = this.usersGroupsSelected.users;
+        this.config.groups = this.usersGroupsSelected.groups;
       }
     },
     value: {
-      immediate: true,
       handler: function handler() {
-        this.config = this.value;
-        Vue.set(this, 'usersGroupsSelected', { 'users': this.config.users, 'groups': this.config.groups });
+        Vue.set(this, 'config', this.value);
+
+        if ('userGoupSelect' in this.$refs) {
+          Vue.set(this, 'usersGroupsSelected', { 'users': this.config.users, 'groups': this.config.groups });
+        }
       }
     }
   },
   computed: {},
-  methods: {
-    emitConfig: function emitConfig() {
-      this.$emit('input', this.config);
-    },
-    emitUsersandGroups: function emitUsersandGroups() {
-      this.$emit('usersGroupsSelected', { 'users': this.config.users, 'groups': this.config.groups });
-    }
-  }
+  methods: {}
 });
 
 /***/ }),
@@ -425,13 +416,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 sendAt: 'task-end',
                 expression: '',
                 subject: '',
-                type: 'text'
+                type: 'text',
+                textBody: '',
+                addEmails: [],
+                users: [],
+                groups: [],
+                screenRef: null
             },
             editNotificationIndex: null,
             deleteNotification: {
                 index: null,
                 notification: {}
-            }
+            },
+            showConfig: false
         };
     },
 
@@ -445,6 +442,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
         },
         "initNotification": {
+            deep: true,
+            handler: function handler() {
+                this.setNodeConfig();
+            }
+        },
+        config: {
             deep: true,
             handler: function handler() {
                 this.setNodeConfig();
@@ -468,14 +471,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         addNotification: function addNotification() {
             var _this = this;
 
-            this.$root.$emit('bv::toggle::collapse', 'email-configuration');
             this.config.email_notifications.notifications.push(Object.assign({}, this.initNotification));
             this.createdNotificationIndex = this.config.email_notifications.notifications.findIndex(function (x) {
                 return x.subject === _this.initNotification.subject;
             });
-        },
-        setUsersAndGroups: function setUsersAndGroups(event) {
-            Vue.set(this.node(), 'usersGroupsSelected', JSON.stringify(event));
         },
         getNodeConfig: function getNodeConfig() {
             if (_.get(this.node(), 'config')) {
@@ -483,10 +482,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
         },
         onEdit: function onEdit(notification, index) {
-            this._beforeEditingCache = Object.assign({}, notification);
+            if (this.showConfig) {
+                // Just close the open one
+                this.showConfig = false;
+                return;
+            }
+            console.log("loaded notification from bpmn: ", index, notification);
+            this._beforeEditingCache = _.cloneDeep(notification);
             this.initNotification = notification;
             this.editNotificationIndex = index;
-            this.$root.$emit('bv::toggle::collapse', 'email-configuration');
+            this.showConfig = true;
         },
         onDuplicate: function onDuplicate(notification) {
             var duplicateNoticiation = _.cloneDeep(notification);
@@ -501,7 +506,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             };
         },
         onDelete: function onDelete() {
-            this.config.email_notifications.notifications.splice(this.deleteNotification.index, 1);
+            this.$delete(this.config.email_notifications.notifications, this.deleteNotification.index);
             this.showDeleteNotification = !this.showDeleteNotification;
             this.deleteNotification = {
                 index: null,
@@ -510,28 +515,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         onCancel: function onCancel() {
             if (this.editNotificationIndex !== null) {
-                var notification = this.config.email_notifications.notifications[this.editNotificationIndex];
-                Object.assign(notification, this._beforeEditingCache);
+                this.initNotification = _.cloneDeep(this._beforeEditingCache);
             } else {
-                this.config.email_notifications.notifications.splice(this.createdNotificationIndex, 1);
+                this.$delete(this.config.email_notifications.notifications, this.deleteNotification.index);
             }
-            this.$root.$emit('bv::toggle::collapse', 'email-configuration');
-            this.clearForm();
+            this.showConfig = false;
         },
         closeForm: function closeForm() {
-            this.editNotificationIndex = null;
-            this.createdNotificationIndex = null;
-            this.$root.$emit('bv::toggle::collapse', 'email-configuration');
-            this.clearForm();
-        },
-        clearForm: function clearForm() {
-            this.editNotificationIndex = null;
-            this.createdNotificationIndex = null;
-            this.initNotification = {
-                sendAt: 'task-start',
-                expression: '',
-                type: 'text'
-            };
+            this.showConfig = false;
         }
     },
     mounted: function mounted() {
@@ -609,6 +600,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   watch: {
     content: {
       handler: function handler() {
+        if (this.loading) {
+          // Do not chagne settings if this watcher is getting called when value changes (it's loading from pm:config)
+          // Only udpate and emit when the user changes the input
+          return;
+        }
         var selected = {};
         selected.users = [];
         selected.groups = [];
@@ -623,31 +619,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
     },
     value: {
-      immediate: true,
       handler: function handler() {
         var _this = this;
 
-        // Load selected item.
-        if (this.content.length === 0 && this.value && this.value.users && this.value.groups) {
-          this.loading = true;
-          ProcessMaker.apiClient.all(this.value.users.map(function (item) {
-            return ProcessMaker.apiClient.get('users/' + item);
-          })).then(function (items) {
-            _this.loading = false;
-            items.map(function (item) {
-              _this.content.push(item.data);
-            });
-          });
+        this.loading = true;
+        this.content = [];
+        console.log("In UGS, value has changed to", this.value, "LOADING");
 
-          ProcessMaker.apiClient.all(this.value.groups.map(function (item) {
-            return ProcessMaker.apiClient.get('groups/' + item);
-          })).then(function (items) {
-            _this.loading = false;
-            items.map(function (item) {
-              _this.content.push(_this.formatGroup(item.data));
-            });
+        var usersPromise = Promise.all(this.value.users.map(function (item) {
+          return ProcessMaker.apiClient.get('users/' + item);
+        })).then(function (items) {
+          items.map(function (item) {
+            _this.content.push(item.data);
           });
-        }
+        });
+
+        var groupsPromise = Promise.all(this.value.groups.map(function (item) {
+          return ProcessMaker.apiClient.get('groups/' + item);
+        })).then(function (items) {
+          items.map(function (item) {
+            _this.content.push(_this.formatGroup(item.data));
+          });
+        });
+
+        Promise.all([usersPromise, groupsPromise]).then(function () {
+          _this.loading = false;
+        });
       }
     }
   },
@@ -662,12 +659,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           'type': _this2.$t('Users'),
           'items': response.data.data ? response.data.data : []
         });
-        _this2.loadUsersAndGroups(filter);
+        _this2.loadGroups(filter);
       }).catch(function (err) {
         _this2.loading = false;
       });
     },
-    loadUsersAndGroups: function loadUsersAndGroups(filter) {
+    loadGroups: function loadGroups(filter) {
       var _this3 = this;
 
       ProcessMaker.apiClient.get("groups?order_direction=asc&status=active" + (typeof filter === 'string' ? '&filter=' + filter : '')).then(function (response) {
@@ -782,9 +779,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     loadConfig: function loadConfig() {
       this.emailOptionsConfig = JSON.parse(_.get(this.node(), 'config'));
-    },
-    setUsersAndGroups: function setUsersAndGroups(event) {
-      Vue.set(this.node(), 'usersGroupsSelected', JSON.stringify(event));
     }
   },
   data: function data() {
@@ -1133,10 +1127,7 @@ var render = function() {
           _vm._v(" "),
           _c("email-options", {
             attrs: { value: _vm.emailOptionsConfig, node: _vm.node() },
-            on: {
-              usersGroupsSelected: _vm.setUsersAndGroups,
-              input: _vm.setConfig
-            }
+            on: { input: _vm.setConfig }
           })
         ],
         1
@@ -1239,7 +1230,16 @@ var render = function() {
             _vm._v(" "),
             _c(
               "b-collapse",
-              { attrs: { id: "email-configuration" } },
+              {
+                attrs: { id: "email-configuration" },
+                model: {
+                  value: _vm.showConfig,
+                  callback: function($$v) {
+                    _vm.showConfig = $$v
+                  },
+                  expression: "showConfig"
+                }
+              },
               [
                 _c(
                   "b-card",
@@ -1249,7 +1249,6 @@ var render = function() {
                   [
                     _c("email-options", {
                       attrs: { node: _vm.node() },
-                      on: { usersGroupsSelected: _vm.setUsersAndGroups },
                       model: {
                         value: _vm.initNotification,
                         callback: function($$v) {
@@ -1599,14 +1598,14 @@ var render = function() {
             _vm._v(" "),
             _vm._l(_vm.rows, function(row, index) {
               return [
-                _c("div", { staticClass: "input-group border-0" }, [
+                _c("div", { key: index, staticClass: "input-group border-0" }, [
                   _c("input", {
                     directives: [
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: row.email,
-                        expression: "row.email"
+                        value: _vm.rows[index],
+                        expression: "rows[index]"
                       }
                     ],
                     staticClass: "form-control",
@@ -1615,17 +1614,14 @@ var render = function() {
                       placeholder: _vm.placeholder,
                       "aria-describedby": "index"
                     },
-                    domProps: { value: row.email },
+                    domProps: { value: _vm.rows[index] },
                     on: {
-                      input: [
-                        function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(row, "email", $event.target.value)
-                        },
-                        _vm.updateConfig
-                      ]
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.rows, index, $event.target.value)
+                      }
                     }
                   }),
                   _vm._v(" "),
@@ -1933,6 +1929,7 @@ var render = function() {
         _c("label", [_vm._v(_vm._s(_vm.$t("Recipients")))]),
         _vm._v(" "),
         _c("user-group-select", {
+          ref: "userGoupSelect",
           staticClass: "p-0 mb-0",
           attrs: { multiple: true },
           model: {

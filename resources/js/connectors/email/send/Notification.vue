@@ -25,9 +25,9 @@
                     <i class="fas fa-plus-square"></i>
                 </b-button>
             </div>
-            <b-collapse id="email-configuration">
+            <b-collapse id="email-configuration" v-model="showConfig">
                 <b-card no-body :header="$t('Add Notification')">
-                    <email-options @usersGroupsSelected="setUsersAndGroups" v-model="initNotification" :node="node()" ></email-options>
+                    <email-options v-model="initNotification" :node="node()" ></email-options>
 
                     <div class="form-group px-4 py-3 m-0 border-bottom">
                         <label>{{ $t('Send At') }}</label>
@@ -112,13 +112,19 @@ export default {
                 sendAt:'task-end',
                 expression: '',
                 subject: '',
-                type: 'text'
+                type: 'text',
+                textBody: '',
+                addEmails: [],
+                users: [],
+                groups: [],
+                screenRef: null,
             },
             editNotificationIndex: null,
             deleteNotification: {
                 index: null,
                 notification: {}
             },
+            showConfig: false,
         }
     },
     watch: {
@@ -131,6 +137,12 @@ export default {
             }
         },
         "initNotification": {
+            deep: true,
+            handler() {
+                this.setNodeConfig();
+            }
+        },
+        config: {
             deep: true,
             handler() {
                 this.setNodeConfig();
@@ -152,12 +164,8 @@ export default {
             Vue.set(this.node(), 'config', JSON.stringify(this.config));
         },
         addNotification() {
-            this.$root.$emit('bv::toggle::collapse', 'email-configuration');
             this.config.email_notifications.notifications.push(Object.assign({}, this.initNotification));
             this.createdNotificationIndex = this.config.email_notifications.notifications.findIndex(x => x.subject === this.initNotification.subject);
-        },
-        setUsersAndGroups(event) {
-            Vue.set(this.node(), 'usersGroupsSelected',  JSON.stringify(event));
         },
         getNodeConfig() {
             if (_.get(this.node(), 'config')) {
@@ -165,10 +173,16 @@ export default {
             }
         },
         onEdit(notification, index) {
-            this._beforeEditingCache = Object.assign({}, notification);
+            if (this.showConfig) {
+                // Just close the open one
+                this.showConfig = false;
+                return;
+            }
+            console.log("loaded notification from bpmn: ", index, notification)
+            this._beforeEditingCache = _.cloneDeep(notification);
             this.initNotification = notification;
             this.editNotificationIndex = index;
-            this.$root.$emit('bv::toggle::collapse', 'email-configuration');
+            this.showConfig = true
         },
         onDuplicate(notification) {
             let duplicateNoticiation = _.cloneDeep(notification);
@@ -183,7 +197,7 @@ export default {
             }
         },
         onDelete() {
-            this.config.email_notifications.notifications.splice(this.deleteNotification.index, 1);
+            this.$delete(this.config.email_notifications.notifications, this.deleteNotification.index);
             this.showDeleteNotification = !this.showDeleteNotification;
             this.deleteNotification = {
                 index: null,
@@ -192,29 +206,15 @@ export default {
         },
         onCancel() {
             if (this.editNotificationIndex !== null) {
-                let notification = this.config.email_notifications.notifications[this.editNotificationIndex];
-                Object.assign(notification, this._beforeEditingCache);
-            } else  {
-                this.config.email_notifications.notifications.splice(this.createdNotificationIndex, 1);
+                this.initNotification = _.cloneDeep(this._beforeEditingCache)
+            } else {
+                this.$delete(this.config.email_notifications.notifications, this.deleteNotification.index);
             }
-            this.$root.$emit('bv::toggle::collapse', 'email-configuration');
-            this.clearForm();
+            this.showConfig = false
         },
         closeForm() {
-            this.editNotificationIndex = null;
-            this.createdNotificationIndex = null;
-            this.$root.$emit('bv::toggle::collapse', 'email-configuration');
-            this.clearForm();
+            this.showConfig = false
         },
-        clearForm() {
-            this.editNotificationIndex = null;
-            this.createdNotificationIndex = null;
-            this.initNotification = {
-                sendAt:'task-start',
-                expression: '',
-                type: 'text'
-            };
-        }
     },
     mounted() {
         this.getNodeConfig();

@@ -57,6 +57,11 @@
     watch: {
       content: {
         handler() {
+          if (this.loading) {
+            // Do not chagne settings if this watcher is getting called when value changes (it's loading from pm:config)
+            // Only udpate and emit when the user changes the input
+            return;
+          }
           let selected = {};
           selected.users = [];
           selected.groups = [];
@@ -71,38 +76,37 @@
         }
       },
       value: {
-        immediate: true,
         handler() {
-          // Load selected item.
-          if (this.content.length === 0 && this.value && this.value.users && this.value.groups) {
-            this.loading = true;
-            ProcessMaker.apiClient
-              .all(
-                this.value.users.map(item => {
-                  return ProcessMaker.apiClient.get('users/' + item);
-                })
-              )
-              .then(items => {
-                this.loading = false;
-                items.map(item => {
-                  this.content.push(item.data);
-                })
-              });
+          this.loading = true;
+          this.content = [];
+          console.log("In UGS, value has changed to", this.value, "LOADING")
 
-            ProcessMaker.apiClient
-              .all(
-                this.value.groups.map(item => {
-                  return ProcessMaker.apiClient.get('groups/' + item);
-                })
-              )
-              .then(items => {
-                this.loading = false;
-                items.map(item => {
-                  this.content.push(this.formatGroup(item.data));
-                })
-              });
-          }
-        },
+          let usersPromise = Promise.all(
+              this.value.users.map(item => {
+                return ProcessMaker.apiClient.get('users/' + item);
+              })
+            )
+            .then(items => {
+              items.map(item => {
+                this.content.push(item.data);
+              })
+            });
+          
+          let groupsPromise = Promise.all(
+              this.value.groups.map(item => {
+                return ProcessMaker.apiClient.get('groups/' + item);
+              })
+            )
+            .then(items => {
+              items.map(item => {
+                this.content.push(this.formatGroup(item.data));
+              })
+            });
+
+          Promise.all([usersPromise, groupsPromise]).then(() => {
+            this.loading = false;
+          });
+        }
       }
     },
     methods: {
@@ -116,13 +120,13 @@
               'type': this.$t('Users'),
               'items': response.data.data ? response.data.data : []
             });
-            this.loadUsersAndGroups(filter)
+            this.loadGroups(filter)
           })
           .catch(err => {
             this.loading = false;
           });
       },
-      loadUsersAndGroups(filter) {
+      loadGroups(filter) {
         ProcessMaker.apiClient
           .get("groups?order_direction=asc&status=active" + (typeof filter === 'string' ? '&filter=' + filter : ''))
           .then(response => {
