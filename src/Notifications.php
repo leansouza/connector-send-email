@@ -47,10 +47,7 @@ class Notifications
         }
         $config = json_decode($event->token->getDefinition()['config'], true);
 
-        if (
-            isset($config['email_notifications']) &&
-            $config['email_notifications']['enableNotifications'] === true
-        ) {
+        if (isset($config['email_notifications'])) {
             foreach ($config['email_notifications']['notifications'] as $notificationConfig) {
                 if ($notificationConfig['sendAt'] !== $sendAt) {
                     continue;

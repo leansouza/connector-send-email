@@ -24,7 +24,6 @@ class EmailNotificationsTest extends TestCase
         $this->headerMockery();
 
         $pmConfig = ['email_notifications' => [
-            'enableNotifications' => true,
             'notifications' => [[
                 'addEmails' => ['foobar@test.com', 'bar@baz.com'],
                 'users' => [],
@@ -60,12 +59,10 @@ class EmailNotificationsTest extends TestCase
         $this->headerMockery();
 
         $customEmailScreen = factory(Screen::class)->create([
-            'config' => file_get_contents(__DIR__ . '/../fixtures/screen.json')
+            'config' => json_decode(file_get_contents(__DIR__ . '/../fixtures/screen.json'), true)
         ]);
 
-        // test enableNotifications
         $pmConfig = ['email_notifications' => [
-            'enableNotifications' => true,
             'notifications' => [[
                 'addEmails' => ['foobar@test.com', 'bar@baz.com'],
                 'users' => [],
@@ -109,9 +106,7 @@ class EmailNotificationsTest extends TestCase
         $groupMember1 = factory(GroupMember::class)->create();
         $groupMember2 = factory(GroupMember::class)->create();
 
-        // test enableNotifications
         $pmConfig = ['email_notifications' => [
-            'enableNotifications' => true,
             'notifications' => [[
                 'addEmails' => ['foobar@test.com', 'bar@baz.com'],
                 'users' => [$user1->id, $user2->id],
@@ -151,7 +146,6 @@ class EmailNotificationsTest extends TestCase
         $this->headerMockery();
 
         $pmConfig = ['email_notifications' => [
-            'enableNotifications' => true,
             'notifications' => [[
                 'addEmails' => ['foobar@test.com', 'bar@baz.com'],
                 'users' => [],
@@ -196,7 +190,6 @@ class EmailNotificationsTest extends TestCase
         $this->headerMockery();
 
         $pmConfig = ['email_notifications' => [
-            'enableNotifications' => true,
             'notifications' => [[
                 'addEmails' => ['foobar@test.com', 'bar@baz.com'],
                 'users' => [],
