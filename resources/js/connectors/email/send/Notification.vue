@@ -131,7 +131,7 @@ export default {
         "highlightedNode.definition.name" : {
             handler(value) {
                 if (this.initNotification !== '') {
-                    this.initNotification.subject = this.$t('RE: ') + value;
+                    this.initNotification.subject = this.$t('RE') + ': ' + value;
                     this.initNotification.textBody = this.$t('You have a pending task') + ': ' + value;
                 }
             }

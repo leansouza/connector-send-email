@@ -435,7 +435,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         "highlightedNode.definition.name": {
             handler: function handler(value) {
                 if (this.initNotification !== '') {
-                    this.initNotification.subject = this.$t('RE: ') + value;
+                    this.initNotification.subject = this.$t('RE') + ': ' + value;
                     this.initNotification.textBody = this.$t('You have a pending task') + ': ' + value;
                 }
             }
