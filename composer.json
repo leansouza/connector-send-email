@@ -1,28 +1,28 @@
 {
-    "name": "processmaker/connector-send-email",
-    "description": "ProcessMaker BPM Connectors that provide Email service",
-    "type": "library",
-    "require": {
-        "mustache/mustache": "^2.12.0",
-	    "spatie/server-side-rendering": "^0.2.5"
-    },
-    "require-dev": {
-        "processmaker/processmaker": "4.0.*"
-    },
-    "autoload": {
-        "psr-4": {
-            "ProcessMaker\\Packages\\Connectors\\Email\\": "src/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "ProcessMaker\\Packages\\Connectors\\Email\\PluginServiceProvider"
-            ]
-        }
-    },
-    "scripts": {
-        "post-autoload-dump": [
-        ]
-    }
+	"name": "processmaker/connector-send-email",
+	"description": "ProcessMaker BPM Connectors that provide Email service",
+	"version": "1.0.0",
+	"type": "library",
+	"require": {
+		"mustache/mustache": "^2.12.0",
+		"spatie/server-side-rendering": "^0.2.5"
+	},
+	"require-dev": {
+		"processmaker/processmaker": "4.0.*"
+	},
+	"autoload": {
+		"psr-4": {
+			"ProcessMaker\\Packages\\Connectors\\Email\\": "src/"
+		}
+	},
+	"extra": {
+		"laravel": {
+			"providers": [
+				"ProcessMaker\\Packages\\Connectors\\Email\\PluginServiceProvider"
+			]
+		}
+	},
+	"scripts": {
+		"post-autoload-dump": []
+	}
 }
