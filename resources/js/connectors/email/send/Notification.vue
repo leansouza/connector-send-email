@@ -1,21 +1,5 @@
 <template>
- <div class="p-0 notification">
-
-    <div class="p-0 h-100 overflow-auto">
-
-        <button v-b-toggle.configuration
-                  variant="outline"
-                  class="accordion-button text-left card-header d-flex align-items-center w-100 border-right-0 border-left-0 border-top-0"
-                  @click="showConfiguration = !showConfiguration"
-        >
-            <i class="fas fa-paper-plane mr-2"/>
-            {{ $t('Notifications' ) }}
-            <i class="fas fa-angle-down ml-auto"
-            :class="{ 'fas fa-angle-right' : showConfiguration }">
-            </i>
-        </button>
-
-        <b-collapse id="configuration" class="px-3 py-2" visible>
+    <div>
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h6 class="m-0">{{ $t('Notifications') }}</h6>
                 <b-button @click="addNotification()"
@@ -26,8 +10,8 @@
                 </b-button>
             </div>
             <b-collapse id="email-configuration" v-model="showConfig">
-                <b-card no-body :header="$t('Add Notification')">
-                    <email-options v-model="initNotification" :node="node()" ></email-options>
+                <b-card no-body :header="configHeader" v-if="currentNotification">
+                    <email-options v-model="currentNotification"></email-options>
 
                     <div class="form-group px-4 py-3 m-0 border-bottom">
                         <label>{{ $t('Send At') }}</label>
@@ -49,13 +33,16 @@
                         <b-button type="submit" size="sm" variant="secondary" @click="closeForm">{{ $t('Close') }}</b-button>
                     </b-card-footer>
                 </b-card>
+                <div v-else>
+                    No current notification
+                </div>
             </b-collapse>
 
             <b-card no-body v-show="showDeleteNotification"
                     bg-variant="danger"
                     text-variant="white"
             >
-                <div class="p-3">{{ $t('Are you sure you want to delete "') + this.deleteNotification.notification.subject  + $t('" notifications?')}}</div>
+                <div class="p-3">{{ $t('Are you sure you want to delete this notification?') }}</div>
                 <b-card-footer class="text-right">
                     <b-button size="sm" variant="light" @click="showDeleteNotification = !showDeleteNotification">{{ $t('Cancel')  }}</b-button>
                     <b-button size="sm" variant="link text-white" @click="onDelete()">{{ $t('Delete') }}</b-button>
@@ -75,11 +62,7 @@
                      </tr>
                  </tbody>
              </table>
-        </b-collapse>
-
-
     </div>
- </div>
 </template>
 
 <script>
@@ -119,27 +102,17 @@ export default {
                 groups: [],
                 screenRef: null,
             },
-            editNotificationIndex: null,
-            deleteNotification: {
-                index: null,
-                notification: {}
-            },
+            currentNotification: null,
+            deleteIndex: null,
             showConfig: false,
+            configHeader: '',
         }
     },
     watch: {
         "highlightedNode.definition.name" : {
             handler(value) {
-                if (this.initNotification !== '') {
-                    this.initNotification.subject = this.$t('RE') + ': ' + value;
-                    this.initNotification.textBody = this.$t('You have a pending task') + ': ' + value;
-                }
-            }
-        },
-        "initNotification": {
-            deep: true,
-            handler() {
-                this.setNodeConfig();
+                this.initNotification.subject = this.$t('RE') + ': ' + value;
+                this.initNotification.textBody = this.$t('You have a pending task') + ': ' + value;
             }
         },
         config: {
@@ -154,8 +127,12 @@ export default {
             return this.highlightedNode.definition;
         },
         addNotification() {
-            this.config.email_notifications.notifications.push(Object.assign({}, this.initNotification));
-            this.createdNotificationIndex = this.config.email_notifications.notifications.findIndex(x => x.subject === this.initNotification.subject);
+            this.showConfig = false;
+            let newNotification = Object.assign({}, this.initNotification);
+            this.config.email_notifications.notifications.push(newNotification);
+            this.currentNotification = newNotification;
+            this.configHeader = this.$t('Add Notification');
+            this.showConfig = true;
         },
         getNodeConfig() {
             if (_.get(this.node(), 'config')) {
@@ -163,18 +140,7 @@ export default {
             }
         },
         setNodeConfig() {
-            if (this.newNotificationIndex !== null) {
-                this.updateNodeConfig(this.newNotificationIndex);
-            } 
-            
-            if (this.editNotificationIndex !== null) {
-                this.updateNodeConfig(this.editNotificationIndex);
-            }
             Vue.set(this.node(), 'config', JSON.stringify(this.config));
-        },
-        updateNodeConfig(index) {
-            let notification = this.config.email_notifications.notifications[index];
-            Object.assign(notification, this.initNotification);
         },
         setUsersAndGroups(event) {
             Vue.set(this.node(), 'usersGroupsSelected',  JSON.stringify(event));
@@ -186,8 +152,8 @@ export default {
                 return;
             }
             this._beforeEditingCache = _.cloneDeep(notification);
-            this.initNotification = notification;
-            this.editNotificationIndex = index;
+            this.currentNotification = notification;
+            this.configHeader = this.$t('Edit Notification');
             this.showConfig = true
         },
         onDuplicate(notification) {
@@ -197,24 +163,17 @@ export default {
         },
         onConfirmDelete(notification, index) {
             this.showDeleteNotification = true;
-            this.deleteNotification =  {
-                index: index,
-                notification: notification
-            }
+            this.deleteIndex = index
         },
         onDelete() {
-            this.$delete(this.config.email_notifications.notifications, this.deleteNotification.index);
-            this.showDeleteNotification = !this.showDeleteNotification;
-            this.deleteNotification = {
-                index: null,
-                notification: {}
-            };
+            this.$delete(this.config.email_notifications.notifications, this.deleteIndex);
+            this.showDeleteNotification = false;
+            this.currentNotification = null;
+            this.showConfig = false;
         },
         onCancel() {
-            if (this.editNotificationIndex !== null) {
-                this.initNotification = _.cloneDeep(this._beforeEditingCache)
-            } else {
-                this.$delete(this.config.email_notifications.notifications, this.deleteNotification.index);
+            if (this.currentNotification) {
+                this.currentNotification = _.cloneDeep(this._beforeEditingCache)
             }
             this.showConfig = false
         },
@@ -229,10 +188,6 @@ export default {
 </script>
 
 <style scoped>
-.notification {
-    padding: 0!important;
-}
-
 .table td.actions {
     white-space: nowrap;
 }

@@ -57,6 +57,7 @@
     },
     watch: {
       value: {
+        immediate: true,
         handler() {
           this.rows = this.value
 

@@ -90,12 +90,10 @@
         }
       },
       value: {
+        immediate: true,
         handler() {
           Vue.set(this, 'config', this.value);
-
-          if ('userGoupSelect' in this.$refs) {
-            Vue.set(this, 'usersGroupsSelected', {'users': this.config.users, 'groups': this.config.groups});
-          }
+          Vue.set(this, 'usersGroupsSelected', {'users': this.config.users, 'groups': this.config.groups});
         }
       },
     },

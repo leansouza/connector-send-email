@@ -1,7 +1,7 @@
 import emailSend from './connectors/email/send/index';
-import Notification from './connectors/email/send/Notification';
+import EmailNotificationInspector from './connectors/email/send/Notification';
 
-window.Vue.component('EmailNotificationInspector', Notification);
+window.Vue.component('EmailNotificationInspector', EmailNotificationInspector);
 
 let nodeTypes = [
     emailSend,
@@ -19,14 +19,21 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnEx
     }
 
     let config = {
-      component: 'EmailNotificationInspector',
-      name: 'email notification',
+      component: 'FormAccordion',
+      name: "",
       container: true,
       config: {
-        label: '',
-        helper: '',
+        initiallyOpen: false,
+        label: 'Email Notifications',
+        icon: 'paper-plane',
         name: '',
       },
+      items: [
+        {
+          component: 'EmailNotificationInspector',
+          config: { label: '', helper: '', name: ''},
+        },
+      ]
     }
 
     let task = ProcessMaker.nodeTypes.get('processmaker-modeler-task')

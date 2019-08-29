@@ -76,6 +76,7 @@
         }
       },
       value: {
+        immediate: true,
         handler() {
           this.loading = true;
           this.content = [];
