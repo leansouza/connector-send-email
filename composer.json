@@ -1,8 +1,22 @@
 {
 	"name": "processmaker/connector-send-email",
 	"description": "ProcessMaker BPM Connectors that provide Email service",
-	"version": "1.0.0",
-	"type": "library",
+	"version": "1.0.1",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Nolan Ehrstrom",
+            "email": "nolan.ehrstrom@processmaker.com"
+        },
+        {
+            "name": "Sanja Cornelius",
+            "email": "sanja.cornelius@processmaker.com"
+		},
+        {
+            "name": "Marco Antonio Mena",
+            "email": "marco.antonio.nina@processmaker.com"
+		}
+    ],
 	"require": {
 		"mustache/mustache": "^2.12.0",
 		"spatie/server-side-rendering": "^0.2.5"

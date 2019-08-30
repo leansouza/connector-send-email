@@ -9,16 +9,15 @@
 
     <template v-if="selected">
       <div class="form-control p-0 border-0">
-        <button @click="addRow" class="btn btn-sm btn-secondary float-right">
+        <button @click.prevent="addRow" class="btn btn-sm btn-secondary float-right">
           <i class="fas fa-plus"></i>
         </button>
       </div>
 
       <template v-for="(row, index) in rows">
-        <div class="input-group border-0">
-
-          <input type="text" class="form-control" :placeholder="placeholder" v-model="row.email"
-                 aria-describedby="index" @input="updateConfig">
+        <div class="input-group border-0" :key="index">
+          <input type="text" class="form-control" :placeholder="placeholder" v-model="rows[index]"
+                 aria-describedby="index">
           <div class="input-group-prepend">
             <span class="input-group-text border-0" id="index">
               <a @click="remove(index)">
@@ -39,7 +38,7 @@
     props: {
       value: {
         type: Array,
-        default: []
+        default: () => []
       },
       label: {
         type: String,
@@ -53,47 +52,48 @@
     data() {
       return {
         selected: false,
-        rows: []
-
+        rows: [],
       };
     },
     watch: {
       value: {
-        deep: true,
+        immediate: true,
         handler() {
-          this.selected = false;
-          if (this.rows.length === 0 && this.value) {
-            this.value.map(item => {
-              this.rows.push({email: item});
-            })
-          }
+          this.rows = this.value
+
           if (this.rows.length > 0) {
             this.selected = true;
+          } else {
+            this.selected = false;
           }
         }
       },
+      selected() {
+        if (!this.selected) {
+          this.rows = [];
+        } else {
+          if (this.rows.length === 0) {
+            // have an empty one ready when they check the box
+            this.addRow();
+          }
+        }
+      },
+      rows: {
+        handler() {
+          this.$emit("input", this.rows);
+        },
+        deep: true,
+      }
     },
     computed: {},
     methods: {
       addRow() {
-        this.rows.push({email: ""});
+        this.rows.push("");
       },
       remove(index) {
-        this.rows.splice(index, 1);
-        this.updateConfig()
+        this.$delete(this.rows, index)
       },
-      updateConfig() {
-        let data = [];
-        if (this.selected) {
-          this.rows.map(item => {
-            data.push(item.email);
-          })
-        }
-        this.$emit("input", data);
-      }
     },
-    mounted() {
-    }
   };
 </script>
 

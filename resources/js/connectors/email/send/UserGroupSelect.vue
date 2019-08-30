@@ -17,6 +17,7 @@
       group-label="type"
       @open="load"
       @search-change="load">
+
       <template slot="noResult">
         {{ $t('No elements found. Consider changing the search query.') }}
       </template>
@@ -32,75 +33,96 @@
 
 <script>
   import Multiselect from "vue-multiselect";
+  import helper from "../../../helper";
 
   export default {
     inheritAttrs: false,
     props: ["value", "label", "helper", "params"],
+    mixins: [helper],
     components: {
       Multiselect
     },
     data() {
       return {
-        content: [],
         loading: false,
         options: [],
-        error: ''
+        error: '',
+        results: [],
+        selected: { users: [], groups: []},
+        lastEmitted: ''
       };
     },
     computed: {
-      node() {
-        return this.$parent.$parent.highlightedNode.definition;
+      content: {
+        get () {
+          if (this.loading) { return []; }
+          let res = this.selected.users.map(uid => {
+            return this.results.find(r => r.id === uid);
+          }).concat(this.selected.groups.map(gid => {
+            return this.results.find(r => r.id === 'group-' + gid);
+          }));
+          return res;
+        },
+        set (val) {
+          this.selected.users = []
+          this.selected.groups = []
+          val.forEach(item => {
+            this.results.push(item);
+            if (typeof item.id === 'number') {
+              this.selected.users.push(item.id);
+            } else {
+              this.selected.groups.push(parseInt(item.id.substr(6)));
+            }
+          });
+        }
       }
     },
     watch: {
       content: {
         handler() {
-          let selected = {};
-          selected.users = [];
-          selected.groups = [];
-          this.content.forEach(item => {
-            if (typeof item.id === 'number') {
-              selected.users.push(item.id);
-            } else {
-              selected.groups.push(parseInt(item.id.substr(6)));
-            }
-          });
-          this.$emit("input", selected);
+          this.lastEmitted = JSON.stringify(this.selected);
+          this.$emit("input", this.selected);
         }
       },
       value: {
         immediate: true,
         handler() {
-          // Load selected item.
-          if (this.content.length === 0 && this.value && this.value.users && this.value.groups) {
-            this.loading = true;
-            ProcessMaker.apiClient
-              .all(
-                this.value.users.map(item => {
-                  return ProcessMaker.apiClient.get('users/' + item);
-                })
-              )
-              .then(items => {
-                this.loading = false;
-                items.map(item => {
-                  this.content.push(item.data);
-                })
-              });
-
-            ProcessMaker.apiClient
-              .all(
-                this.value.groups.map(item => {
-                  return ProcessMaker.apiClient.get('groups/' + item);
-                })
-              )
-              .then(items => {
-                this.loading = false;
-                items.map(item => {
-                  this.content.push(this.formatGroup(item.data));
-                })
-              });
+          if (this.value.users.length === 0 && this.value.groups.length === 0) {
+            return;
           }
-        },
+          if (JSON.stringify(this.value) == this.lastEmitted) { 
+            return;
+          }
+          this.loading = true;
+          this.results = [];
+
+          let usersPromise = Promise.all(
+              this.value.users.map(item => {
+                return ProcessMaker.apiClient.get('users/' + item);
+              })
+            )
+            .then(items => {
+              items.forEach(item => {
+                this.results.push(item.data);
+              })
+            });
+          
+          let groupsPromise = Promise.all(
+              this.value.groups.map(item => {
+                return ProcessMaker.apiClient.get('groups/' + item);
+              })
+            )
+            .then(items => {
+              items.forEach(item => {
+                this.results.push(this.formatGroup(item.data));
+              })
+            });
+
+          Promise.all([usersPromise, groupsPromise]).then(() => {
+            this.content = this.results
+            this.loading = false;
+          });
+        }
       }
     },
     methods: {
@@ -114,13 +136,13 @@
               'type': this.$t('Users'),
               'items': response.data.data ? response.data.data : []
             });
-            this.loadUsersAndGroups(filter)
+            this.loadGroups(filter)
           })
           .catch(err => {
             this.loading = false;
           });
       },
-      loadUsersAndGroups(filter) {
+      loadGroups(filter) {
         ProcessMaker.apiClient
           .get("groups?order_direction=asc&status=active" + (typeof filter === 'string' ? '&filter=' + filter : ''))
           .then(response => {

@@ -4,10 +4,16 @@ namespace ProcessMaker\Packages\Connectors\Email;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use ProcessMaker\Events\ScreenBuilderStarting;
+use ProcessMaker\Nayra\Contracts\Bpmn\ActivityInterface;
+use ProcessMaker\Packages\Connectors\Email\Controllers\EmailController;
+use ProcessMaker\Packages\Connectors\Email\Notifications;
 use ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder;
 use ProcessMaker\Traits\PluginServiceProviderTrait;
+use ProcessMaker\Facades\WorkflowManager;
+use ProcessMaker\Models\Process;
 
 class PluginServiceProvider extends ServiceProvider
 {
@@ -46,6 +52,14 @@ class PluginServiceProvider extends ServiceProvider
             }
         });
 
+        Event::listen(ActivityInterface::EVENT_ACTIVITY_ACTIVATED, function ($event) {
+            app(Notifications::class)->created($event);
+        });
+
+        Event::listen(ActivityInterface::EVENT_ACTIVITY_COMPLETED, function ($event) {
+            app(Notifications::class)->completed($event);
+        });
+
         // Register email templates
         $this->loadViewsFrom(__DIR__ . '/views', 'email');
 
@@ -55,4 +69,5 @@ class PluginServiceProvider extends ServiceProvider
         // Complete the connector boot
         $this->completePluginBoot();
     }
+
 }

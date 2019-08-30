@@ -44,7 +44,7 @@ class SendEmail implements ShouldQueue
     public function handle()
     {
         Mail::send([], [], function (Message $message) {
-            $message->to($this->properties['email'], $this->properties['name'])
+            $message->to($this->properties['email'])
                 ->subject($this->properties['subject'])
                 ->setBody(view('email::layout', array_merge($this->properties, ['message' => $message]))->render(), 'text/html');
         });
