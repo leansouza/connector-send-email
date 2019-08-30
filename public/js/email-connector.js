@@ -248,7 +248,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   data: function data() {
     return {
       showConfiguration: false,
-      usersGroupsSelected: { users: [], groups: [] },
       config: {
         subject: '',
         type: 'screen',
@@ -269,22 +268,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.$emit('input', this.config);
       }
     },
-    usersGroupsSelected: {
-      deep: true,
-      handler: function handler() {
-        this.config.users = this.usersGroupsSelected.users;
-        this.config.groups = this.usersGroupsSelected.groups;
-      }
-    },
     value: {
       immediate: true,
       handler: function handler() {
+        if (this.value === null) {
+          return;
+        }
         Vue.set(this, 'config', this.value);
-        Vue.set(this, 'usersGroupsSelected', { 'users': this.config.users, 'groups': this.config.groups });
       }
     }
   },
-  computed: {},
+  computed: {
+    usersGroupsSelected: {
+      get: function get() {
+        return { users: this.config.users, groups: this.config.groups };
+      },
+      set: function set(val) {
+        this.config.users = val.users;
+        this.config.groups = val.groups;
+      }
+    }
+  },
   methods: {}
 });
 
@@ -445,9 +449,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         setNodeConfig: function setNodeConfig() {
             Vue.set(this.node(), 'config', JSON.stringify(this.config));
         },
-        setUsersAndGroups: function setUsersAndGroups(event) {
-            Vue.set(this.node(), 'usersGroupsSelected', JSON.stringify(event));
-        },
         onEdit: function onEdit(notification, index) {
             if (this.showConfig) {
                 // Just close the open one
@@ -531,6 +532,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -544,100 +546,125 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
   data: function data() {
     return {
-      content: [],
       loading: false,
       options: [],
-      error: ''
+      error: '',
+      results: [],
+      selected: { users: [], groups: [] },
+      lastEmitted: ''
     };
   },
 
   computed: {
-    node: function node() {
-      return this.highlightedNode.definition;
+    content: {
+      get: function get() {
+        var _this = this;
+
+        if (this.loading) {
+          return [];
+        }
+        var res = this.selected.users.map(function (uid) {
+          return _this.results.find(function (r) {
+            return r.id === uid;
+          });
+        }).concat(this.selected.groups.map(function (gid) {
+          return _this.results.find(function (r) {
+            return r.id === 'group-' + gid;
+          });
+        }));
+        return res;
+      },
+      set: function set(val) {
+        var _this2 = this;
+
+        this.selected.users = [];
+        this.selected.groups = [];
+        val.forEach(function (item) {
+          _this2.results.push(item);
+          if (typeof item.id === 'number') {
+            _this2.selected.users.push(item.id);
+          } else {
+            _this2.selected.groups.push(parseInt(item.id.substr(6)));
+          }
+        });
+      }
     }
   },
   watch: {
     content: {
       handler: function handler() {
-        if (this.loading) {
-          // Do not chagne settings if this watcher is getting called when value changes (it's loading from pm:config)
-          // Only udpate and emit when the user changes the input
-          return;
-        }
-        var selected = {};
-        selected.users = [];
-        selected.groups = [];
-        this.content.forEach(function (item) {
-          if (typeof item.id === 'number') {
-            selected.users.push(item.id);
-          } else {
-            selected.groups.push(parseInt(item.id.substr(6)));
-          }
-        });
-        this.$emit("input", selected);
+        this.lastEmitted = JSON.stringify(this.selected);
+        this.$emit("input", this.selected);
       }
     },
     value: {
       immediate: true,
       handler: function handler() {
-        var _this = this;
+        var _this3 = this;
 
+        if (this.value.users.length === 0 && this.value.groups.length === 0) {
+          return;
+        }
+        if (JSON.stringify(this.value) == this.lastEmitted) {
+          return;
+        }
         this.loading = true;
-        this.content = [];
+        this.results = [];
 
         var usersPromise = Promise.all(this.value.users.map(function (item) {
           return ProcessMaker.apiClient.get('users/' + item);
         })).then(function (items) {
-          items.map(function (item) {
-            _this.content.push(item.data);
+          items.forEach(function (item) {
+            _this3.results.push(item.data);
           });
         });
 
         var groupsPromise = Promise.all(this.value.groups.map(function (item) {
           return ProcessMaker.apiClient.get('groups/' + item);
         })).then(function (items) {
-          items.map(function (item) {
-            _this.content.push(_this.formatGroup(item.data));
+          items.forEach(function (item) {
+            _this3.results.push(_this3.formatGroup(item.data));
           });
         });
 
         Promise.all([usersPromise, groupsPromise]).then(function () {
-          _this.loading = false;
+          _this3.content = _this3.results;
+          _this3.loading = false;
         });
       }
     }
   },
   methods: {
     load: function load(filter) {
-      var _this2 = this;
+      var _this4 = this;
 
       this.loading = true;
       this.options = [];
       ProcessMaker.apiClient.get("users?order_direction=asc&status=active" + (typeof filter === 'string' ? '&filter=' + filter : '')).then(function (response) {
-        _this2.options.push({
-          'type': _this2.$t('Users'),
+        _this4.options.push({
+          'type': _this4.$t('Users'),
           'items': response.data.data ? response.data.data : []
         });
-        _this2.loadGroups(filter);
+        _this4.loadGroups(filter);
       }).catch(function (err) {
-        _this2.loading = false;
+        _this4.loading = false;
       });
     },
     loadGroups: function loadGroups(filter) {
-      var _this3 = this;
+      var _this5 = this;
 
       ProcessMaker.apiClient.get("groups?order_direction=asc&status=active" + (typeof filter === 'string' ? '&filter=' + filter : '')).then(function (response) {
         var groups = response.data.data.map(function (item) {
-          return _this3.formatGroup(item);
+          return _this5.formatGroup(item);
         });
 
-        _this3.options.push({
-          'type': _this3.$t('Groups'),
+        _this5.options.push({
+          'type': _this5.$t('Groups'),
           'items': groups ? groups : []
         });
-        _this3.loading = false;
+        _this5.loading = false;
       }).catch(function (err) {
-        _this3.loading = false;
+        _this5.loading = false;
       });
     },
     formatGroup: function formatGroup(item) {
@@ -732,18 +759,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     node: function node() {
       return this.highlightedNode.definition;
     },
-    setConfig: function setConfig(event) {
-      Vue.set(this.node(), 'config', JSON.stringify(event));
-      this.emailOptionsConfig = event;
-    },
     loadConfig: function loadConfig() {
-      this.emailOptionsConfig = JSON.parse(_.get(this.node(), 'config'));
+      if (_.get(this.node(), 'config')) {
+        this.emailOptionsConfig = JSON.parse(_.get(this.node(), 'config'));
+      }
+    }
+  },
+  watch: {
+    emailOptionsConfig: {
+      deep: true,
+      handler: function handler() {
+        Vue.set(this.node(), 'config', JSON.stringify(this.emailOptionsConfig));
+      }
     }
   },
   data: function data() {
     return {
       showConfiguration: false,
-      emailOptionsConfig: {}
+      emailOptionsConfig: null // will be set on init in EmailOptions.vue, no need to duplicate here
     };
   },
   mounted: function mounted() {
@@ -1085,8 +1118,14 @@ var render = function() {
           ),
           _vm._v(" "),
           _c("email-options", {
-            attrs: { value: _vm.emailOptionsConfig, node: _vm.node() },
-            on: { input: _vm.setConfig }
+            attrs: { node: _vm.node() },
+            model: {
+              value: _vm.emailOptionsConfig,
+              callback: function($$v) {
+                _vm.emailOptionsConfig = $$v
+              },
+              expression: "emailOptionsConfig"
+            }
           })
         ],
         1

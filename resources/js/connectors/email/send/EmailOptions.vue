@@ -62,7 +62,6 @@
     data() {
       return {
         showConfiguration: false,
-        usersGroupsSelected: { users: [], groups: [] },
         config: {
           subject: '',
           type: 'screen',
@@ -82,23 +81,27 @@
           this.$emit('input', this.config);
         }
       },
-      usersGroupsSelected: {
-        deep: true,
-        handler() {
-          this.config.users = this.usersGroupsSelected.users;
-          this.config.groups = this.usersGroupsSelected.groups;
-        }
-      },
       value: {
         immediate: true,
         handler() {
+          if (this.value === null) { return; }
           Vue.set(this, 'config', this.value);
-          Vue.set(this, 'usersGroupsSelected', {'users': this.config.users, 'groups': this.config.groups});
         }
       },
     },
-    computed: {},
-    methods: {},
+    computed: {
+      usersGroupsSelected: {
+        get () {
+          return { users: this.config.users, groups: this.config.groups};
+        },
+        set (val) {
+          this.config.users = val.users;
+          this.config.groups = val.groups;
+        }
+      }
+    },
+    methods: {
+    },
   };
 </script>
 

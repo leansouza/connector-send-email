@@ -17,6 +17,7 @@
       group-label="type"
       @open="load"
       @search-change="load">
+
       <template slot="noResult">
         {{ $t('No elements found. Consider changing the search query.') }}
       </template>
@@ -43,43 +44,57 @@
     },
     data() {
       return {
-        content: [],
         loading: false,
         options: [],
-        error: ''
+        error: '',
+        results: [],
+        selected: { users: [], groups: []},
+        lastEmitted: ''
       };
     },
     computed: {
-      node() {
-        return this.highlightedNode.definition;
+      content: {
+        get () {
+          if (this.loading) { return []; }
+          let res = this.selected.users.map(uid => {
+            return this.results.find(r => r.id === uid);
+          }).concat(this.selected.groups.map(gid => {
+            return this.results.find(r => r.id === 'group-' + gid);
+          }));
+          return res;
+        },
+        set (val) {
+          this.selected.users = []
+          this.selected.groups = []
+          val.forEach(item => {
+            this.results.push(item);
+            if (typeof item.id === 'number') {
+              this.selected.users.push(item.id);
+            } else {
+              this.selected.groups.push(parseInt(item.id.substr(6)));
+            }
+          });
+        }
       }
     },
     watch: {
       content: {
         handler() {
-          if (this.loading) {
-            // Do not chagne settings if this watcher is getting called when value changes (it's loading from pm:config)
-            // Only udpate and emit when the user changes the input
-            return;
-          }
-          let selected = {};
-          selected.users = [];
-          selected.groups = [];
-          this.content.forEach(item => {
-            if (typeof item.id === 'number') {
-              selected.users.push(item.id);
-            } else {
-              selected.groups.push(parseInt(item.id.substr(6)));
-            }
-          });
-          this.$emit("input", selected);
+          this.lastEmitted = JSON.stringify(this.selected);
+          this.$emit("input", this.selected);
         }
       },
       value: {
         immediate: true,
         handler() {
+          if (this.value.users.length === 0 && this.value.groups.length === 0) {
+            return;
+          }
+          if (JSON.stringify(this.value) == this.lastEmitted) { 
+            return;
+          }
           this.loading = true;
-          this.content = [];
+          this.results = [];
 
           let usersPromise = Promise.all(
               this.value.users.map(item => {
@@ -87,8 +102,8 @@
               })
             )
             .then(items => {
-              items.map(item => {
-                this.content.push(item.data);
+              items.forEach(item => {
+                this.results.push(item.data);
               })
             });
           
@@ -98,12 +113,13 @@
               })
             )
             .then(items => {
-              items.map(item => {
-                this.content.push(this.formatGroup(item.data));
+              items.forEach(item => {
+                this.results.push(this.formatGroup(item.data));
               })
             });
 
           Promise.all([usersPromise, groupsPromise]).then(() => {
+            this.content = this.results
             this.loading = false;
           });
         }

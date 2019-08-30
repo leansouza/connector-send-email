@@ -14,7 +14,7 @@
           class="fas fa-angle-down ml-auto"
           :class="{ 'fas fa-angle-right' : showConfiguration }"></i>
       </button>
-      <email-options @input="setConfig" :value="emailOptionsConfig" :node="node()"></email-options>
+      <email-options v-model="emailOptionsConfig" :node="node()"></email-options>
     </b-card-body>
   </b-card>
 
@@ -35,19 +35,24 @@
       node() {  
         return this.highlightedNode.definition;
       }, 
-      setConfig(event){
-        Vue.set(this.node(), 'config',  JSON.stringify(event));
-        this.emailOptionsConfig = event;
-      },
       loadConfig() {
-        this.emailOptionsConfig = JSON.parse(_.get(this.node(), 'config'));
-        
+        if (_.get(this.node(), 'config')) {
+          this.emailOptionsConfig = JSON.parse(_.get(this.node(), 'config'));
+        }
       },
+    },
+    watch: {
+      emailOptionsConfig: {
+        deep: true,
+        handler()  {
+          Vue.set(this.node(), 'config',  JSON.stringify(this.emailOptionsConfig));
+        }
+      }
     },
     data() {
       return {
         showConfiguration: false,
-        emailOptionsConfig: {},
+        emailOptionsConfig: null, // will be set on init in EmailOptions.vue, no need to duplicate here
       }
     },
     mounted() {

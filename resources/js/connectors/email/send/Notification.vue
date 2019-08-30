@@ -142,9 +142,6 @@ export default {
         setNodeConfig() {
             Vue.set(this.node(), 'config', JSON.stringify(this.config));
         },
-        setUsersAndGroups(event) {
-            Vue.set(this.node(), 'usersGroupsSelected',  JSON.stringify(event));
-        },
         onEdit(notification, index) {
             if (this.showConfig) {
                 // Just close the open one
