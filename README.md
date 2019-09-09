@@ -18,6 +18,11 @@ php artisan connector-send-email:install
 * Specify your MAIL_USERNAME
 * Specify your MAIL_PASSWORD
 
+3. Set the location for your NodeJS executable with NODE_BIN_PATH in your .env. For example:
+   ```
+   NODE_BIN_PATH=/usr/bin/node
+   ```
+
 ## Uninstall
 * Use `php artisan connector-send-email:uninstall` to remove the package setup 
 * Use `composer remove processmaker/connector-send-email` to remove the package

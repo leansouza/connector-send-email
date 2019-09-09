@@ -444,6 +444,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         getNodeConfig: function getNodeConfig() {
             if (_.get(this.node(), 'config')) {
                 this.config = JSON.parse(_.get(this.node(), 'config'));
+                if (!('email_notifications' in this.config)) {
+                    this.config.email_notifications = { notifications: [] };
+                }
             }
         },
         setNodeConfig: function setNodeConfig() {
