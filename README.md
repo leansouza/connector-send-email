@@ -25,6 +25,7 @@ php artisan connector-send-email:install
 ## Uninstall
 * Use `php artisan connector-send-email:uninstall` to remove the package setup 
 * Use `composer remove processmaker/connector-send-email` to remove the package
+* If you have 2-factor authentication enabled, you will also need to [create an app password](https://security.google.com/settings/security/apppasswords)
 
 ## Development
 
