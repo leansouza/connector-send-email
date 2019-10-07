@@ -18,6 +18,11 @@ php artisan connector-send-email:install
 * Specify your MAIL_USERNAME
 * Specify your MAIL_PASSWORD
 
+## For use with GMail SMTP
+ * Add `MAIL_ENCRYPTION=ssl` to your .env file
+ * [Enable less secure apps for your gmail account](https://support.google.com/accounts/answer/6010255)
+ * If you have 2-factor authentication enabled, you will also need to [create an app password](https://security.google.com/settings/security/apppasswords)
+
 ## Uninstall
 * Use `php artisan connector-send-email:uninstall` to remove the package setup 
 * Use `composer remove processmaker/connector-send-email` to remove the package
