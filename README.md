@@ -18,6 +18,10 @@ php artisan connector-send-email:install
 * Specify your MAIL_USERNAME
 * Specify your MAIL_PASSWORD
 
+3. Set the location for your NodeJS executable with NODE_BIN_PATH in your .env. For example:
+   ```
+   NODE_BIN_PATH=/usr/bin/node
+   ```
 ## For use with GMail SMTP
  * Add `MAIL_ENCRYPTION=ssl` to your .env file
  * [Enable less secure apps for your gmail account](https://support.google.com/accounts/answer/6010255)

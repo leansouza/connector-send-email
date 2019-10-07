@@ -134,6 +134,9 @@ export default {
         getNodeConfig() {
             if (_.get(this.node(), 'config')) {
                 this.config = JSON.parse(_.get(this.node(), 'config'));
+                if (!('email_notifications' in this.config)) {
+                    this.config.email_notifications = { notifications: [] };
+                }
             }
         },
         setNodeConfig() {
