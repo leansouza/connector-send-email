@@ -388,10 +388,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     data: function data() {
         return {
-            showConfiguration: false,
             showDeleteNotification: false,
             confirmDelete: false,
-            newNotificationIndex: null,
             config: {
                 email_notifications: {
                     notifications: []
@@ -409,6 +407,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 screenRef: null
             },
             currentNotification: null,
+            currentNotificationIndex: null,
+            originalNotification: null,
             deleteIndex: null,
             showConfig: false,
             configHeader: ''
@@ -416,12 +416,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     watch: {
-        "highlightedNode.definition.name": {
-            handler: function handler(value) {
-                this.initNotification.subject = this.$t('RE') + ': ' + value;
-                this.initNotification.textBody = this.$t('You have a pending task') + ': ' + value;
-            }
-        },
         config: {
             deep: true,
             handler: function handler() {
@@ -436,7 +430,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         addNotification: function addNotification() {
             this.showConfig = false;
             var newNotification = Object.assign({}, this.initNotification);
+            newNotification.subject = this.$t('RE') + ': ' + this.node().name;
+            newNotification.textBody = this.$t('You have a pending task') + ': ' + this.node().name;
             this.config.email_notifications.notifications.push(newNotification);
+            this.currentNotificationIndex = this.config.email_notifications.notifications.length - 1;
             this.currentNotification = newNotification;
             this.configHeader = this.$t('Add Notification');
             this.showConfig = true;
@@ -455,8 +452,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 this.showConfig = false;
                 return;
             }
-            this._beforeEditingCache = _.cloneDeep(notification);
+            this.originalNotification = _.cloneDeep(notification);
             this.currentNotification = notification;
+            this.currentNotificationIndex = index;
             this.configHeader = this.$t('Edit Notification');
             this.showConfig = true;
         },
@@ -472,13 +470,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         onDelete: function onDelete() {
             this.$delete(this.config.email_notifications.notifications, this.deleteIndex);
             this.showDeleteNotification = false;
-            this.currentNotification = null;
-            this.showConfig = false;
+            this.deleteIndex = null;
         },
         onCancel: function onCancel() {
-            if (this.currentNotification) {
-                this.currentNotification = _.cloneDeep(this._beforeEditingCache);
+            if (this.originalNotification) {
+                this.$set(this.config.email_notifications.notifications, this.currentNotificationIndex, _.cloneDeep(this.originalNotification));
+            } else {
+                this.$delete(this.config.email_notifications.notifications, this.currentNotificationIndex);
             }
+            this.currentNotification = null;
+            this.currentNotificationIndex - null;
+            this.originalNotification = null;
             this.showConfig = false;
         },
         closeForm: function closeForm() {
@@ -1224,8 +1226,8 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.initNotification.sendAt,
-                              expression: "initNotification.sendAt"
+                              value: _vm.currentNotification.sendAt,
+                              expression: "currentNotification.sendAt"
                             }
                           ],
                           staticClass: "form-control",
@@ -1240,7 +1242,7 @@ var render = function() {
                                   return val
                                 })
                               _vm.$set(
-                                _vm.initNotification,
+                                _vm.currentNotification,
                                 "sendAt",
                                 $event.target.multiple
                                   ? $$selectedVal
@@ -1283,20 +1285,20 @@ var render = function() {
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.initNotification.expression,
-                            expression: "initNotification.expression"
+                            value: _vm.currentNotification.expression,
+                            expression: "currentNotification.expression"
                           }
                         ],
                         staticClass: "form-control",
                         attrs: { placeholder: _vm.$t("varname == true") },
-                        domProps: { value: _vm.initNotification.expression },
+                        domProps: { value: _vm.currentNotification.expression },
                         on: {
                           input: function($event) {
                             if ($event.target.composing) {
                               return
                             }
                             _vm.$set(
-                              _vm.initNotification,
+                              _vm.currentNotification,
                               "expression",
                               $event.target.value
                             )

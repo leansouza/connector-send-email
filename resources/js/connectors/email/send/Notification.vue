@@ -15,7 +15,7 @@
 
                     <div class="form-group px-4 py-3 m-0 border-bottom">
                         <label>{{ $t('Send At') }}</label>
-                        <select class="form-control" v-model="initNotification.sendAt">
+                        <select class="form-control" v-model="currentNotification.sendAt">
                             <option value="task-start">{{ $t('Task Start') }}</option>
                             <option value="task-end">{{ $t('Task Completion') }}</option>
                         </select>
@@ -24,7 +24,7 @@
 
                     <div class="form-group px-4 py-3 m-0 border-bottom">
                         <label>{{ $t('Expression') }}</label>
-                        <input :placeholder="$t('varname == true')" class="form-control" v-model="initNotification.expression">
+                        <input :placeholder="$t('varname == true')" class="form-control" v-model="currentNotification.expression">
                         <small class="form-text text-muted">{{ $t('This notification will only be sent if the expression is true.') }}</small>
                     </div>
 
@@ -82,10 +82,8 @@ export default {
     },
     data() {
         return {
-            showConfiguration: false,
             showDeleteNotification: false,
             confirmDelete: false,
-            newNotificationIndex: null,
             config: {
                 email_notifications: {
                     notifications: [],
@@ -103,18 +101,14 @@ export default {
                 screenRef: null,
             },
             currentNotification: null,
+            currentNotificationIndex: null,
+            originalNotification: null,
             deleteIndex: null,
             showConfig: false,
             configHeader: '',
         }
     },
     watch: {
-        "highlightedNode.definition.name" : {
-            handler(value) {
-                this.initNotification.subject = this.$t('RE') + ': ' + value;
-                this.initNotification.textBody = this.$t('You have a pending task') + ': ' + value;
-            }
-        },
         config: {
             deep: true,
             handler() {
@@ -129,7 +123,10 @@ export default {
         addNotification() {
             this.showConfig = false;
             let newNotification = Object.assign({}, this.initNotification);
+            newNotification.subject = this.$t('RE') + ': ' + this.node().name;
+            newNotification.textBody = this.$t('You have a pending task') + ': ' + this.node().name;
             this.config.email_notifications.notifications.push(newNotification);
+            this.currentNotificationIndex = this.config.email_notifications.notifications.length - 1;
             this.currentNotification = newNotification;
             this.configHeader = this.$t('Add Notification');
             this.showConfig = true;
@@ -148,8 +145,9 @@ export default {
                 this.showConfig = false;
                 return;
             }
-            this._beforeEditingCache = _.cloneDeep(notification);
+            this.originalNotification = _.cloneDeep(notification);
             this.currentNotification = notification;
+            this.currentNotificationIndex = index;
             this.configHeader = this.$t('Edit Notification');
             this.showConfig = true
         },
@@ -160,19 +158,27 @@ export default {
         },
         onConfirmDelete(notification, index) {
             this.showDeleteNotification = true;
-            this.deleteIndex = index
+            this.deleteIndex = index;
         },
         onDelete() {
             this.$delete(this.config.email_notifications.notifications, this.deleteIndex);
             this.showDeleteNotification = false;
-            this.currentNotification = null;
-            this.showConfig = false;
+            this.deleteIndex = null;
         },
         onCancel() {
-            if (this.currentNotification) {
-                this.currentNotification = _.cloneDeep(this._beforeEditingCache)
+            if (this.originalNotification) {
+                this.$set(
+                    this.config.email_notifications.notifications,
+                    this.currentNotificationIndex,
+                    _.cloneDeep(this.originalNotification)
+                );
+            } else {
+                this.$delete(this.config.email_notifications.notifications, this.currentNotificationIndex);
             }
-            this.showConfig = false
+            this.currentNotification = null;
+            this.currentNotificationIndex - null;
+            this.originalNotification = null;
+            this.showConfig = false;
         },
         closeForm() {
             this.showConfig = false
