@@ -35,27 +35,6 @@
       color: black;
     }
 
-    a.btn {
-      color: white;
-    }
-
-    .btn {
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .btn:hover {
-      color: white;
-      background-color: #0069d9;
-    }
-
-    .btn-primary {
-      background-color: #3397e1;
-    }
-
     a.text-light {
       text-decoration: none;
       color: #f8f9fa;
