@@ -66,6 +66,11 @@ class PluginServiceProvider extends ServiceProvider
         // Register a seeder that will be executed in php artisan db:seed
         $this->registerSeeder(EmailSendSeeder::class);
 
+        // Tell css inliner to use core's app.css
+        config([
+            'css-inliner.css-files' => [public_path('css/app.css')]
+        ]);
+
         // Complete the connector boot
         $this->completePluginBoot();
     }
