@@ -18,20 +18,26 @@ Artisan::command('connector-send-email:install', function () {
     if (file_exists($envPath)) {
         $envContent = file_get_contents($envPath);
 
-        $MAIL_DRIVER =  $this->ask(__("Enter your MAIL DRIVER"), 'smtp');
-        $envContent .= "\nMAIL_DRIVER=$MAIL_DRIVER";
+        $addEnv = function($name, $ask, $default = null, $method = 'ask') use (&$envContent) {
+            if (!isset($_ENV[$name])) {
+                $value = $this->$method($ask, $default);
+                $envContent .= "\n{$name}={$value}";
+                return $value;
+            }
+            return $_ENV[$name];
+        };
 
-        $MAIL_HOST =  $this->ask(__("Enter your MAIL HOST"), 'smtp.yourmail.com');
-        $envContent .= "\nMAIL_HOST=$MAIL_HOST";
-
-        $MAIL_PORT =  $this->ask(__("Enter your MAIL PORT"), '2525');
-        $envContent .= "\nMAIL_PORT=$MAIL_PORT";
-
-        $MAIL_USERNAME =  $this->ask(__("Enter your MAIL USERNAME"), 'username');
-        $envContent .= "\nMAIL_USERNAME=$MAIL_USERNAME";
-
-        $MAIL_PASSWORD =  $this->secret(__("Enter your MAIL PASSWORD (hidden)"), 'password');
-        $envContent .= "\nMAIL_PASSWORD=$MAIL_PASSWORD";
+        $path = $addEnv('NODE_BIN_PATH', __("Enter path to your Node.js executable"), '/usr/bin/node');
+        exec($path. " --version", $_out, $returnValue);
+        if ($returnValue !== 0) {
+            $this->error(__("Node executable at {$path} not found or can not be run"));
+            return;
+        }
+        $addEnv('MAIL_DRIVER', __("Enter your MAIL DRIVER"), 'smtp');
+        $addEnv('MAIL_HOST', __("Enter your MAIL HOST"), 'smtp.yourmail.com');
+        $addEnv('MAIL_PORT', __("Enter your MAIL PORT"), '2525');
+        $addEnv('MAIL_USERNAME', __("Enter your MAIL USERNAME"));
+        $addEnv('MAIL_PASSWORD', __("Enter your MAIL PASSWORD (hidden)"), null, 'secret');
 
         file_put_contents($envPath, $envContent);
     }
