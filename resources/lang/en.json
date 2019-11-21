@@ -18,5 +18,17 @@
     "Add additional emails": "Add additional emails",
     "enter email": "enter email",
     "The name of the Send Email Task": "The name of the Send Email Task",
-    "Email Notifications": "Email Notifications"
+    "Email Notifications": "Email Notifications",
+    "RE": "RE",
+    "You have a pending task": "You have a pending task",
+    "Add Notification": "Add Notification",
+    "Send At": "Send At",
+    "Task Start": "Task Start",
+    "Task Completion": "Task Completion",
+    "Choose when this email will be sent to recipients": "Choose when this email will be sent to recipients",
+    "This notification will only be sent if the expression is true.": "This notification will only be sent if the expression is true.",
+    "edit": "edit",
+    "duplicate": "duplicate",
+    "delete": "delete",
+    "Are you sure you want to delete this notification?": "Are you sure you want to delete this notification?"
 }
