@@ -1,8 +1,3 @@
-<template>
-  <div>
-  </div>
-</template>
-
 <script>
 import icon from './marker.svg';
 
