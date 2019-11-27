@@ -1,37 +1,37 @@
-import {renderer, FormBuilderControls} from "@processmaker/screen-builder";
-import FormHtmlEditorStatic from './FormHtmlEditorStatic'
+import globalProperties from "@processmaker/screen-builder/src/global-properties";
+import {FormBuilderControls} from "@processmaker/screen-builder";
+import FormHtmlEditorStatic from './FormHtmlEditorStatic';
 
-const {
-    FormRecordListStatic,
-} = renderer;
+window.Vue.component('FormHtmlEditorStatic', FormHtmlEditorStatic);
 
-const TableControl = FormBuilderControls.find(control => control.rendererBinding === 'FormMultiColumn');
-
-const RichTextControl = FormBuilderControls.find(control => control.rendererBinding === 'FormHtmlEditor');
+const RichTextControl = FormBuilderControls.find(control => control.rendererBinding === "FormHtmlEditor");
 RichTextControl.control.component = 'FormHtmlEditorStatic';
 RichTextControl.rendererBinding = 'FormHtmlEditorStatic';
-RichTextControl.rendererComponent = Vue.component('FormHtmlEditorStatic', FormHtmlEditorStatic);
+RichTextControl.rendererComponent = FormHtmlEditorStatic;
 
-const FormRecordList = FormBuilderControls.find(control => control.rendererBinding === 'FormRecordList');
-FormRecordList.control.component = 'FormRecordListStatic';
-FormRecordList.rendererBinding = 'FormRecordListStatic';
-FormRecordList.rendererComponent = Vue.component('FormRecordListStatic', FormRecordListStatic);
+const TableControl = FormBuilderControls.find(control => control.rendererBinding === "FormMultiColumn");
+
+const FormRecordList = FormBuilderControls.find(control => control.rendererBinding === "FormRecordList");
+
+// Remove editable inspector props
+FormRecordList.control.inspector = FormRecordList.control.inspector.filter(prop => prop.field !== "editable" && prop.field !== "form");
 
 let emailControls = [
-    RichTextControl,
-    TableControl,
-    FormRecordList,
+  RichTextControl,
+  TableControl,
+  FormRecordList,
 ];
 
 ProcessMaker.EventBus.$on("screen-builder-init", (manager) => {
-    for (let item of emailControls) {
-        manager.type = 'email';
-        manager.addControl(
-           item.control,
-           item.rendererComponent,
-           item.rendererBinding,
-           item.builderComponent,
-           item.builderBinding
-        );
-    }
+  emailControls.forEach((item) => {
+    item.control.inspector.push(...globalProperties[0].inspector);
+    manager.type = 'email';
+    manager.addControl(
+      item.control,
+      item.rendererComponent,
+      item.rendererBinding,
+      item.builderComponent,
+      item.builderBinding
+    );
+  });
 });
