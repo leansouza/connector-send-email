@@ -37,7 +37,15 @@ export default {
         modifiedConfig() {
             this.config.forEach((page, pageIndex) => {
                 page.items.forEach((item, itemIndex) => {
-                    if (item.component == 'FormHtmlViewer') {
+                    if (item.container) {
+                        item.items.forEach((containerItem, containerIndex) => {
+                            containerItem.forEach((childItem, childIndex) => {
+                                if (childItem.component == 'FormHtmlViewer') {
+                                    this.config[pageIndex].items[itemIndex].items[containerIndex][childIndex].component = 'FormHtmlEditorStatic';
+                                }
+                            });
+                        });
+                    } else if (item.component == 'FormHtmlViewer') {
                         this.config[pageIndex].items[itemIndex].component = 'FormHtmlEditorStatic';
                     }
                 });
