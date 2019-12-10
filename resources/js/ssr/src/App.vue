@@ -47,6 +47,10 @@ export default {
                         });
                     } else if (item.component == 'FormHtmlViewer') {
                         this.config[pageIndex].items[itemIndex].component = 'FormHtmlEditorStatic';
+                    } else if (item.component == 'FormRecordList') {
+                        const optionsList = item.config.fields.optionsList;
+                        this.config[pageIndex].items[itemIndex].config.fields = optionsList;
+                        this.config[pageIndex].items[itemIndex].component = 'FormRecordListStatic'; 
                     }
                 });
             });
