@@ -24,3 +24,11 @@ mix.setPublicPath('public')
     .js('resources/js/email-connector.js', 'js')
     .js('resources/js/processes/screen-builder/typeEmail.js', 'js/processes/screen-builder')
     .version()
+    .then(() => {
+        try {
+          require('./webpack.callback')();
+        } catch(e) {
+          //No callback found
+        }
+      });
+      
