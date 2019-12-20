@@ -7,6 +7,11 @@ import icon from './marker.svg';
  */
 export default {
   extends: ProcessMaker.nodeTypes.get('processmaker-modeler-task').component,
+  data() {
+    return {
+      dropdownData: [],
+    }
+  },
   methods: {
     /**
      * Define the inspector loaded when nthe control is selected
