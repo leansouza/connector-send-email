@@ -27,7 +27,8 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"ProcessMaker\\Packages\\Connectors\\Email\\": "src/"
+			"ProcessMaker\\Packages\\Connectors\\Email\\": "src/",
+			"ProcessMaker\\ScriptRunners\\": "tests/ScriptRunners/"
 		}
 	},
 	"extra": {
