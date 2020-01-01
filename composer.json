@@ -19,7 +19,6 @@
     ],
 	"require": {
 		"mustache/mustache": "^2.12.0",
-		"spatie/server-side-rendering": "^0.2.5",
 		"fedeisas/laravel-mail-css-inliner": "^2.3"
 	},
 	"require-dev": {
