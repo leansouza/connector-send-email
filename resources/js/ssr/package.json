@@ -2,7 +2,6 @@
   "name": "vue-form-ssr",
   "version": "1.0.0",
   "description": "",
-  "main": "test.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --watch --progress --config webpack.config.js",

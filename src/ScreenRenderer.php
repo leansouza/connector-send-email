@@ -12,6 +12,7 @@ class ScreenRenderer
             $entry,
             escapeshellarg(json_encode($screen_config)),
             escapeshellarg(json_encode($data)),
+            '2>&1'
         ]);
         exec($cmd, $out, $err);
         if ($err) {
