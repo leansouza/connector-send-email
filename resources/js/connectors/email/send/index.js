@@ -39,15 +39,19 @@ export default  {
     /**
      * Inspector handler
      */
-    inspectorHandler: function(value, definition, component) {
+    inspectorHandler(value, node, setNodeProp) {
         // Go through each property and rebind it to our data
-        for (var key in value) {
-            // Only change if the value is different
-            if (definition[key] != value[key]) {
-                definition[key] = key === 'config' ? JSON.stringify(value[key]) : value[key];
+        for (const key in value) {
+            if (node.definition[key] === value[key]) {
+                continue;
+            }
+
+            if (node[key] = key === 'config') {
+                setNodeProp(node, key, JSON.stringify(value[key]));
+            } else {
+                setNodeProp(node, key, value[key]);
             }
         }
-        component.updateShape();
     },
     /**
      * Inspector definition
@@ -57,10 +61,43 @@ export default  {
             name: 'Send Email',
             items: [
                 {
-                    component: inspector,
+                    component: 'FormAccordion',
+                    container: true,
                     config: {
-                        name: 'id',
+                        initiallyOpen: true,
+                        label: 'Configuration',
+                        icon: 'cog',
+                        name: 'inspector-accordion',
                     },
+                    items: [
+                        {
+                            component: inspector,
+                            config: {
+                                name: '',
+                            },
+                        },
+                    ],
+                },
+                {
+                    component: 'FormAccordion',
+                    container: true,
+                    config: {
+                        initiallyOpen: false,
+                        label: 'Advanced',
+                        icon: 'cogs',
+                        name: 'inspector-accordion',
+                    },
+                    items: [
+                        {
+                            component: 'FormInput',
+                            config: {
+                                label: 'Node Identifier',
+                                helper: 'Enter the id that is unique from all other elements in the diagram',
+                                name: 'id',
+                                validation: ['required', 'regex:/^[a-zA-Z][^\\s][a-zA-Z0-9_-]+$/'],
+                            },
+                        },
+                    ],
                 },
             ],
         },

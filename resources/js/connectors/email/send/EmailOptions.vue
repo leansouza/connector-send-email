@@ -1,13 +1,13 @@
 <template>
     <div class="email-options">
 
-        <div class="form-group pl-4 pr-4 pt-3 pb-3 border-bottom m-0">
+        <div class="form-group">
           <label>{{ $t('Subject') }}</label>
           <input v-model="config.subject" :placeholder="$t('RE:')" class="form-control">
           <small class="form-text text-muted">{{ $t('Email subject') }}</small>
         </div>
 
-        <div class="form-group pl-4 pr-4 pt-3 pb-3 border-bottom m-0">
+        <div class="form-group">
           <label>{{ $t('Body') }}</label>
           <select class="form-control" v-model="config.type">
             <option value="text">{{ $t('Plain Text') }}</option>
@@ -26,10 +26,8 @@
           </modeler-screen-select>
         </div>
 
-        <div class="form-group pl-4 pr-4 pt-3 pb-3 m-0 border-bottom">
-          <label>{{ $t('Recipients') }}</label>
           <user-group-select
-            class="p-0 mb-0"
+            label="Recipients"
             v-bind:multiple="true"
             v-model="usersGroupsSelected"
             ref="userGoupSelect"
@@ -38,12 +36,10 @@
           <small class="form-text text-muted">{{ $t('(Select all that apply)') }}</small>
 
            <add-input
-            class="p-0"
             :label="$t('Add additional emails')"
             :placeholder="$t('enter email')"
             v-model="config.addEmails"
           ></add-input>
-        </div>
 
     </div>
 
@@ -52,6 +48,7 @@
 <script>
   import AddInput from "./AddInput";
   import UserGroupSelect from "./UserGroupSelect";
+  import helper from '../../../helper';
 
   export default {
     components: {
@@ -59,6 +56,7 @@
       UserGroupSelect
     },
     props: ["value"],
+    mixins: [helper],
     data() {
       return {
         showConfiguration: false,
@@ -67,7 +65,6 @@
           type: 'screen',
           textBody: '',
           screenRef: '',
-          email: '',
           addEmails: [],
           users : [],
           groups : [],
@@ -78,6 +75,7 @@
       config: {
         deep: true,
         handler() {
+          this.validate();
           this.$emit('input', this.config);
         }
       },
@@ -87,6 +85,9 @@
           if (this.value === null) { return; }
           Vue.set(this, 'config', this.value);
         }
+      },
+      nodeId() {
+        this.validate();
       },
     },
     computed: {
@@ -98,9 +99,54 @@
           this.config.users = val.users;
           this.config.groups = val.groups;
         }
+      },
+      warnings: {
+        get() {
+          return this.$root.$children[0].warnings;
+        },
+        set(val) {
+          this.$root.$children[0].warnings = val;
+        }
       }
     },
     methods: {
+      validate() {
+        // Remove any existing warnings
+        this.warnings = this.warnings.filter(w => w._node_id !== this.nodeId);
+
+        if (!this.config.subject) {
+          this.addWarning(this.$t('Email Subject Is Missing'));
+        }
+
+        if (this.config.type === 'screen') {
+          if (!this.config.screenRef) {
+            this.addWarning(this.$t('No Screen Selected'));
+          }
+        } else {
+          if (!this.config.textBody) {
+            this.addWarning(this.$t('Email Body Text Is Missing'));
+          }
+        }
+
+        if (
+          (
+            this.config.addEmails.length === 0 ||
+            this.config.addEmails.every(r => r === '')
+          ) &&
+          this.config.users.length === 0 &&
+          this.config.groups.length === 0
+        ) {
+          this.addWarning(this.$t('Email Has No Recipients'));
+        }
+      },
+      addWarning(text) {
+        const warning = {
+          _node_id: this.nodeId,
+          title: this.$t('Send Email') + ' ' + this.nodeId,
+          text
+        };
+        this.warnings.push(warning);
+      }
     },
   };
 </script>
