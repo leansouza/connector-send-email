@@ -2,6 +2,12 @@
     <div class="email-options">
 
         <div class="form-group">
+          <label>{{ $t('Name') }}</label>
+          <input v-model="definition.name" name="name" placeholder type="text" class="form-control"/>
+          <small class="form-text text-muted">{{ $t('Enter the name of this element') }}</small>
+        </div>
+
+        <div class="form-group">
           <label>{{ $t('Subject') }}</label>
           <input v-model="config.subject" :placeholder="$t('RE:')" class="form-control">
           <small class="form-text text-muted">{{ $t('Email subject') }}</small>
