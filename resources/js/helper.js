@@ -1,23 +1,61 @@
 export default {
+    computed: {
+        modeler() {
+            return this.$root.$children[0].$refs.modeler;
+        },
+        highlightedNode() {
+            return this.modeler.highlightedNode;
+        },
+        definition() {
+            return this.highlightedNode.definition;
+        },
+        modelerId() {
+            return this.highlightedNode._modelerId;
+        }
+    },
+    watch: {
+        modelerId: {
+            immediate: true,
+            handler() {
+                if (this.config === undefined) {
+                    return;
+                }
+                try {
+                    Object.assign(this.config, this.defaultConfig, JSON.parse(this.definition.config));
+                } catch (e) {
+                    Object.assign(this.config, this.defaultConfig);
+                }
+            }
+        },
+        'definition.config'() {
+            if (this.config === undefined) {
+                return;
+            }
+            try {
+                Object.assign(this.config, this.defaultConfig, JSON.parse(this.definition.config));
+            } catch (e) {
+                Object.assign(this.config, this.defaultConfig);
+            }
+        },
+        config: {
+            deep: true,
+            immediate: true,
+            handler(config) {
+                if (this.config === undefined) {
+                    return;
+                }
+                if (this.defaultConfig === false) {
+                    this.defaultConfig = config;
+                } else {
+                    const json = JSON.stringify(config);
+                    json !== this.definition.config ? this.definition.config = json : null;
+                }
+            }
+        }
+    },
     data() {
         return {
-            highlightedNode: null,
-            highlightedNodePath: '',
-        }
+            defaultConfig: false,
+        };
     },
-    created() {
-        let i = 1;
-        let ref = this.$parent;
-
-        while(typeof ref.highlightedNode === 'undefined' && i < 10) {
-            ref = ref.$parent;
-            i++;
-        }
-        if (typeof ref.highlightedNode === 'undefined') {
-            throw "highlighted node not found in 10 parent levels";
-        }
-
-        this.highlightedNode = ref.highlightedNode;
-        this.highlightedNodePath = '$parent.'.repeat(i) + 'highlightedNode';
-    },
-};
+}
