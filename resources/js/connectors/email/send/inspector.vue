@@ -9,11 +9,18 @@
         @click="showConfiguration = !showConfiguration"
       >
         <i class="fas fa-cog mr-2"/>
-        {{ $t('Configuration Send Email' ) }}
+        {{ $t('Configuration' ) }}
         <i
           class="fas fa-angle-down ml-auto"
           :class="{ 'fas fa-angle-right' : showConfiguration }"></i>
       </button>
+     
+      <div class="form-group pl-4 pr-4 pt-3 pb-3 border-bottom m-0">
+        <label>{{ $t('Name') }}</label>
+        <input v-model="definition.name" name="name" placeholder type="text" class="form-control"/>
+        <small class="form-text text-muted">{{ $t('Enter the name of this element') }}</small>
+      </div>
+
       <email-options v-model="emailOptionsConfig" :node="node()"></email-options>
     </b-card-body>
   </b-card>
