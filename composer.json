@@ -19,7 +19,6 @@
     ],
 	"require": {
 		"mustache/mustache": "^2.12.0",
-		"spatie/server-side-rendering": "^0.2.5",
 		"fedeisas/laravel-mail-css-inliner": "^2.3"
 	},
 	"require-dev": {
@@ -27,7 +26,8 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"ProcessMaker\\Packages\\Connectors\\Email\\": "src/"
+			"ProcessMaker\\Packages\\Connectors\\Email\\": "src/",
+			"ProcessMaker\\ScriptRunners\\": "tests/ScriptRunners/"
 		}
 	},
 	"extra": {

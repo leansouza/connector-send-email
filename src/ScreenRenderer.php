@@ -1,22 +1,27 @@
 <?php
-
 namespace ProcessMaker\Packages\Connectors\Email;
-
-use Spatie\Ssr\Renderer;
-use Spatie\Ssr\Engines\Node;
 
 class ScreenRenderer
 {
     public static function render($screen_config, $data)
     {
         $node = env('NODE_BIN_PATH', '/usr/bin/node');
-        $engine = new Node($node, '/tmp');
-        $renderer = new Renderer($engine);
-        return $renderer
-            ->debug()
-            ->context('config', $screen_config)
-            ->context('data', $data)
-            ->entry(__DIR__ . '/../resources/js/ssr/dist/main.js')
-            ->render();
+        $entry = __DIR__ . '/../resources/js/ssr/entry.js';
+        $cmd = join(' ', [
+            $node,
+            $entry,
+            escapeshellarg(json_encode($screen_config)),
+            escapeshellarg(json_encode($data)),
+            '2>&1'
+        ]);
+        exec($cmd, $out, $err);
+        if ($err) {
+            throw new \Exception($err);
+        }
+        $out = join("\n", $out);
+        if (!preg_match('/\[BEGIN-SSR\](.*)\[END-SSR\]/s', $out, $matches)) {
+            throw new \Exception($out);
+        }
+        return $matches[1];
     }
 }

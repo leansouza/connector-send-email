@@ -42,6 +42,9 @@ Artisan::command('connector-send-email:install', function () {
         file_put_contents($envPath, $envContent);
     }
 
+    $this->info('Restart queue workers');
+    Artisan::call('horizon:terminate');
+
     $this->info('Connector send email plugin has been installed');
 })->describe('Installs the send mail connector');
 

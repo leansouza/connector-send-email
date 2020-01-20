@@ -3,6 +3,8 @@ require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/../../../../src/ScreenRenderer.php';
 use ProcessMaker\Packages\Connectors\Email\ScreenRenderer;
 
+function env($k, $v) { return $v; }
+
 $config = file_get_contents(__DIR__ . '/config.json');
 
 $data = [
