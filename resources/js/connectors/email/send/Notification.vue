@@ -10,10 +10,10 @@
                 </b-button>
             </div>
             <b-collapse id="email-configuration" v-model="showConfig">
-                <b-card no-body :header="configHeader" v-if="currentNotification">
+                <b-card :header="configHeader" v-if="currentNotification">
                     <email-options v-model="currentNotification"></email-options>
 
-                    <div class="form-group px-4 py-3 m-0 border-bottom">
+                    <div class="form-group">
                         <label>{{ $t('Send At') }}</label>
                         <select class="form-control" v-model="currentNotification.sendAt">
                             <option value="task-start">{{ $t('Task Start') }}</option>
@@ -22,7 +22,7 @@
                         <small class="form-text text-muted">{{ $t('Choose when this email will be sent to recipients') }}</small>
                     </div>
 
-                    <div class="form-group px-4 py-3 m-0 border-bottom">
+                    <div class="form-group">
                         <label>{{ $t('Expression') }}</label>
                         <input :placeholder="$t('varname == true')" class="form-control" v-model="currentNotification.expression">
                         <small class="form-text text-muted">{{ $t('This notification will only be sent if the expression is true.') }}</small>
@@ -196,5 +196,8 @@ export default {
 <style scoped>
 .table td.actions {
     white-space: nowrap;
+}
+div.card-body {
+    padding: 0.5em;
 }
 </style>

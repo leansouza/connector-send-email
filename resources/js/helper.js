@@ -9,12 +9,12 @@ export default {
         definition() {
             return this.highlightedNode.definition;
         },
-        modelerId() {
+        nodeId() {
             return this.highlightedNode._modelerId;
         }
     },
     watch: {
-        modelerId: {
+        nodeId: {
             immediate: true,
             handler() {
                 if (this.config === undefined) {
