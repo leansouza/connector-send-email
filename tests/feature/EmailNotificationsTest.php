@@ -7,6 +7,7 @@ use ProcessMaker\Facades\WorkflowManager;
 use ProcessMaker\Models\GroupMember;
 use ProcessMaker\Models\ProcessRequestToken;
 use ProcessMaker\Models\User;
+use ProcessMaker\Models\ProcessTaskAssignment;
 use ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder;
 use ProcessMaker\Models\Screen;
 use ProcessMaker\Models\Process;
@@ -273,7 +274,18 @@ class EmailNotificationsTest extends TestCase
         $jsonString = str_replace('"', '&#34;', json_encode($config));
 
         $bpmn = str_replace('[pmConfig]', $jsonString, $bpmn);
-        return factory(Process::class)->create(['bpmn' => $bpmn]);
+        $bpmn = str_replace('[assignedUserId]', $this->user->id, $bpmn);
+        $process = factory(Process::class)->create(['bpmn' => $bpmn]);
+
+        $taskId = 'node_2';
+        factory(ProcessTaskAssignment::class)->create([
+            'process_id' => $process->id,
+            'process_task_id' => $taskId,
+            'assignment_id' => $this->user->id,
+            'assignment_type' => User::class,
+        ]);
+
+        return $process;
     }
 
     private function headerMockery()

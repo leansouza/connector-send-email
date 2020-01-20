@@ -1,4 +1,4 @@
-const { mix } = require('laravel-mix');
+const mix = require('laravel-mix');
 
 /*
 Your BPM Plugin webpack utilizes laravel mix in order to easily compile

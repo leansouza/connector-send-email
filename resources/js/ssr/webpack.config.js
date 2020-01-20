@@ -1,6 +1,6 @@
-'use strict'
-const { VueLoaderPlugin } = require('vue-loader')
-const webpack = require('webpack')
+'use strict';
+const { VueLoaderPlugin } = require('vue-loader');
+const webpack = require('webpack');
 
 module.exports = {
   mode: 'development',
@@ -18,6 +18,10 @@ module.exports = {
         test: /\.css$/,
         loaders: ['css-loader']
       },
+      {
+        test: /\.node$/,
+        use: 'node-loader'
+      }
     ]
   },
   resolve: {
