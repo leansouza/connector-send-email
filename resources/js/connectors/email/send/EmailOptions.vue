@@ -134,13 +134,13 @@
           }
         }
 
-        if (
+        if ( this.config.addEmails && 
           (
-            this.config.addEmails.length === 0 ||
+            !this.config.addEmails.length ||
             this.config.addEmails.every(r => r === '')
           ) &&
-          this.config.users.length === 0 &&
-          this.config.groups.length === 0
+          !this.config.users.length &&
+          !this.config.groups.length
         ) {
           this.addWarning(this.$t('Email Has No Recipients'));
         }
