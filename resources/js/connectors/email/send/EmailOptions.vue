@@ -1,7 +1,7 @@
 <template>
     <div class="email-options">
 
-        <div class="form-group">
+        <div v-if="highlightedNode.type === 'processmaker-communication-send-email'" class="form-group">
           <label>{{ $t('Name') }}</label>
           <input v-model="definition.name" name="name" placeholder type="text" class="form-control"/>
           <small class="form-text text-muted">{{ $t('Enter the name of this element') }}</small>
@@ -134,13 +134,13 @@
           }
         }
 
-        if (
+        if ( this.config.addEmails && 
           (
-            this.config.addEmails.length === 0 ||
+            !this.config.addEmails.length ||
             this.config.addEmails.every(r => r === '')
           ) &&
-          this.config.users.length === 0 &&
-          this.config.groups.length === 0
+          !this.config.users.length &&
+          !this.config.groups.length
         ) {
           this.addWarning(this.$t('Email Has No Recipients'));
         }
