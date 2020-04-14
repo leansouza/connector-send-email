@@ -19,5 +19,5 @@ renderVueComponentToString(app, (err, html) => {
   if (err) {
     throw err
   }
-  console.log('[BEGIN-SSR]' + html + '[END-SSR]');
+  context.output(html);
 })

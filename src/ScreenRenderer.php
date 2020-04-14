@@ -5,23 +5,40 @@ class ScreenRenderer
 {
     public static function render($screen_config, $data)
     {
+        try {
+            $path = config('app.processmaker_scripts_home');
+        } catch (\Throwable $e) {
+            $path = '/tmp';
+        }
+        $configFile = tempnam($path, 'ssr-config');
+        $dataFile   = tempnam($path, 'ssr-data');
+        $outputFile = tempnam($path, 'ssr-output');
+
+        file_put_contents($configFile, json_encode($screen_config));
+        file_put_contents($dataFile, json_encode($data));
+
         $node = env('NODE_BIN_PATH', '/usr/bin/node');
         $entry = __DIR__ . '/../resources/js/ssr/entry.js';
         $cmd = join(' ', [
             $node,
             $entry,
-            escapeshellarg(json_encode($screen_config)),
-            escapeshellarg(json_encode($data)),
+            $configFile,
+            $dataFile,
+            $outputFile,
             '2>&1'
         ]);
+
         exec($cmd, $out, $err);
+
         if ($err) {
             throw new \Exception($err);
         }
-        $out = join("\n", $out);
-        if (!preg_match('/\[BEGIN-SSR\](.*)\[END-SSR\]/s', $out, $matches)) {
-            throw new \Exception($out);
-        }
-        return $matches[1];
+
+        $result = file_get_contents($outputFile);
+        unlink($configFile);
+        unlink($dataFile);
+        unlink($outputFile);
+
+        return $result;
     }
 }
