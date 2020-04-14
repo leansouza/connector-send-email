@@ -1,7 +1,7 @@
 const jsdom = require("jsdom");
 const fs = require('fs');
 const { JSDOM } = jsdom;
-const url = "file://" + __dirname + '/main.js';
+const url = "file://" + __dirname + '/dist/main.js';
 
 const screenConfigRaw = fs.readFileSync(process.argv[2]);
 const formDataRaw = fs.readFileSync(process.argv[3]);
