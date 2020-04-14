@@ -34,9 +34,6 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(),
   ],
-  externals: {
-	  // canvas: "commonjs canvas"
-  },
   node: {
     __dirname: false,
   }

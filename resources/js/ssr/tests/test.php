@@ -3,7 +3,8 @@ require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/../../../../src/ScreenRenderer.php';
 use ProcessMaker\Packages\Connectors\Email\ScreenRenderer;
 
-function env($k, $v) { return $v; }
+function env($_k, $v) { return $v; }
+function config($_v) { return '/tmp'; }
 
 $config = file_get_contents(__DIR__ . '/config.json');
 
@@ -16,5 +17,4 @@ $data = [
     ]
 ];
 
-// echo json_encode($data);
 echo ScreenRenderer::render(json_decode($config), $data) . "\n";

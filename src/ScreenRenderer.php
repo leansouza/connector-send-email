@@ -5,11 +5,7 @@ class ScreenRenderer
 {
     public static function render($screen_config, $data)
     {
-        try {
-            $path = config('app.processmaker_scripts_home');
-        } catch (\Throwable $e) {
-            $path = '/tmp';
-        }
+        $path = config('app.processmaker_scripts_home');
         $configFile = tempnam($path, 'ssr-config');
         $dataFile   = tempnam($path, 'ssr-data');
         $outputFile = tempnam($path, 'ssr-output');
