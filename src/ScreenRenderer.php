@@ -14,7 +14,7 @@ class ScreenRenderer
         file_put_contents($dataFile, json_encode($data));
 
         $node = env('NODE_BIN_PATH', '/usr/bin/node');
-        $entry = __DIR__ . '/../resources/js/ssr/dist/entry.js';
+        $entry = __DIR__ . '/../resources/js/ssr/entry.js';
         $cmd = join(' ', [
             $node,
             $entry,
