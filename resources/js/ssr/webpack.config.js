@@ -5,13 +5,9 @@ const webpack = require('webpack');
 module.exports = {
   mode: 'development',
   target: 'node',
-  entry: {
-    main: './src/app.js',
-    entry: './entry.js',
-  },
-  output: {
-    filename: '[name].js',
-  },
+  entry: [
+    './src/app.js'
+  ],
   module: {
     rules: [
       {
@@ -34,7 +30,4 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(),
   ],
-  node: {
-    __dirname: false,
-  }
 }
