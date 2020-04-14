@@ -45,6 +45,8 @@ Artisan::command('connector-send-email:install', function () {
     $this->info('Restart queue workers');
     Artisan::call('horizon:terminate');
 
+    system('cd ' . __DIR__ . '/../resources/js/ssr && npm install');
+
     $this->info('Connector send email plugin has been installed');
 })->describe('Installs the send mail connector');
 
