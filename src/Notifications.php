@@ -73,6 +73,7 @@ class Notifications
         $event = $definitions->getEvent(EmailSendSeeder::SUB_PROCESS_START_EVENT);
         WorkflowManager::triggerStartEvent(
             $subProcess, $event, array_merge($token->processRequest->data, [
+                '_request' => $token->processRequest->toArray(),
                 '_request_id' => $token->processRequest->id,
                 '_task_name' => $token->element_name,
                 'notification_config' => $notificationConfig
