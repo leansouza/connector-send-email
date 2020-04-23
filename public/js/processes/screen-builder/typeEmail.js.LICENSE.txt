@@ -4,6 +4,14 @@
    */
 
 /*!
+ * BootstrapVue Icons, generated from Bootstrap Icons 1.0.0-alpha3
+ *
+ * @link https://icons.getbootstrap.com/
+ * @license MIT
+ * https://github.com/twbs/icons/blob/master/LICENSE.md
+ */
+
+/*!
  * Name: vue-upload-component
  * Version: 2.8.20
  * Author: LianYue
@@ -54,7 +62,7 @@
 /*! 
   * portal-vue © Thorsten Lünborg, 2019 
   * 
-  * Version: 2.1.6
+  * Version: 2.1.7
   * 
   * LICENCE: MIT 
   * 
@@ -90,7 +98,7 @@
 
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.15.0
+ * @version 1.16.1
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -114,7 +122,7 @@
  */
 
 /**!
- * Sortable 1.10.0
+ * Sortable 1.10.2
  * @author	RubaXa   <trash@rubaxa.org>
  * @author	owenm    <owen23355@gmail.com>
  * @license MIT

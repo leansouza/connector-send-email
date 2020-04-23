@@ -26,3 +26,4 @@ const dom = new JSDOM(html, {
 };
 
 dom.window.document.queryCommandSupported = function() { };
+dom.window.customElements = { get: function() { return null } };
