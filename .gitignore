@@ -1,6 +1,5 @@
 node_modules
 /nbproject/private/
-package-lock.json
 nbproject/
 vendor/
 composer.lock
