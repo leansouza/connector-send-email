@@ -72,6 +72,13 @@ class SendEmail implements ShouldQueue
         }
     }
 
+    /**
+     * Prepare the email: render the body, subject, email address
+     *
+     * @param array $config
+     *
+     * @return array
+     */
     private function prepareEmailProperties($config)
     {
         if ($this->properties) {
