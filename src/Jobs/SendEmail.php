@@ -35,8 +35,8 @@ class SendEmail implements ShouldQueue
      */
     public function tags()
     {
-        $this->prepareEmail($this->config);
-        return ['package-email', $this->properties['subject']];
+        $properties = $this->prepareEmailProperties($this->config);
+        return ['package-email', $properties['subject']];
     }
 
     /**
@@ -46,7 +46,7 @@ class SendEmail implements ShouldQueue
      */
     public function handle()
     {
-        $this->prepareEmail($this->config);
+        $this->properties = $this->prepareEmailProperties($this->config);
 
         Mail::send([], [], function (Message $message) {
             $message->to($this->properties['email'])
@@ -72,10 +72,10 @@ class SendEmail implements ShouldQueue
         }
     }
 
-    private function prepareEmail($config)
+    private function prepareEmailProperties($config)
     {
         if ($this->properties) {
-            return;
+            return $this->properties;
         }
 
         //Load data
@@ -135,6 +135,8 @@ class SendEmail implements ShouldQueue
         $config['email'] = array_filter($emails);
 
         $this->properties = $config;
+
+        return $this->properties;
     }
 
     private function getData($config, $data)
