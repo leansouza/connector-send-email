@@ -10,6 +10,11 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 use ProcessMaker\Models\Comment;
+use ProcessMaker\Models\GroupMember;
+use ProcessMaker\Models\ProcessRequest;
+use ProcessMaker\Models\Screen;
+use ProcessMaker\Models\User;
+use ProcessMaker\Packages\Connectors\Email\ScreenRenderer;
 
 class SendEmail implements ShouldQueue
 {
@@ -131,6 +136,7 @@ class SendEmail implements ShouldQueue
             //screen definition
             $screen = Screen::find($mustache->render($config['screenRef'], $data));
             $rendered = ScreenRenderer::render($screen->config, $data);
+            \Log::info($rendered);
             $config['body'] = $rendered;
         } else {
             //Plain text
