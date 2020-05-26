@@ -40,8 +40,7 @@ class SendEmail implements ShouldQueue
      */
     public function tags()
     {
-        $properties = $this->prepareEmailProperties($this->config);
-        return ['package-email', $properties['subject']];
+        return ['package-email', $this->config['subject']];
     }
 
     /**
