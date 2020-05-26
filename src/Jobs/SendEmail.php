@@ -10,6 +10,11 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 use ProcessMaker\Models\Comment;
+use ProcessMaker\Models\GroupMember;
+use ProcessMaker\Models\ProcessRequest;
+use ProcessMaker\Models\Screen;
+use ProcessMaker\Models\User;
+use ProcessMaker\Packages\Connectors\Email\ScreenRenderer;
 
 class SendEmail implements ShouldQueue
 {
