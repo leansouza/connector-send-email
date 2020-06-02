@@ -14,7 +14,7 @@
 		"fedeisas/laravel-mail-css-inliner": "^2.3"
 	},
 	"require-dev": {
-		"processmaker/processmaker": "4.0.*"
+		"processmaker/processmaker": "^4.0.6"
 	},
 	"autoload": {
 		"psr-4": {
