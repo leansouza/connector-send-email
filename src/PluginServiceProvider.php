@@ -42,7 +42,9 @@ class PluginServiceProvider extends ServiceProvider
 
         // Register a dependency manager for the exporter
         $this->app->extend(ExportManager::class, function ($manager) {
-            $manager->addDependencyManager(ScreensInEmailConnector::class);
+            if (method_exists($manager, 'addDependencyManager')) {
+                $manager->addDependencyManager(ScreensInEmailConnector::class);
+            }
             return $manager;
         });
 
