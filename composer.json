@@ -13,9 +13,6 @@
 		"mustache/mustache": "^2.12.0",
 		"fedeisas/laravel-mail-css-inliner": "^2.3"
 	},
-	"require-dev": {
-		"processmaker/processmaker": "4.0.*"
-	},
 	"autoload": {
 		"psr-4": {
 			"ProcessMaker\\Packages\\Connectors\\Email\\": "src/",
