@@ -13,7 +13,7 @@
 		"mustache/mustache": "^2.12.0"
 	},
 	"require-dev": {
-		"processmaker/processmaker": "4.0.*"
+		"processmaker/processmaker": "^4.0.6"
 	},
 	"autoload": {
 		"psr-4": {
