@@ -26,7 +26,7 @@ class ScreenRenderer
 
         exec($cmd, $out, $err);
         if ($err) {
-            throw new \Exception($err);
+            throw new \Exception("Error from NodeJS: " . implode("\n", $out));
         }
 
         $result = file_get_contents($outputFile);
