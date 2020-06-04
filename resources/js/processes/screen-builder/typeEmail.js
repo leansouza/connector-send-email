@@ -3,8 +3,6 @@ import {FormBuilderControls} from "@processmaker/screen-builder";
 
 const RichTextControl = FormBuilderControls.find(control => control.rendererBinding === "FormHtmlEditor");
 
-const TableControl = FormBuilderControls.find(control => control.rendererBinding === "FormMultiColumn");
-
 const FormRecordList = FormBuilderControls.find(control => control.rendererBinding === "FormRecordList");
 
 // Remove editable inspector props
@@ -12,7 +10,6 @@ FormRecordList.control.inspector = FormRecordList.control.inspector.filter(prop 
 
 let emailControls = [
   RichTextControl,
-  TableControl,
   FormRecordList,
 ];
 

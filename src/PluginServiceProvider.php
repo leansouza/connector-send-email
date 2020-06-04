@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use ProcessMaker\Events\ScreenBuilderStarting;
+use ProcessMaker\Managers\ExportManager;
 use ProcessMaker\Nayra\Contracts\Bpmn\ActivityInterface;
+use ProcessMaker\Packages\Connectors\Email\Assets\ScreensInEmailConnector;
 use ProcessMaker\Packages\Connectors\Email\Controllers\EmailController;
 use ProcessMaker\Packages\Connectors\Email\Notifications;
 use ProcessMaker\Packages\Connectors\Email\Seeds\EmailSendSeeder;
@@ -37,6 +39,14 @@ class PluginServiceProvider extends ServiceProvider
             'js/email-connector.js',
             'vendor/processmaker/connectors/email'
         );
+
+        // Register a dependency manager for the exporter
+        $this->app->extend(ExportManager::class, function ($manager) {
+            if (method_exists($manager, 'addDependencyManager')) {
+                $manager->addDependencyManager(ScreensInEmailConnector::class);
+            }
+            return $manager;
+        });
 
         $this->publishes([
             __DIR__ . '/../public' => public_path('vendor/processmaker/connectors/email'),
