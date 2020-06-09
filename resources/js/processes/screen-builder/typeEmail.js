@@ -1,7 +1,14 @@
 import globalProperties from "@processmaker/screen-builder/src/global-properties";
 import {FormBuilderControls} from "@processmaker/screen-builder";
+import FormHtmlEditorStatic from './FormHtmlEditorStatic';
+
+window.Vue.component('FormHtmlEditorStatic', FormHtmlEditorStatic);
 
 const RichTextControl = FormBuilderControls.find(control => control.rendererBinding === "FormHtmlEditor");
+
+RichTextControl.control.component = 'FormHtmlEditorStatic';
+RichTextControl.rendererBinding = 'FormHtmlEditorStatic';
+RichTextControl.rendererComponent = FormHtmlEditorStatic;
 
 const FormRecordList = FormBuilderControls.find(control => control.rendererBinding === "FormRecordList");
 

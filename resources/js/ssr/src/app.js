@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import App from './App.vue'
-import renderVueComponentToString from 'vue-server-renderer/basic'
+import renderVueComponentToString from 'vue-server-renderer/basic';
+import FormHtmlEditorStatic from '../../processes/screen-builder/FormHtmlEditorStatic';
+
+Vue.component('FormHtmlEditorStatic', FormHtmlEditorStatic);
 
 const app = new Vue({
   el: '#app',
