@@ -136,7 +136,7 @@ class SendEmail implements ShouldQueue
             $screen = Screen::find($mustache->render($config['screenRef'], $data));
             $rendered = ScreenRenderer::render($screen->config, $data);
             $config['body'] = $rendered;
-        } elseif ($type !== 'html') {
+        } else if ($type !== 'html') {
             //Plain text
             $config['body'] = htmlentities($mustache->render($config['textBody'], $data), ENT_QUOTES, 'UTF-8');
         }
