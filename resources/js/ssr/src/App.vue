@@ -6,10 +6,12 @@
 </template>
 
 <script>
+import * as VueDeepSet from 'vue-deepset';
 import Vue from 'vue'
 import { VueFormRenderer } from "@processmaker/screen-builder";
 import FormHtmlEditorStatic from '../../processes/screen-builder/FormHtmlEditorStatic';
 
+Vue.use(VueDeepSet);
 Vue.component('FormHtmlEditorStatic', FormHtmlEditorStatic);
 Vue.component('VueFormRenderer', VueFormRenderer);
 

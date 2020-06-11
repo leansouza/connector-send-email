@@ -12,6 +12,7 @@ const formData = JSON.parse(formDataRaw);
 
 const html = `<!DOCTYPE html><div id="app"></div><script src="${url}"></script>`;
 const dom = new JSDOM(html, {
+   url: 'http://localhost/',
    resources: "usable",
    runScripts: "dangerously",
    pretendToBeVisual: "true",

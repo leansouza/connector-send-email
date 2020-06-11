@@ -1,7 +1,6 @@
 'use strict';
 const { VueLoaderPlugin } = require('vue-loader');
 const webpack = require('webpack');
-
 module.exports = {
   mode: 'development',
   target: 'node',
@@ -12,7 +11,12 @@ module.exports = {
     rules: [
       {
         test: /\.vue$/,
-        use: 'vue-loader'
+        use: {
+          loader: 'vue-loader',
+          options: {
+            optimizeSSR: false,
+          },
+        }
       },
       {
         test: /\.css$/,
