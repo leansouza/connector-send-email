@@ -21,7 +21,7 @@ class PluginServiceProvider extends ServiceProvider
 {
     use PluginServiceProviderTrait;
 
-    const version = '0.0.12';
+    const version = '1.1.19';
     const name = 'connector-send-email';
 
     /**
