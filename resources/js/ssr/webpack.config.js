@@ -1,6 +1,7 @@
 'use strict';
 const { VueLoaderPlugin } = require('vue-loader');
 const webpack = require('webpack');
+const path = require('path');
 module.exports = {
   mode: 'development',
   target: 'node',
@@ -29,7 +30,10 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['*', '.js', '.vue', '.json']
+    extensions: ['*', '.js', '.vue', '.json'],
+    alias: {
+      vue: path.resolve(__dirname, 'node_modules/vue/dist/vue.js'),
+    },
   },
   plugins: [
     new VueLoaderPlugin(),
