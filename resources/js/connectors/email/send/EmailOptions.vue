@@ -1,7 +1,7 @@
 <template>
     <div class="email-options">
 
-        <div v-if="highlightedNode.type === 'processmaker-communication-send-email'" class="form-group">
+        <div class="form-group">
           <label>{{ $t('Name') }}</label>
           <input v-model="definition.name" name="name" placeholder type="text" class="form-control"/>
           <small class="form-text text-muted">{{ $t('Enter the name of this element') }}</small>
