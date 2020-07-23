@@ -38,4 +38,7 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(),
   ],
+  externals: [
+    'monaco-editor'
+  ]
 }
