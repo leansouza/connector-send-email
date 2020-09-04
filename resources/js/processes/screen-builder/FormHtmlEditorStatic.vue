@@ -9,7 +9,7 @@ import Mustache from 'mustache';
  
 export default {
   name: 'FormHtmlEditorStatic',
-  props: ['content', 'validationData'],
+  props: ['content', 'validationData','renderVarHtml'],
   components: {
   },
   mounted() {
@@ -25,6 +25,16 @@ export default {
       }
 
       try {
+        if (this.renderVarHtml) {
+          let escape = Mustache.escape;
+          Mustache.escape = function (text) {
+            return text;
+          };
+          let render = Mustache.render(this.content, this.validationData);
+          Mustache.escape = escape;
+          return render;
+        }
+
         return Mustache.render(this.content, this.validationData);
       } catch (error) {
         return this.content;
