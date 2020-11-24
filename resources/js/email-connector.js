@@ -26,7 +26,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnEx
         initiallyOpen: false,
         label: 'Email Notifications',
         icon: 'paper-plane',
-        name: '',
+        name: 'email-notification',
       },
       items: [
         {
