@@ -3,6 +3,7 @@
 namespace ProcessMaker\Packages\Connectors\Email;
 
 use ProcessMaker\Facades\WorkflowManager;
+use ProcessMaker\Models\FormalExpression;
 use ProcessMaker\Models\Process;
 use ProcessMaker\Nayra\Bpmn\Events\ActivityActivatedEvent;
 use ProcessMaker\Nayra\Bpmn\Events\ActivityCompletedEvent;
@@ -49,9 +50,28 @@ class Notifications
 
         if (isset($config['email_notifications'])) {
             foreach ($config['email_notifications']['notifications'] as $notificationConfig) {
+                // Do not send notifications if they aren't of the correct type
                 if ($notificationConfig['sendAt'] !== $sendAt) {
                     continue;
                 }
+
+                // Do not send notifications if their expression don't evaluate to true
+               if ($notificationConfig['expression']) {
+                   $tokenData = $this->tokenData($event->token, $notificationConfig);
+
+                   $mustache = new \Mustache_Engine;
+                   $evaluatedCondition = $mustache->render($notificationConfig['expression'], $tokenData);
+
+                   $formalExp = new FormalExpression();
+                   $formalExp->setLanguage('FEEL');
+                   $formalExp->setBody($evaluatedCondition);
+                   if (!$formalExp($tokenData)) {
+                       continue;
+                   }
+                   // In our send email subprocess, use the expression with mustache evaluated
+                   $notificationConfig['expression'] = $evaluatedCondition;
+               }
+
                 $this->createNotification(
                     $notificationConfig,
                     $event->token
@@ -72,12 +92,7 @@ class Notifications
         $definitions = $subProcess->getDefinitions();
         $event = $definitions->getEvent(EmailSendSeeder::SUB_PROCESS_START_EVENT);
         WorkflowManager::triggerStartEvent(
-            $subProcess, $event, array_merge($token->processRequest->data, [
-                '_request' => $token->processRequest->toArray(),
-                '_request_id' => $token->processRequest->id,
-                '_task_name' => $token->element_name,
-                'notification_config' => $notificationConfig
-            ])
+            $subProcess, $event, $this->tokenData($token, $notificationConfig)
         );
     }
 
@@ -89,6 +104,23 @@ class Notifications
     private function notificationSubProcess()
     {
         return Process::where('package_key', EmailSendSeeder::SUB_PROCESS_ID)->firstOrFail();
+    }
+
+    /**
+     * Adds _request and other values to the request data to be used by the send process, mustache evaluations, etc.
+     *
+     * @param $token,
+     * @param $notificationConfig
+     * @return array
+     */
+    private function tokenData($token, $notificationConfig): array
+    {
+        return array_merge($token->processRequest->data, [
+            '_request' => $token->processRequest->toArray(),
+            '_request_id' => $token->processRequest->id,
+            '_task_name' => $token->element_name,
+            'notification_config' => $notificationConfig
+        ]);
     }
 
 }
