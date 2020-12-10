@@ -68,6 +68,8 @@ class Notifications
                    if (!$formalExp($tokenData)) {
                        continue;
                    }
+                   // In our send email subprocess, use the expression with mustache evaluated
+                   $notificationConfig['expression'] = $evaluatedCondition;
                }
 
                 $this->createNotification(
