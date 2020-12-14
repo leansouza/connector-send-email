@@ -2985,14 +2985,14 @@ var nodeId = 'processmaker-communication-email-send';
   category: 'Communication',
   icon: __webpack_require__(/*! ./icon.svg */ "./resources/js/connectors/email/send/icon.svg"),
   implementation: implementation,
-  label: 'Send Email',
+  label: window.ProcessMaker.i18n.t('Send Email'),
 
   /**
    * BPMN definition
    */
   definition: function definition(moddle) {
     return moddle.create('bpmn:ServiceTask', {
-      name: 'Send Email',
+      name: window.ProcessMaker.i18n.t('Send Email'),
       implementation: implementation,
       config: JSON.stringify({
         type: 'text',
@@ -3182,7 +3182,7 @@ window.Vue.component('EmailNotificationInspector', _connectors_email_send_Notifi
 var nodeTypes = [_connectors_email_send_index__WEBPACK_IMPORTED_MODULE_0__["default"]];
 /**
  * Initialize the connector.
- * 
+ *
  * Register the nodes it contains.
  */
 
@@ -3212,7 +3212,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', function (_ref) {
     container: true,
     config: {
       initiallyOpen: false,
-      label: 'Email Notifications',
+      label: window.ProcessMaker.i18n.t('Email Notifications'),
       icon: 'paper-plane',
       name: 'email-notification'
     },
@@ -3266,7 +3266,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/nolan/src/pm-packages/ProcessMaker/connector-send-email/resources/js/email-connector.js */"./resources/js/email-connector.js");
+module.exports = __webpack_require__(/*! /home/dante/desa/connector-send-email/resources/js/email-connector.js */"./resources/js/email-connector.js");
 
 
 /***/ })

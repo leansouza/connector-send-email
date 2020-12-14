@@ -14,13 +14,13 @@ export default  {
     category: 'Communication',
     icon: require('./icon.svg'),
     implementation,
-    label: 'Send Email',
+    label: window.ProcessMaker.i18n.t('Send Email'),
     /**
      * BPMN definition
      */
     definition: function(moddle) {
         return moddle.create('bpmn:ServiceTask', {
-            name: 'Send Email',
+            name: window.ProcessMaker.i18n.t('Send Email'),
             implementation,
             config: JSON.stringify({ type: 'text', subject: '', textBody: '', screenRef: null, users: [], groups: [] }),
         });
