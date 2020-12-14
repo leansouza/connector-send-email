@@ -94,6 +94,7 @@ class SendEmail implements ShouldQueue
 
         //Mustache
         $mustache = new \Mustache_Engine;
+        $mustacheNoEscape = new \Mustache_Engine(['escape' => function($txt) { return $txt; }]);
 
         //Mustache data notification
         if (isset($data['notification_config'])) {
@@ -142,7 +143,7 @@ class SendEmail implements ShouldQueue
         }
 
         //change mustache
-        $config['subject'] = $mustache->render($config['subject'], $data);
+        $config['subject'] = $mustacheNoEscape->render($config['subject'], $data);
         $config['email'] = array_filter($emails);
 
         $this->properties = $config;
