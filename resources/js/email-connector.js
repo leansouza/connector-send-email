@@ -9,7 +9,7 @@ let nodeTypes = [
 
 /**
  * Initialize the connector.
- * 
+ *
  * Register the nodes it contains.
  */
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnExtension, registerInspectorExtension })  => {
@@ -24,7 +24,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnEx
       container: true,
       config: {
         initiallyOpen: false,
-        label: 'Email Notifications',
+        label: window.ProcessMaker.i18n.t('Email Notifications'),
         icon: 'paper-plane',
         name: 'email-notification',
       },
