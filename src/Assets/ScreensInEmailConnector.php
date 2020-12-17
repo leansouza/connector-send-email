@@ -3,6 +3,8 @@
 namespace ProcessMaker\Packages\Connectors\Email\Assets;
 
 use DOMXPath;
+use Log;
+use ProcessMaker\Managers\ExportManager;
 use ProcessMaker\Models\Process;
 use ProcessMaker\Models\Screen;
 use ProcessMaker\Providers\WorkflowServiceProvider;
@@ -45,10 +47,11 @@ class ScreensInEmailConnector
      *
      * @param Process $process
      * @param array $references
+     * @param ExportManager $exportManager
      *
      * @return void
      */
-    public function updateReferences(Process $process, array $references = [])
+    public function updateReferences(Process $process, array $references = [], ExportManager $exportManager = null)
     {
         $definitions = $process->getDefinitions();
         $xpath = new DOMXPath($definitions);
@@ -61,7 +64,19 @@ class ScreensInEmailConnector
             $config = json_decode($node->getAttributeNS(WorkflowServiceProvider::PROCESS_MAKER_NS, 'config'));
             if (isset($config->screenRef) && is_numeric($config->screenRef)) {
                 $oldRef = $config->screenRef;
-                $newRef = $references[Screen::class][$oldRef]->getKey();
+                if (isset($references[Screen::class][$oldRef])) {
+                    $newRef = $references[Screen::class][$oldRef]->getKey();
+                } else {
+                    $newRef = null;
+                }
+                if ($config->type === 'screen' && !$newRef && $exportManager) {
+                    $exportManager->addLogMessage(
+                        'processmaker-communication-email-send:references',
+                        __('Imported file does not contain the screen assigned to an email connector'),
+                        false,
+                        __('Configuration Send Email')
+                    );
+                }
                 $config->screenRef = $newRef;
                 $node->setAttributeNS(WorkflowServiceProvider::PROCESS_MAKER_NS, 'config', json_encode($config));
             }
